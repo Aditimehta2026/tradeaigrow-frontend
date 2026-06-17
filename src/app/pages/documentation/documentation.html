@@ -1,0 +1,143 @@
+<div class="card">
+    <div class="font-semibold text-2xl mb-2">TradeAIGrow Documentation</div>
+    <p class="text-muted-color mb-6">
+        Everything you need to set up, run, and extend the TradeAIGrow platform.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Get Started</div>
+    <p class="text-lg mb-4">
+        TradeAIGrow is a full-stack trading platform built with Angular on the frontend
+        and Node.js on the backend. Make sure you have <b>Node.js 18+</b> and the
+        <b>Angular CLI</b> installed before continuing.
+    </p>
+    <pre class="app-code">
+<code>npm install -g &#64;angular/cli</code></pre>
+
+    <p class="text-lg mb-4">
+        Clone the repository, install the dependencies for both apps, and start the
+        frontend and API in two separate terminals.
+    </p>
+    <pre class="app-code">
+<code>git clone https://github.com/your-org/tradeaigrow
+cd tradeaigrow
+
+cd tradeaigrow-frontend
+npm install
+ng serve
+
+cd ../tradeaigrow-api
+npm install
+npm run dev</code></pre>
+
+    <p class="text-lg mb-4">
+        The Angular app runs at
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">http://localhost:4200/</i>
+        and the API at
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">http://localhost:3000/</i>
+        by default.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Project Structure</div>
+    <p class="text-lg mb-4">
+        The repository is split into two independent applications so the frontend and
+        backend can be built, deployed, and scaled separately.
+    </p>
+    <ul class="leading-normal list-disc pl-8 text-lg mb-4">
+        <li><span class="text-primary font-medium">tradeaigrow-frontend/</span>: Angular 20 client application.</li>
+        <li><span class="text-primary font-medium">tradeaigrow-api/</span>: Node.js / Express REST API.</li>
+        <li><span class="text-primary font-medium">src/app/layout</span>: Topbar, sidebar, menu and shared layout components.</li>
+        <li><span class="text-primary font-medium">src/app/pages</span>: Feature pages — dashboard, auth, trading, loan, withdrawal, etc.</li>
+        <li><span class="text-primary font-medium">src/app/interceptors</span>: HTTP interceptors (auth token, error handling).</li>
+        <li><span class="text-primary font-medium">src/app/pages/service</span>: Shared Angular services (auth, dashboard data, products).</li>
+    </ul>
+
+    <div class="font-semibold text-xl mb-4">Authentication</div>
+    <p class="text-lg mb-4">
+        Login, registration, email verification, and password reset live under
+        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/app/pages/auth</span>.
+        A JWT token is stored in
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">localStorage</i>
+        and attached to every protected request by
+        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/app/interceptors/auth.interceptor.ts</span>.
+        Expired or invalid tokens automatically redirect the user back to
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">/auth/login</i>.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Navigation & Menu</div>
+    <p class="text-lg mb-4">
+        The main sidebar menu is defined in
+        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/app/layout/component/app.menu.ts</span>.
+        Update the <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">model</i>
+        property to add, hide, or reorder menu items.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Routing</div>
+    <p class="text-lg mb-4">
+        Top-level routes are declared in
+        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/app.routes.ts</span>.
+        Feature areas use lazy-loaded route files:
+    </p>
+    <ul class="leading-normal list-disc pl-8 text-lg mb-4">
+        <li><span class="text-primary font-medium">/</span>: Public landing page.</li>
+        <li><span class="text-primary font-medium">/auth/*</span>: Login, register, forgot-password, reset-password, access, error.</li>
+        <li><span class="text-primary font-medium">/app/dashboard</span>: Authenticated user dashboard.</li>
+        <li><span class="text-primary font-medium">/app/page/*</span>: Trading, deposit, withdrawal, loan, support, and other features.</li>
+        <li><span class="text-primary font-medium">/notfound</span>: Catch-all 404 page.</li>
+    </ul>
+
+    <div class="font-semibold text-xl mb-4">Layout Service</div>
+    <p class="text-lg mb-4">
+        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/app/layout/service/layout.service.ts</span>
+        manages layout state such as dark mode, menu mode (static / overlay), sidebar
+        visibility, and theme color. Inject this service in any component that needs
+        to react to layout changes.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Styling</div>
+    <p class="text-lg mb-4">
+        TradeAIGrow uses <b>Tailwind CSS</b> utility classes for layout and spacing,
+        with custom SCSS for app-shell styling. Global styles and CSS variables live
+        in <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/styles.scss</span>
+        and <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/assets/layout</span>.
+        Prefer Tailwind utilities for new components; reach for SCSS only when a
+        utility-only solution is awkward.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Icons & Charts</div>
+    <p class="text-lg mb-4">
+        Use <b>Feather</b>-style icons (or the existing icon classes already wired in
+        the project) for any new UI. For data visualization use the shared
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">apex-chart</i>
+        wrapper or the <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">chart-tab</i>
+        component instead of introducing a new chart library.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Notifications</div>
+    <p class="text-lg mb-4">
+        All toast and alert dialogs go through
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">SweetAlert2</i>.
+        Avoid mixing in other notification libraries to keep the UX consistent.
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Backend API</div>
+    <p class="text-lg mb-4">
+        The Express server lives in
+        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">tradeaigrow-api/server.js</span>
+        and exposes REST endpoints under
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">/auth</i>,
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">/dashboard</i>,
+        and feature-specific routes. Configure secrets and ports through a
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">.env</i>
+        file (kept out of git via
+        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">.gitignore</i>).
+    </p>
+
+    <div class="font-semibold text-xl mb-4">Need Help?</div>
+    <p class="text-lg mb-4">
+        Reach the team at
+        <a href="mailto:support@tradeaigrow.com" class="text-primary font-medium hover:underline">
+            support@tradeaigrow.com
+        </a>
+        or open an issue in the project repository.
+    </p>
+</div>

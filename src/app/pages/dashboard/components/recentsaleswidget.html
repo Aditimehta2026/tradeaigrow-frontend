@@ -1,0 +1,52 @@
+<div class="card mb-8">
+    <div class="font-semibold text-xl mb-4">Top Coins</div>
+    <p-table [value]="coins" [paginator]="true" [rows]="5" responsiveLayout="scroll" [styleClass]="'p-datatable-sm'">
+        <ng-template #header>
+            <tr>
+                <th>Image</th>
+                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="current_price">Price <p-sortIcon field="current_price"></p-sortIcon></th>
+                <th>7D Chart</th>
+                <th pSortableColumn="price_change_percentage_24h">% 24h <p-sortIcon field="price_change_percentage_24h"></p-sortIcon></th>
+                <th pSortableColumn="market_cap_rank">Rank<p-sortIcon field="market_cap_rank"></p-sortIcon></th>
+                <th pSortableColumn="market_cap">Market Cap<p-sortIcon field="market_cap"></p-sortIcon> </th>
+                
+            </tr>
+        </ng-template>
+        <ng-template #body let-coin>
+            <tr>
+                <td style="width: 8%; min-width: 4rem;">
+                    <img [src]="coin.image" class="shadow-lg rounded-full" [alt]="coin.name" width="40" height="40" />
+                </td>
+                <td style="width: 22%; min-width: 7rem;">
+                    {{ coin.name }} ({{ coin.symbol | uppercase }})
+                </td>
+                <td style="width: 15%; min-width: 8rem;">
+                    {{ coin.current_price | currency: 'USD' }}
+                </td>
+                <td>
+                    <p-chart
+                        *ngIf="coin.sparkline_in_7d?.price"
+                        type="line"
+                        [data]="getSparklineData(coin.sparkline_in_7d.price)"
+                        [options]="sparklineOptions"
+                        [style]="{height: '60px', width: '120px', display: 'block', margin: '0', padding: '0'}">
+                    </p-chart>
+                </td>
+                <td style="width: 25%; min-width: 8rem;">
+                    <span [ngClass]="{ 'text-green-500': coin.price_change_percentage_24h >= 0, 'text-red-500': coin.price_change_percentage_24h < 0 }">
+                        {{ coin.price_change_percentage_24h | number: '1.2-2' }}%
+                    </span>
+                </td>
+
+                <td style="width: 25%; min-width: 8rem;">
+                    {{ coin.market_cap_rank }}
+                </td>
+                <td style="width: 25%; min-width: 8rem;">
+                    {{ coin.market_cap | currency: 'USD' }}
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

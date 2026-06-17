@@ -1,0 +1,159 @@
+<!-- Full-screen Drawer for policy/customize -->
+<p-drawer
+  [(visible)]="visibleDrawer"
+  [fullScreen]="true"
+  [modal]="true"
+  [blockScroll]="true"
+  appendTo="body"
+  header="Cookie settings"
+>
+  <ng-container *ngIf="drawerType === 'policy'">
+    <div class="max-h-[85dvh] overflow-y-auto overflow-x-hidden pe-2 text-sm sm:text-base leading-relaxed break-words space-y-4 [scrollbar-gutter:stable]">
+      <h3 class="text-lg sm:text-xl font-semibold break-words">Cookie Policy</h3>
+      <p class="text-surface-600 dark:text-surface-400">
+        How we use cookies and similar technologies on our websites and apps
+      </p>
+
+      <ol class="list-decimal pl-5 space-y-4 marker:font-semibold">
+        <li>
+          <span class="font-medium">What cookies are</span><br />
+          Cookies are small text files stored on your device. Similar technologies help us run the service securely,
+          remember settings, and understand how the product is used.
+        </li>
+        <li>
+          <span class="font-medium">What we use them for</span><br />
+          We use strictly necessary cookies so the service works. Where allowed, we may use performance, functional,
+          and advertising or measurement cookies to improve experience and measure campaigns.
+        </li>
+        <li>
+          <span class="font-medium">How long they last</span><br />
+          Session cookies are removed when you close the browser. Persistent cookies stay for a set period.
+        </li>
+        <li>
+          <span class="font-medium">Your choices</span><br />
+          You can control non-essential cookies through preferences and your browser/device settings.
+        </li>
+        <li>
+          <span class="font-medium">Changes to this policy</span><br />
+          We may update this Cookie Policy from time to time.
+        </li>
+      </ol>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="drawerType === 'customize'">
+    <div class="max-h-[85dvh] overflow-y-auto overflow-x-hidden pe-2 text-sm sm:text-base leading-relaxed break-words space-y-5 [scrollbar-gutter:stable]">
+      <h3 class="text-lg sm:text-xl font-semibold break-words">Cookie consent manager</h3>
+
+      <p>
+        When you visit our website, we may store cookies on your browser for security and to better understand user behavior.
+        Blocking some types of cookies may impact your experience on the site.
+      </p>
+
+      <p>
+        See our
+        <button
+          type="button"
+          class="inline font-semibold text-primary underline bg-transparent border-0 p-0 cursor-pointer"
+          (click)="openDrawer('policy')"
+        >
+          Cookie Policy
+        </button>
+        for more detail.
+      </p>
+
+      <h4 class="text-base font-semibold border-b border-surface-200 dark:border-surface-700 pb-2">
+        Manage cookie preferences
+      </h4>
+
+      <div class="space-y-2">
+        <span class="font-medium block">Strictly Necessary Cookies (Always active)</span>
+        <p class="text-surface-600 dark:text-surface-400 text-sm leading-relaxed">
+          These cookies are required for essential functionality and security.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <span class="font-medium block">Functional Cookies</span>
+        <p class="text-surface-600 dark:text-surface-400 text-sm leading-relaxed">
+          These cookies remember choices to provide enhanced functionality.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <span class="font-medium block">Targeting Cookies</span>
+        <p class="text-surface-600 dark:text-surface-400 text-sm leading-relaxed">
+          These cookies may be used by advertising partners to show relevant ads.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <span class="font-medium block">Performance Cookies</span>
+        <p class="text-surface-600 dark:text-surface-400 text-sm leading-relaxed">
+          These cookies help us measure site traffic and improve performance.
+        </p>
+      </div>
+    </div>
+  </ng-container>
+</p-drawer>
+
+<!-- Sticky cookie card -->
+<div
+  *ngIf="visible"
+  class="fixed z-[1200] left-0 right-0 bottom-0 p-3 sm:left-4 sm:right-auto sm:bottom-4 sm:w-[26rem]"
+>
+  <div class="relative rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 shadow-xl p-4 sm:p-5">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-times"
+      [text]="true"
+      [rounded]="true"
+      severity="secondary"
+      aria-label="Close cookie card"
+      class="!absolute top-2 right-2"
+      (click)="onClose()"
+    ></button>
+
+    <h3 class="text-base sm:text-lg font-semibold mb-2 pr-10">Cookie Settings</h3>
+
+    <p class="mb-4 text-sm sm:text-base leading-relaxed break-words">
+      We use cookies to improve your experience. See our
+      <button
+        type="button"
+        class="inline font-semibold text-primary underline bg-transparent border-0 p-0 cursor-pointer"
+        (click)="openDrawer('policy')"
+      >
+        Cookie Policy
+      </button>
+      and
+      <button
+        type="button"
+        class="inline font-semibold text-primary underline bg-transparent border-0 p-0 cursor-pointer"
+        (click)="openDrawer('customize')"
+      >
+        Customize Cookies
+      </button>.
+    </p>
+
+    <div class="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
+      <button
+        pButton
+        type="button"
+        label="Reject"
+        severity="secondary"
+        class="w-full sm:w-auto min-h-11 justify-center"
+        (click)="reject()"
+      ></button>
+
+      <button
+        pButton
+        type="button"
+        label="Accept"
+        severity="primary"
+        class="w-full sm:w-auto min-h-11 justify-center"
+        (click)="accept()"
+      ></button>
+    </div>
+  </div>
+</div>

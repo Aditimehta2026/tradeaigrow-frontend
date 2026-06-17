@@ -1,0 +1,190 @@
+<p-toast />
+<div class="grid grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
+    <div class="col-span-full lg:col-span-8 xl:col-span-6">
+        <div class="card">
+            <div class="font-semibold text-lg sm:text-xl mb-4 sm:mb-6">Upload Your ID for Verification</div>
+
+            <!-- Warning Message -->
+            <div
+                class="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <div class="flex items-start gap-2 sm:gap-3">
+                    <i
+                        class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 text-lg sm:text-xl mt-0.5 flex-shrink-0"></i>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-semibold text-sm sm:text-base text-amber-900 dark:text-amber-200 mb-1">
+                            Please follow the instructions below to upload your ID for verification.
+                        </div>
+                        <ng-container *ngIf="userBalance < 1000">
+                            <p class="text-xs sm:text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
+                                You need to maintain a minimum balance of $1,000 in your account to unlock the loan
+                                feature. Please ensure your account balance meets this requirement to access this
+                                service.
+                            </p>
+                        </ng-container>
+                        <ng-container *ngIf="userBalance >= 1000">
+                            <p class="text-xs sm:text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
+                                You can now apply for a loan up to ${{ maxLimit }}. Please ensure your account balance
+                                meets this requirement to access this service.
+                            </p>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <form class="flex flex-col gap-4 sm:gap-6">
+                <!-- File Upload Section -->
+
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+                        ID Document <span class="text-red-500">*</span>
+                    </label>
+                    <div class="card flex flex-wrap gap-6 items-center justify-between">
+                        <p-fileupload #fileUpload mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload"
+                            name="idDocument" accept="image/*,.pdf" maxFileSize="5000000" [disabled]="isFormDisabled"
+                            [auto]="false" />
+                    </div>
+                    <span *ngIf="showIdDocumentError && (!fileUpload.files || fileUpload.files.length === 0)"
+                        class="text-xs text-red-600 dark:text-red-400 mt-1">
+                        ID Document is required. Please upload a file.
+                    </span>
+                </div>
+
+                <!-- Loan Amount -->
+                <div class="flex flex-col gap-2">
+                    <label for="loanAmount"
+                        class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
+                        Loan Amount <span class="text-red-500">*</span>
+                    </label>
+                    <p-inputnumber id="loanAmount" [(ngModel)]="loanAmount" name="loanAmount" mode="decimal" [min]="100"
+                        [max]="maxLimit" prefix="$" [useGrouping]="true" placeholder="example: 100"
+                        [disabled]="isFormDisabled" (onInput)="onLoanAmountInput($event)" />
+                    <span *ngIf="loanAmountExceedsMax" class="text-xs text-red-600 dark:text-red-400 mt-1">
+                        Max limit exceeded. Please enter a value within $100 to ${{ maxLimit | number:'1.0-0' }}
+                    </span>
+                </div>
+
+                <!-- Loan Term Dropdown -->
+                <div class="flex flex-col gap-2">
+                    <label for="loanTerm" class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
+                        Loan Term (Days) <span class="text-red-500">*</span>
+                    </label>
+                    <p-select id="loanTerm" [(ngModel)]="selectedLoanTerm" name="loanTerm" [options]="loanTermOptions"
+                        optionLabel="label" optionValue="value" placeholder="Select loan term" fluid
+                        [disabled]="isFormDisabled" (ngModelChange)="calculateInterest()" />
+                </div>
+
+                <!-- Total Interest Information -->
+                <div
+                    class="flex flex-col gap-3 p-3 sm:p-4 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <span class="text-xs sm:text-sm text-surface-600 dark:text-surface-400">
+                            Total Interest <span class="text-xs">(Daily Interest Rate: 0.33%)</span>
+                        </span>
+                        <span class="text-base sm:text-lg font-semibold text-primary">
+                            {{ calculatedInterest | number:'1.2-2' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-2">
+                    <p-button label="Submit" icon="pi pi-check" severity="success" (onClick)="submitLoanApplication()"
+                        [disabled]="isFormDisabled || !isFormValid()" styleClass="w-full" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Loan Application Success Dialog -->
+<p-dialog [(visible)]="showSuccessDialog" [modal]="true" [style]="{width: '95%', maxWidth: '450px'}" [closable]="false"
+    [draggable]="false" [resizable]="false" [breakpoints]="{'960px': '90%', '640px': '95%'}"
+    [styleClass]="'p-dialog-sm md:p-dialog-md'">
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2 px-3 sm:px-2 md:px-0">
+            <i class="pi pi-check-circle text-green-500 text-lg sm:text-xl md:text-2xl"></i>
+            <span class="font-semibold text-sm sm:text-base md:text-lg">Loan Application Submitted Successfully</span>
+        </div>
+    </ng-template>
+    <div class="py-3 sm:py-2 md:py-4 px-3 sm:px-2 md:px-0">
+        <div class="text-center space-y-3 sm:space-y-3 md:space-y-4">
+            <div>
+
+                <p
+                    class="text-xs sm:text-sm md:text-base text-surface-600 dark:text-surface-400 px-1 sm:px-2 leading-relaxed mb-3 sm:mb-4">
+                    Thank you for submitting your loan application. Our team will review your request and reach out to
+                    you as soon as possible.
+                </p>
+                <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-2.5 sm:p-3 mt-3 sm:mt-4">
+                    <p class="text-xs sm:text-xs md:text-sm text-surface-600 dark:text-surface-400 italic">
+                        Would you like to contact our support team now to track your application status?
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex flex-col sm:flex-row justify-end gap-2 px-3 sm:px-2 md:px-0 pb-3 sm:pb-2 md:pb-0">
+            <p-button label="No, Stay Here" icon="pi pi-times" severity="secondary" (onClick)="closeDialog()"
+                styleClass="w-full sm:w-auto text-xs sm:text-sm md:text-base" />
+            <p-button label="Yes, Contact Support" icon="pi pi-headphones" severity="success"
+                (onClick)="onMoveToSupport()" styleClass="w-full sm:w-auto text-xs sm:text-sm md:text-base" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Loan Application Limit Dialog -->
+<p-dialog 
+    [(visible)]="loanlimitDialog" 
+    [modal]="true" 
+    [style]="{width: '90%', maxWidth: '450px'}"
+    [closable]="false"
+    [draggable]="false"
+    [resizable]="false"
+    [breakpoints]="{'960px': '90%', '640px': '95%'}"
+    [styleClass]="'p-dialog-sm md:p-dialog-md'">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2 px-2 md:px-0">
+            <i class="pi pi-info-circle text-orange-500 text-xl md:text-2xl"></i>
+            <span class="font-semibold text-base md:text-lg">Loan Application Limit Reached</span>
+        </div>
+    </ng-template>
+
+    <div class="py-2 md:py-4 px-2 md:px-0">
+        <div class="text-center space-y-3 md:space-y-4">
+            <h2 class="text-lg md:text-xl font-semibold">Please try again later</h2>
+
+            <p class="text-sm md:text-base text-surface-600 dark:text-surface-400 px-2">
+                {{loanErrorDetails}}
+            </p>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex flex-col sm:flex-row justify-end gap-2 px-2 md:px-0 pb-2 md:pb-0">
+            
+            <button 
+                pButton 
+                pRipple
+                type="button"
+                label="No, Stay Here"
+                icon="pi pi-times"
+                (click)="closeDialog()"
+                class="p-button-outlined p-button-secondary w-full sm:w-auto text-sm md:text-base">
+            </button>
+
+            <button 
+                pButton 
+                pRipple
+                type="button"
+                label="Contact Support"
+                icon="pi pi-headphones"
+                (click)="onMoveToSupport()"
+                class="p-button-primary w-full sm:w-auto text-sm md:text-base">
+            </button>
+
+        </div>
+    </ng-template>
+
+</p-dialog>

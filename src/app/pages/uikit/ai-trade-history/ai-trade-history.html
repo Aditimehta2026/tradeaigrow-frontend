@@ -1,0 +1,206 @@
+<div class="card mb-8 p-4 md:p-6">
+    <div class="flex items-center justify-between mb-5">
+        <div>
+            <h2 class="text-xl md:text-2xl font-semibold m-0">AI Trade History</h2>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mt-1 mb-0">
+                Your recent AI trading records
+            </p>
+        </div>
+        <div class="hidden md:flex items-center gap-2 text-surface-500 dark:text-surface-400 text-sm">
+            <i class="pi pi-chart-line"></i>
+            <span>Total: {{ AItradeHistory.length }}</span>
+        </div>
+    </div>
+
+    <!-- Cards -->
+    <div *ngIf="AItradeHistory.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5">
+        <div *ngFor="let trade of AItradeHistory"   (click)="openTradeDialog(trade)"
+            class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-4 md:p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
+
+            <!-- Top -->
+            <div class="flex items-start justify-between gap-3 mb-4">
+                <div>
+                    <div class="font-semibold text-base md:text-lg text-surface-900 dark:text-surface-0">
+                        {{ trade.tradeDuration }}
+                    </div>
+                    <div
+                        class="text-xs md:text-sm text-surface-500 dark:text-surface-400 mt-1 inline-flex items-center gap-1">
+                        <i class="pi pi-clock"></i>
+                        <span>{{ trade.durationInDays }} days</span>
+                    </div>
+                </div>
+
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5" [ngClass]="{
+                        'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300': trade.status === 'running',
+                        'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300': trade.status === 'completed',
+                        'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300': trade.status === 'cancelled'
+                    }">
+                    <i class="pi" [ngClass]="{
+                            'pi-spin pi-spinner': trade.status === 'running',
+                            'pi-check-circle': trade.status === 'completed',
+                            'pi-times-circle': trade.status === 'cancelled'
+                        }"></i>
+                    {{ trade.status | titlecase }}
+                </span>
+            </div>
+
+            <!-- Amount + ROI -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
+                    <div class="text-xs text-blue-700 dark:text-blue-300 mb-1">Invested Amount</div>
+                    <div class="font-semibold text-blue-700 dark:text-blue-300 text-sm md:text-base">
+                        {{ trade.amount | currency:'USD':'symbol':'1.0-0' }}
+                    </div>
+                </div>
+
+                <div class="rounded-lg bg-purple-50 dark:bg-purple-900/20 p-3">
+                    <div class="text-xs text-purple-700 dark:text-purple-300 mb-1">Daily ROI</div>
+                    <div class="font-semibold text-purple-700 dark:text-purple-300 text-sm md:text-base">
+                        {{ trade.dailyROI }}%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Balances -->
+            <div class="space-y-2 mb-4">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-surface-500 dark:text-surface-400">Balance Before AI Trade</span>
+                    <span class="font-medium text-surface-800 dark:text-surface-100">
+                        {{ trade.oldBalance | currency:'USD':'symbol':'1.0-0' }}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-surface-500 dark:text-surface-400">Balance After AI Trade</span>
+                    <span class="font-semibold text-emerald-600 dark:text-emerald-400">
+                        {{ trade.newBalance | currency:'USD':'symbol':'1.0-0' }}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-surface-500 dark:text-surface-400">Strategy Profit</span>
+                    <span class="font-semibold text-sky-600 dark:text-sky-400">
+                        {{ (trade.totalProfit ?? 0) | currency:'USD':'symbol':'1.0-0' }}
+                    </span>
+                </div>
+                
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-surface-500 dark:text-surface-400">Projected Payout</span>
+                    <span class="font-semibold text-indigo-600 dark:text-indigo-400">
+                        {{ (trade.finalAmount ?? trade.newBalance ?? 0) | currency:'USD':'symbol':'1.0-0' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Dates -->
+            <div class="pt-3 border-t border-surface-200 dark:border-surface-700 text-xs md:text-sm space-y-2">
+                <div class="flex items-center gap-2 text-orange-600 dark:text-orange-300">
+                    <i class="pi pi-calendar"></i>
+                    <span>Created: {{ trade.tradeCreatedAt | date:'medium' }}</span>
+                </div>
+
+                <div class="flex items-center gap-2 text-rose-600 dark:text-rose-300">
+                    <i class="pi pi-hourglass"></i>
+                    <span>Ends: {{ trade.tradeEndDate | date:'medium' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="AItradeHistory.length === 0" class="text-center py-14">
+        <div class="flex flex-col items-center gap-3">
+            <i class="pi pi-inbox text-5xl text-surface-400"></i>
+            <h3 class="m-0 text-lg font-semibold text-surface-700 dark:text-surface-200">No AI Trades Yet</h3>
+            <p class="m-0 text-sm text-surface-500 dark:text-surface-400">
+                Your AI trade history will appear here once you start trading.
+            </p>
+        </div>
+    </div>
+</div>
+
+<p-dialog
+    header="AI Trade Details"
+    [(visible)]="displayTradeDialog"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: '32rem', maxWidth: '95vw' }"
+    (onHide)="closeTradeDialog()"
+>
+    <div *ngIf="selectedTrade" class="space-y-3">
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Duration</span>
+            <span class="font-semibold">{{ selectedTrade.tradeDuration || 'N/A' }}</span>
+        </div>
+
+        <div class="flex justify-between items-center border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Status</span>
+            <p-tag
+                icon="pi pi-sparkles"
+                [value]="selectedTrade.status | titlecase"
+                [severity]="
+                    selectedTrade.status === 'running'
+                        ? 'info'
+                        : selectedTrade.status === 'completed'
+                        ? 'success'
+                        : selectedTrade.status === 'cancelled'
+                        ? 'danger'
+                        : 'secondary'
+                "
+                [rounded]="true"
+                styleClass="px-3 py-1 text-xs font-semibold"
+            ></p-tag>
+        </div>
+
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Invested</span>
+            <span class="font-semibold">{{ selectedTrade.amount | currency:'USD':'symbol':'1.0-0' }}</span>
+        </div>
+
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Daily ROI</span>
+            <span class="font-semibold">{{ selectedTrade.dailyROI ? (selectedTrade.dailyROI) : 'N/A' }}%</span>
+        </div>
+
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Balance Before AI Trade</span>
+            <span class="font-semibold">{{ selectedTrade.oldBalance | currency:'USD':'symbol':'1.0-0' }}</span>
+        </div>
+
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Balance After AI Trade</span>
+            <span class="font-semibold text-emerald-600 dark:text-emerald-400">
+                {{ selectedTrade.newBalance | currency:'USD':'symbol':'1.0-0' }}
+            </span>
+        </div>
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Strategy Profit</span>
+            <span class="font-semibold text-sky-600 dark:text-sky-400">
+                {{ (selectedTrade.totalProfit ?? 0) | currency:'USD':'symbol':'1.0-0' }}
+            </span>
+        </div>
+        
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Projected Payout</span>
+            <span class="font-semibold text-indigo-600 dark:text-indigo-400">
+                {{ (selectedTrade.finalAmount ?? selectedTrade.newBalance ?? 0) | currency:'USD':'symbol':'1.0-0' }}
+            </span>
+        </div>
+        
+
+        <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+            <span class="text-surface-500">Created</span>
+            <span class="font-semibold">{{ selectedTrade.tradeCreatedAt | date:'medium' }}</span>
+        </div>
+
+        <div class="flex justify-between">
+            <span class="text-surface-500">Ends</span>
+            <span class="font-semibold">{{ selectedTrade.tradeEndDate | date:'medium' }}</span>
+        </div>
+    </div>
+</p-dialog>
+
+<div *ngIf="isLoading" class="loading-overlay">
+  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner">
+  </p-progressSpinner>
+</div>

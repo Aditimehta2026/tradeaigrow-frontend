@@ -1,0 +1,308 @@
+  <div class="layout-topbar">
+        <div class="layout-topbar-logo-container">
+            <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
+                <i class="pi pi-bars"></i>
+            </button>
+            <a class="layout-topbar-logo" routerLink="/">
+             <span> <img src="assets/demo/images/logo/trade-AIgrow-logo-new.png" alt="Logo" class="logo-image-after-login mr-2"></span>
+                <span>{{userName}}</span>
+            </a>
+        </div>
+
+        <div class="layout-topbar-actions">
+            <div class="layout-config-menu">
+                <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
+                    <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
+                </button>
+            </div>
+
+            <button class="layout-topbar-menu-button layout-topbar-action" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
+                <i class="pi pi-ellipsis-v"></i>
+            </button>
+
+            <div class="layout-topbar-menu hidden lg:block">
+                <div class="layout-topbar-menu-content">
+                    <button type="button" class="layout-topbar-action" (click)="openProfile()">
+                        <i class="pi pi-user"></i>
+                        <span>Profile</span>
+                    </button>
+                    <button type="button" class="layout-topbar-action" (click)="openConfirmation()">
+                        <i class="pi pi-sign-out"></i>
+                        <span>Quit</span>
+                    </button>
+                 
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <!-- Place p-dialog here, outside layout-topbar, without card wrapper -->
+<p-dialog header="Confirmation" [(visible)]="displayConfirmation" [style]="{ width: '350px' }" [modal]="true">
+    <div class="flex items-center justify-center">
+        <i class="pi pi-exclamation-triangle mr-4" style="font-size: 2rem"></i>
+        <span>Are you sure you want to logout?</span>
+    </div>
+    <ng-template #footer>
+        <p-button label="No" icon="pi pi-times" (click)="closeConfirmation()" text severity="secondary" />
+        <p-button label="Yes" icon="pi pi-check" (click)="logOutConfirmation()" severity="danger" outlined autofocus />
+    </ng-template>
+</p-dialog>
+
+<!-- Profile Drawer -->
+<p-drawer
+    [(visible)]="showProfileDrawer"
+    position="right"
+    [modal]="true"
+    [dismissible]="true"
+    [showCloseIcon]="true"
+    styleClass="!w-full sm:!w-[360px]">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <i class="pi pi-user text-primary"></i>
+            <span class="font-semibold text-lg">My Account</span>
+        </div>
+    </ng-template>
+
+    <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
+            <span class="text-sm text-surface-500">Username</span>
+            <span class="font-semibold text-base text-surface-900 dark:text-surface-0 break-words text-right">
+                {{ userName || '—' }}
+            </span>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
+            <span class="text-sm text-surface-500 shrink-0">Email</span>
+            <span class="font-medium text-sm text-surface-900 dark:text-surface-0 break-all text-right">
+                {{ userEmail || '—' }}
+            </span>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
+            <span class="text-sm text-surface-500 shrink-0">UID</span>
+            <span class="font-medium text-sm text-surface-900 dark:text-surface-0 break-all text-right">
+                {{ userUid || '—' }}
+            </span>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
+            <span class="text-sm text-surface-500">Balance</span>
+            <span class="font-bold text-lg text-surface-900 dark:text-surface-0 text-right">
+                ${{ balance | number:'1.0-2' }}
+            </span>
+        </div>
+    </div>
+    <div class="flex items-center justify-between gap-3 pb-1 mt-4 border-b border-surface-200 dark:border-surface-700 pb-3">
+        <span class="text-sm text-surface-500">Region</span>
+        <p-selectButton
+            [options]="regionOptions"
+            [(ngModel)]="selectedRegion"
+            optionLabel="label"
+            optionValue="value"
+            (onChange)="onRegionChange($event.value)"
+            [allowEmpty]="false"
+            size="small">
+        </p-selectButton>
+    </div>
+    <div class="flex items-center justify-between gap-3 pb-1 mt-4">
+        <span class="text-sm text-surface-500">Verification Center</span>
+
+        <ng-container *ngIf="isIdentityVerified === true; else verifiedPending">
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold
+                         bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
+                <i class="pi pi-check-circle"></i>
+                Verified
+            </span>
+        </ng-container>
+
+        <ng-template #verifiedPending>
+            <button type="button" (click)="openVerifyDialog()" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold
+                           bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300
+                           hover:bg-amber-200 transition-colors cursor-pointer">
+                <i class="pi pi-exclamation-triangle"></i>
+                {{ verificationStatus || 'pending' }}
+            </button>
+        </ng-template>
+    </div>
+    <p-divider class="!my-4"></p-divider>
+
+    <p-button
+        label="Logout"
+        icon="pi pi-sign-out"
+        severity="danger"
+        [outlined]="true"
+        styleClass="w-full"
+        (onClick)="closeProfile(); openConfirmation()">
+    </p-button>
+</p-drawer>
+
+<p-dialog [(visible)]="showVerifyDialog" [modal]="true" (onHide)="resetVerifyForm()"
+    [style]="{ width: '95%', maxWidth: '500px' }" [draggable]="false" [resizable]="false">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <i class="pi pi-shield text-primary text-xl"></i>
+            <span class="font-semibold text-lg">Identity Verification</span>
+        </div>
+    </ng-template>
+
+    <!-- Warning -->
+    <div class="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <div class="flex items-start gap-2">
+            <i class="pi pi-info-circle text-amber-600 dark:text-amber-400 mt-0.5"></i>
+            <p class="text-xs sm:text-sm text-amber-800 dark:text-amber-300 m-0 leading-relaxed">
+                Identity verification document is required to enable deposits and withdrawals.
+                Please upload a valid government-issued ID.
+            </p>
+        </div>
+    </div>
+
+    <form class="flex flex-col gap-4">
+        <!-- Document Type -->
+        <div class="flex flex-col gap-2">
+            <label class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
+                Document Type <span class="text-red-500">*</span>
+            </label>
+            <p-select [(ngModel)]="documentType" name="documentType" [options]="documentTypeOptions"
+                optionLabel="label" optionValue="value" placeholder="Select document type" fluid />
+        </div>
+
+        <!-- Document Number -->
+        <div class="flex flex-col gap-2">
+            <label class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
+                Document Number <span class="text-red-500">*</span>
+            </label>
+            <input pInputText [(ngModel)]="documentNumber" name="documentNumber"
+                placeholder="Enter document number" class="w-full" />
+        </div>
+
+        <!-- File Upload (reuse menudemo pattern) -->
+        <div class="flex flex-col gap-2">
+            <label class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
+                ID Document <span class="text-red-500">*</span>
+            </label>
+            <div class="card flex flex-wrap gap-6 items-center justify-between m-0">
+                <p-fileupload #verifyFileUpload mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload"
+                    name="verifyDocument" accept="image/*,.pdf" maxFileSize="5000000" [auto]="false" />
+            </div>
+            <span *ngIf="showDocError && (!verifyFileUpload.files || verifyFileUpload.files.length === 0)"
+                  class="text-xs text-red-600 dark:text-red-400 mt-1">
+                ID Document is required. Please upload a file.
+            </span>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <div class="flex flex-col sm:flex-row justify-end gap-2">
+            <p-button label="Cancel" icon="pi pi-times" severity="secondary" [outlined]="true"
+                (onClick)="closeVerifyDialog()" />
+            <p-button label="Submit" icon="pi pi-check" severity="success" (onClick)="verifyIdentity(verifyFileUpload)" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner"></p-progressSpinner>
+  </div>
+
+    <p-dialog [(visible)]="showVerifySuccessDialog"
+          [modal]="true"
+          [style]="{ width: '95%', maxWidth: '460px' }"
+          [closable]="false"
+          [draggable]="false"
+          [resizable]="false">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-green-500 text-2xl"></i>
+            <span class="font-semibold text-base sm:text-lg">
+                Document Uploaded Successfully
+            </span>
+        </div>
+    </ng-template>
+
+    <div class="py-2 sm:py-3">
+        <div class="text-center space-y-3 sm:space-y-4">
+
+            <div class="mx-auto w-16 h-16 rounded-full
+                        bg-emerald-100 dark:bg-emerald-500/20
+                        text-emerald-600 dark:text-emerald-300
+                        flex items-center justify-center">
+                <i class="pi pi-shield text-3xl"></i>
+            </div>
+
+            <p class="text-sm sm:text-base text-surface-700 dark:text-surface-200 leading-relaxed m-0">
+                Your verification document has been uploaded successfully.
+            </p>
+
+            <p class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 leading-relaxed m-0">
+                Our team will review your submission and update your verification status shortly.
+            </p>
+
+            <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-3 mt-2">
+                <div class="flex items-start gap-2 text-left">
+                    <i class="pi pi-info-circle text-primary mt-0.5"></i>
+                    <p class="text-xs sm:text-sm text-surface-600 dark:text-surface-400 m-0">
+                        You'll be notified once the review is complete.
+                        Status: <span class="font-semibold text-amber-600 dark:text-amber-400">Pending review</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end">
+            <p-button label="Got it"
+                      icon="pi pi-check"
+                      severity="success"
+                      styleClass="w-full sm:w-auto"
+                      (onClick)="closeVerifySuccessDialog()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- for error -->
+ <p-dialog [(visible)]="showVerifyErrorDialog"
+          [modal]="true"
+          [style]="{ width: '95%', maxWidth: '440px' }"
+          [closable]="false"
+          [draggable]="false"
+          [resizable]="false">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <i class="pi pi-times-circle text-red-500 text-2xl"></i>
+            <span class="font-semibold text-base sm:text-lg">
+                Submission Failed
+            </span>
+        </div>
+    </ng-template>
+
+    <div class="py-2 sm:py-3">
+        <div class="text-center space-y-3 sm:space-y-4">
+            <div class="mx-auto w-16 h-16 rounded-full
+                        bg-red-100 dark:bg-red-500/20
+                        text-red-600 dark:text-red-300
+                        flex items-center justify-center">
+                <i class="pi pi-exclamation-triangle text-3xl"></i>
+            </div>
+
+            <p class="text-sm sm:text-base text-surface-700 dark:text-surface-200 leading-relaxed m-0">
+                {{ verifyErrorMessage || 'Something went wrong. Please try again.' }}
+            </p>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end">
+            <p-button label="Close"
+                      icon="pi pi-times"
+                      severity="danger"
+                      [outlined]="true"
+                      styleClass="w-full sm:w-auto"
+                      (onClick)="closeVerifyErrorDialog()" />
+        </div>
+    </ng-template>
+</p-dialog>

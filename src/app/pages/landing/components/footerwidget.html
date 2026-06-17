@@ -1,0 +1,73 @@
+<div class="py-12 px-12 mx-0 mt-20 lg:mx-20">
+    <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-12 md:col-span-3">
+            <a routerLink="/auth/login"
+                class="flex flex-wrap items-center justify-center md:justify-start md:mb-0 mb-4 cursor-pointer">
+                <img src="assets/demo/images/logo/trade-AIgrow-logo-new.png" alt="TradeAIGrow Logo"
+                    class="logo-image mr-2" />
+                <h4 class="font-medium text-3xl text-surface-900 dark:text-surface-0">TradeAIGrow</h4>
+            </a>
+            <p class="text-sm text-surface-600 dark:text-surface-400 text-center md:text-left mt-2">
+                © 2026 TradeAIGrow. Built for precision trading teams.
+            </p>
+        </div>
+
+        <div class="col-span-12 md:col-span-9">
+            <div class="grid grid-cols-12 gap-6 text-center md:text-left">
+                <div class="col-span-12 sm:col-span-6 md:col-span-3">
+                    <h4 class="font-medium text-2xl leading-normal mb-5 text-surface-900 dark:text-surface-0">Trading
+                    </h4>
+                    <button type="button" (click)="openInfo('spot')"
+                        class="leading-normal text-xl block w-full text-center md:text-left cursor-pointer mb-2 text-surface-700 dark:text-surface-100 hover:text-primary transition-colors">Spot
+                        Trading</button>
+                    <button type="button" (click)="openInfo('ai')"
+                        class="leading-normal text-xl block w-full text-center md:text-left cursor-pointer mb-2 text-surface-700 dark:text-surface-100 hover:text-primary transition-colors">AI
+                        Trading</button>
+                    <button type="button" (click)="openInfo('commodity')"
+                        class="leading-normal text-xl block w-full text-center md:text-left cursor-pointer mb-2 text-surface-700 dark:text-surface-100 hover:text-primary transition-colors">Commodity
+                        Trading</button>
+                    <button type="button" (click)="openInfo('events')"
+                        class="leading-normal text-xl block w-full text-center md:text-left cursor-pointer text-surface-700 dark:text-surface-100 hover:text-primary transition-colors">Upcoming
+                        Events</button>
+                </div>
+
+                <div class="col-span-12 sm:col-span-6 md:col-span-3">
+                    <h4 class="font-medium text-2xl leading-normal mb-5 text-surface-900 dark:text-surface-0">Support &
+                        Legal</h4>
+                    <a routerLink="/auth/login"
+                        class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Support</a>
+                    <a routerLink="/auth/login"
+                        class="leading-normal text-xl block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Privacy
+                        Policy</a>
+                    <a routerLink="/auth/login"
+                        class="leading-normal text-xl block cursor-pointer text-surface-700 dark:text-surface-100">Terms
+                        of Service</a>
+                </div>
+
+                <div class="col-span-12 sm:col-span-6 md:col-span-3">
+                    <h4 class="font-medium text-2xl leading-normal mb-5 text-surface-900 dark:text-surface-0">Company
+                    </h4>
+                    <a routerLink="/auth/login"
+                        class="leading-normal text-xl block cursor-pointer text-surface-700 dark:text-surface-100">Contact</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<p-dialog [(visible)]="showDialog" [modal]="true" [draggable]="false" [dismissableMask]="true"
+    [style]="{ width: '32rem' }" [breakpoints]="{ '640px': '92vw' }" [header]="selectedInfo?.title">
+    <p class="text-surface-700 dark:text-surface-200 text-base leading-relaxed">
+        {{ selectedInfo?.body }}
+    </p>
+
+    <div class="mt-5 rounded-lg border border-amber-300/50 bg-amber-50 dark:bg-amber-500/10 p-3">
+        <p class="text-xs leading-relaxed text-amber-700 dark:text-amber-400">
+            <strong>Risk warning:</strong> Trading involves significant risk and can result in the loss of
+            your invested capital. Only invest what you can afford to lose.
+        </p>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Got it" severity="warn" (onClick)="showDialog = false" />
+    </ng-template>
+</p-dialog>

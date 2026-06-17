@@ -1,0 +1,135 @@
+<div class="card mb-8 p-4 md:p-6">
+    <div class="font-semibold text-xl mb-4">Multi-Asset Trade History</div>
+    
+    <!-- Card-based layout for mobile -->
+    <div class="space-y-4" *ngIf="tradeHistory.length > 0">
+        <div 
+            *ngFor="let trade of tradeHistory"  (click)="openTradeDialog(trade)"
+            class="bg-surface-100 dark:bg-surface-800 rounded-lg p-4 border border-surface-200 dark:border-surface-700 shadow-sm hover:shadow-md transition-shadow">
+            
+            <!-- Header Row: Date and Direction -->
+            <div class="flex items-center justify-between mb-3 pb-3 border-b border-surface-200 dark:border-surface-700">
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-calendar text-surface-500 text-sm"></i>
+                    <span class="text-xs md:text-sm text-surface-600 dark:text-surface-400">
+                        {{ trade.date | date: 'short' }}
+                    </span>
+                </div>
+                <div>
+                    <span 
+                        [ngClass]="{ 
+                            'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300': trade.direction === 'up', 
+                            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300': trade.direction === 'down' 
+                        }"
+                        class="px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                        <i [class]="trade.direction === 'up' ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                        {{ trade.direction === 'up' ? 'Up' : 'Down' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-2 gap-3 md:gap-4">
+                <!-- Coin -->
+                <div class="flex flex-col">
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Coin</span>
+                    <span class="text-sm md:text-base font-semibold text-surface-900 dark:text-surface-0">
+                        {{ trade.coinname || 'N/A' }}
+                    </span>
+                </div>
+
+                <!-- Timing -->
+                <div class="flex flex-col">
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Timing</span>
+                    <span class="text-sm md:text-base font-semibold text-surface-900 dark:text-surface-0">
+                        {{ trade.timing || 'N/A' }}
+                    </span>
+                </div>
+
+                <!-- Balance -->
+                <div class="flex flex-col">
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Balance</span>
+                    <span class="text-sm md:text-base font-semibold text-surface-900 dark:text-surface-0">
+                        {{ trade.balance | currency: 'USD' }}
+                    </span>
+                </div>
+
+                <!-- Gain/Loss -->
+                <div class="flex flex-col">
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Gain/Loss</span>
+                    <span 
+                        [ngClass]="{ 
+                            'text-green-600 dark:text-green-400': trade.todayGain >= 0, 
+                            'text-red-600 dark:text-red-400': trade.todayGain < 0 
+                        }"
+                        class="text-sm md:text-base font-bold">
+                        {{ trade.todayGain >= 0 ? '+' : '' }}{{ trade.todayGain | currency: 'USD' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p-dialog
+  header="Trade Details"
+  [(visible)]="displayTradeDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '32rem', maxWidth: '95vw' }"
+  (onHide)="closeTradeDialog()"
+>
+  <div *ngIf="selectedTrade" class="space-y-3">
+    <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+      <span class="text-surface-500">Coin</span>
+      <span class="font-semibold">{{ selectedTrade.coinname || 'N/A' }}</span>
+    </div>
+
+    <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+      <span class="text-surface-500">Direction</span>
+      <span class="font-semibold">{{ selectedTrade.direction || 'N/A' }}</span>
+    </div>
+
+    <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+      <span class="text-surface-500">Timing</span>
+      <span class="font-semibold">{{ selectedTrade.timing || 'N/A' }}</span>
+    </div>
+
+    <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+      <span class="text-surface-500">Balance</span>
+      <span class="font-semibold">{{ selectedTrade.balance | currency:'USD' }}</span>
+    </div>
+
+    <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
+      <span class="text-surface-500">Gain/Loss</span>
+      <span
+        class="font-bold"
+        [ngClass]="{
+          'text-green-600 dark:text-green-400': selectedTrade.todayGain >= 0,
+          'text-red-600 dark:text-red-400': selectedTrade.todayGain < 0
+        }"
+      >
+        {{ selectedTrade.todayGain >= 0 ? '+' : '' }}{{ selectedTrade.todayGain | currency:'USD' }}
+      </span>
+    </div>
+
+    <div class="flex justify-between">
+      <span class="text-surface-500">Date</span>
+      <span class="font-semibold">{{ selectedTrade.date | date:'medium' }}</span>
+    </div>
+  </div>
+</p-dialog>
+
+    <!-- Empty State -->
+    <div *ngIf="tradeHistory.length === 0" class="text-center py-12">
+        <div class="flex flex-col items-center gap-3">
+            <i class="pi pi-inbox text-5xl text-surface-400"></i>
+            <p class="text-surface-600 dark:text-surface-400 text-sm md:text-base">No trade history found</p>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-overlay">
+  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner">
+  </p-progressSpinner>
+</div>
