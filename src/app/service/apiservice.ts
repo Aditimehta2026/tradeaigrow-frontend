@@ -14,7 +14,8 @@ export class Apiservice {
 if (origin.includes('localhost')) {
   this.baseUrl = 'http://localhost:3000/api';
 } else {
-  this.baseUrl = 'https://prodtradexcoin2026.onrender.com/api';
+  this.baseUrl = 'https://tradeaigrow-api.onrender.com/api';
+  
 }
 }
 
