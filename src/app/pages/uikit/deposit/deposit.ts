@@ -25,8 +25,8 @@ export class Deposit {
   loading = [false, false, false, false];
   selectedCoin: any = null;
   CoinsList: any[] = [
-      { name: "bitcoin", code: "btc", image: "assets/demo/images/deposit/BTCV2.png" },
-      { name: "ethereum", code: "eth", image: "assets/demo/images/deposit/ETHV2.png", scan: "assets/demo/images/scan/ETHV2.jpg", address: "0x42b888f7E3B9d11e41C96D40d54a5A2DcCCB90bb" },
+      { name: "bitcoin", code: "btc", image: "assets/demo/images/deposit/BTC.png" },
+      { name: "ethereum", code: "eth", image: "assets/demo/images/deposit/ETH.png", scan: "assets/demo/images/scan/ETHV2.jpg", address: "0x42b888f7E3B9d11e41C96D40d54a5A2DcCCB90bb" },
       { name: "tetherBEP20", code: "usdt(bep20)", image: "assets/demo/images/deposit/USDT.png" },
       { name: "tetherTRC20", code: "usdt(trc20)", image: "assets/demo/images/deposit/USDT.png" },
       { name: "binancecoin", code: "bnb", image: "assets/demo/images/deposit/BNB.png" },
