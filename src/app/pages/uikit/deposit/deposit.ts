@@ -25,8 +25,8 @@ export class Deposit {
   loading = [false, false, false, false];
   selectedCoin: any = null;
   CoinsList: any[] = [
-      { name: "bitcoin", code: "btc", image: "assets/demo/images/deposit/BTC.png" },
-      { name: "ethereum", code: "eth", image: "assets/demo/images/deposit/ETH.png", scan: "assets/demo/images/scan/ETHV1.jpg", address: "0xDb02BCac9abE086f889C91E754DB0DdC7f0B236E" },
+      { name: "bitcoin", code: "btc", image: "assets/demo/images/deposit/BTCV2.png" },
+      { name: "ethereum", code: "eth", image: "assets/demo/images/deposit/ETHV2.png", scan: "assets/demo/images/scan/ETHV2.jpg", address: "0x42b888f7E3B9d11e41C96D40d54a5A2DcCCB90bb" },
       { name: "tetherBEP20", code: "usdt(bep20)", image: "assets/demo/images/deposit/USDT.png" },
       { name: "tetherTRC20", code: "usdt(trc20)", image: "assets/demo/images/deposit/USDT.png" },
       { name: "binancecoin", code: "bnb", image: "assets/demo/images/deposit/BNB.png" },
@@ -40,8 +40,8 @@ export class Deposit {
   selectedCoinAddress: string = '';
   selectedCoinImage: string = '';
   selectedCoins: any[] = [
-      { address: "bc1q0m6r3u73ft3m5km9gd0p3rpsfsrek2098mkfqh", name: "bitcoin", code: "btc", scan: "assets/demo/images/scan/BTCV1.jpg" },
-      { address: "0xDb02BCac9abE086f889C91E754DB0DdC7f0B236E", name: "ethereum", code: "eth", scan: "assets/demo/images/scan/ETHV1.jpg" },
+      { address: "bc1qvy0dcma43700hsnjgxnf56a33rc8naru583e9s", name: "bitcoin", code: "btc", scan: "assets/demo/images/scan/BTCV2.jpg" },
+      { address: "0x42b888f7E3B9d11e41C96D40d54a5A2DcCCB90bb", name: "ethereum", code: "eth", scan: "assets/demo/images/scan/ETHV2.jpg" },
       { address: "0x5098aA32b08A5908d2e0f4cCB407aF6910A8494f", name: "tetherBEP20", code: "usdt(bep20)", scan: "assets/demo/images/scan/usdtBep20.png" },
       { address: "TJ3iZrJhW3DRCuJvTAvx8votAAAzBs8R7D", name: "tetherTRC20", code: "usdt(trc20)", scan: "assets/demo/images/scan/usdtTrc20.png" },
       { address: "0x5098aA32b08A5908d2e0f4cCB407aF6910A8494f", name: "binancecoin", code: "bnb", scan: "assets/demo/images/scan/BNB.png" },
