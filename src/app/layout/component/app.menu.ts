@@ -3,22 +3,29 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { ButtonModule } from 'primeng/button';
+import { LayoutService } from '../service/layout.service';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, AppMenuitem, RouterModule],
-    template: `<ul class="layout-menu">
-        <ng-container *ngFor="let item of model; let i = index">
-            <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
-            <li *ngIf="item.separator" class="menu-separator"></li>
-        </ng-container>
-    </ul> `
+    imports: [CommonModule, AppMenuitem, RouterModule, ButtonModule, AvatarModule],
+    templateUrl: './app.menu.html',
 })
 export class AppMenu {
     model: MenuItem[] = [];
 
+    userName = '';
+    userEmail = '';
+    userInitial = 'U';
+    constructor(private layoutService: LayoutService) { }
+
     ngOnInit() {
+        this.initMenu();
+        this.loadUser();
+    }
+    initMenu() {
         this.model = [
             {
                 label: 'Home',
@@ -28,7 +35,7 @@ export class AppMenu {
                 label: 'Trading',
                 items: [
                     { label: 'Deposit', icon: 'pi pi-fw pi-wallet', routerLink: ['/app/page/deposit'] },
-                    // { label: 'Deposit History', icon: 'pi pi-fw pi-history', routerLink: ['/app/page/deposit-history'] },
+                    { label: 'Deposit History', icon: 'pi pi-fw pi-history', routerLink: ['/app/page/deposit-history'] },
                     { label: 'Withdraw', icon: 'pi pi-fw pi-arrow-down', routerLink: ['/app/page/withdraw'] },
                     { label: 'Withdrawal History', icon: 'pi pi-fw pi-history', routerLink: ['/app/page/withdrawal-history'] },
                     { label: 'Spot Trade', icon: 'pi pi-fw pi-chart-scatter', routerLink: ['/app/page/spot-trade'] },
@@ -194,5 +201,26 @@ export class AppMenu {
             //     ]
             // }
         ];
+    }
+    closeMenu() {
+        this.layoutService.layoutState.update((prev) => ({
+            ...prev,
+            overlayMenuActive: false,
+            staticMenuMobileActive: false,
+            menuHoverActive: false
+        }));
+    }
+    loadUser() {
+        try {
+            const parsed = JSON.parse(localStorage.getItem('user') || '{}');
+            const user = parsed?.data?.user ?? parsed;
+            this.userName = user?.username || user?.name || 'User';
+            this.userEmail = user?.email || '';
+            this.userInitial = this.userName.charAt(0).toUpperCase();
+        } catch {
+            this.userName = 'User';
+            this.userEmail = '';
+            this.userInitial = 'U';
+        }
     }
 }
