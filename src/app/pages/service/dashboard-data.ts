@@ -3,21 +3,6 @@ import { Observable, tap,BehaviorSubject, of } from 'rxjs';
 import { Apiservice } from '@/service/apiservice';
 import { HttpClient } from '@angular/common/http';
 
-// One coin item from the dashboard API
-export interface DashboardCoin {
-    id: string;
-    symbol: string;
-    name: string;
-    image: string;
-    current_price: number;
-    price_change_percentage_24h: number;
-    market_cap: number;
-    market_cap_rank: number;
-    sparkline_in_7d?: {
-        price: number[];
-    };
-}
-
 
 @Injectable({
     providedIn: 'root'
@@ -25,9 +10,7 @@ export interface DashboardCoin {
 export class DashboardData {
     private apiUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=true"
 
-// BehaviorSubject to share data between components
-private coinsSubject = new BehaviorSubject<DashboardCoin[]>([]);
-public coins$ = this.coinsSubject.asObservable();
+
     // BehaviorSubject for user data
     private userDataSubject = new BehaviorSubject<any>(null);
     public userData$ = this.userDataSubject.asObservable();
@@ -35,38 +18,16 @@ public coins$ = this.coinsSubject.asObservable();
     private tradeHistorySubject = new BehaviorSubject<any>(null);
     public tradeHistory$ = this.tradeHistorySubject.asObservable();
 
-constructor(private apiService: Apiservice, private http: HttpClient) {
-    // Load from localStorage on service initialization
-    this.loadFromCache();
-}
+constructor(private apiService: Apiservice, private http: HttpClient) {}
         getData(): Observable<any[]> {
             return this.http.get<any[]>(this.apiUrl).pipe(
                 tap((res) => {
                     // Store in localStorage
                     localStorage.setItem('tableData', JSON.stringify(res));
-                    // Emit to subscribers
-                    this.coinsSubject.next(res);
                 })
             );
         }
 
-        private loadFromCache(): void {
-            const cachedData = localStorage.getItem('tableData');
-            if (cachedData) {
-                try {
-                    const parsedData = JSON.parse(cachedData);
-                    if (Array.isArray(parsedData) && parsedData.length > 0) {
-                        this.coinsSubject.next(parsedData);
-                    }
-                } catch (e) {
-                    console.error('Error parsing cached data:', e);
-                }
-            }
-        }
-
-        getCurrentCoins(): DashboardCoin[] {
-            return this.coinsSubject.value;
-        }
 
 
         getUserData(userEmail: string): Observable<any> {

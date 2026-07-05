@@ -7,7 +7,8 @@ import { MenuModule } from 'primeng/menu';
     standalone: true,
     selector: 'app-notifications-widget',
     imports: [ButtonModule, MenuModule , RouterModule],
-    templateUrl:"./notificationswidget.html"
+    templateUrl:"./notificationswidget.html",
+    styleUrls: ['./recentsaleswidget.scss']
 })
 export class NotificationsWidget {
     items = [

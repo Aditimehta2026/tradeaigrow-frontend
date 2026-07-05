@@ -50,3 +50,7 @@
         </ng-template>
     </p-table>
 </div>
+<div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner">
+    </p-progressSpinner>
+  </div>

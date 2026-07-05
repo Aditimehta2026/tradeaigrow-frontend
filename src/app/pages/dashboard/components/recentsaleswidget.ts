@@ -3,19 +3,19 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
-import { DashboardCoin,DashboardData as DashboardService } from '../../service/dashboard-data';
+import { DashboardData as DashboardService } from '../../service/dashboard-data';
 import { ChartModule } from 'primeng/chart';
-import { Subscription } from 'rxjs';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
     standalone: true,
     selector: 'app-recent-sales-widget',
-    imports: [CommonModule, TableModule, ButtonModule, RippleModule,ChartModule],
+    imports: [CommonModule, TableModule, ButtonModule, RippleModule,ChartModule,ProgressSpinnerModule],
     templateUrl: './recentsaleswidget.html'
 })
 export class RecentSalesWidget implements OnInit {
-    coins: DashboardCoin[] = [];
-    private subscription?: Subscription;
+    coins: any[] = [];
+    isLoading = false;
 
     sparklineOptions = {
         responsive: true,
@@ -49,21 +49,9 @@ export class RecentSalesWidget implements OnInit {
       constructor(private dashboardData: DashboardService) {}
 
 
-    ngOnInit(): void {
-      this.coins = this.dashboardData.getCurrentCoins();
-      this.subscription = this.dashboardData.coins$.subscribe((data) => {
-        if (data && data.length > 0) {
-            this.coins = data;
-        }
-    });
+    ngOnInit() {
+      this.gettableData();
     }
-    
-    ngOnDestroy(): void {
-      if (this.subscription) {
-          this.subscription.unsubscribe();
-          localStorage.removeItem('tableData');
-      }
-  }
 
   getSparklineData(prices: number[] | undefined) {
     if (!prices || prices.length === 0) {
@@ -91,5 +79,29 @@ export class RecentSalesWidget implements OnInit {
         ]
     };
 }
+  gettableData() {
+    const cached = localStorage.getItem('tableData');
+    if (cached) {
+      try {
+        this.coins = JSON.parse(cached);
+      } catch (e) {
+        this.coins = [];
+      }
+    }
+
+    this.isLoading = true;
+
+    this.dashboardData.getData().subscribe({
+      next: (res) => {
+        this.coins = res;
+        localStorage.setItem('tableData', JSON.stringify(res));
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.warn('API error:', err);
+        this.isLoading = false;
+      }
+    });
+  }
       
 }

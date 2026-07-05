@@ -10,7 +10,6 @@ import { AccountBalanceHeader } from './components/account-balance-header/accoun
     templateUrl: './dashboard.html'
 })
 export class Dashboard implements OnInit {
-    dashboardDatas: any[] = [];
     userData: any[] = [];
     selectedCoinSymbol: string = 'BINANCE:BTCUSDT'; // Default symbol
 
@@ -18,21 +17,8 @@ export class Dashboard implements OnInit {
 
     ngOnInit() {
         this.getUserData();
-        this.gettableData();
-
     }
 
-    gettableData() {
-        this.dashboardData.getData().subscribe({
-            next: (res) => {
-                // this.dashboardDatas = res;
-                console.log("table data", res);
-            },
-            error: (err) => {
-                console.warn('API error:', err);
-            }
-        });
-    }
 
     // Method to convert coin symbol to TradingView format
     getTradingViewSymbol(coinId: string, symbol: string): string {
