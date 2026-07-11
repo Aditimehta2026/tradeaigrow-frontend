@@ -28,7 +28,7 @@
             class="p-3 md:p-4 rounded-lg border h-full flex flex-col transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
             <div class="text-xs md:text-sm text-surface-600 dark:text-surface-400 mb-1">{{ card.time }}</div>
             <div class="text-xl md:text-2xl font-bold text-primary">{{ card.return }}</div>
-            <div class="text-xs text-surface-500 dark:text-surface-500 mt-1">Return</div>
+            <div class="text-xs text-surface-500 dark:text-surface-500 mt-1">{{ 'Return' | translate }}</div>
         </div>
     </div>
     
@@ -36,9 +36,9 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div class="flex flex-col">
             <label class="text-xs md:text-sm font-medium text-surface-700 dark:text-surface-300 mb-2 break-words">
-                <span class="block md:inline">Amount</span>
+                <span class="block md:inline">{{ 'Amount' | translate }}</span>
                 <span class="block md:inline text-xs text-surface-500 dark:text-surface-400 mt-1 md:mt-0 md:ml-1">
-                    (Range: {{ returnCards[selectedCardIndex].min.toLocaleString() }} - {{ returnCards[selectedCardIndex].max.toLocaleString() }})
+                    ({{ 'Range' | translate }}: {{ returnCards[selectedCardIndex].min.toLocaleString() }} - {{ returnCards[selectedCardIndex].max.toLocaleString() }})
                 </span>
             </label>
             <input 
@@ -46,13 +46,13 @@
                 type="number"
                 [(ngModel)]="userEnteramount"
                 (input)="onAmountChange()"
-                placeholder="Enter amount"
+                placeholder="{{ 'Enter amount' | translate }}"
                 [class]="amountError ? 'p-invalid' : ''"
                 class="w-full text-sm md:text-base" />
             <small *ngIf="amountError" class="text-red-500 mt-1 text-xs">{{ amountError }}</small>
         </div>
         <div class="flex flex-col">
-            <label class="text-xs md:text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Expected Return</label>
+            <label class="text-xs md:text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">{{ 'Expected Return' | translate }}</label>
             <input 
                 pInputText 
                 type="text" 
@@ -69,7 +69,7 @@
             pRipple
             type="button"
             icon="pi pi-arrow-up"
-            [label]="'Up'"
+            [label]="'Up' | translate"
             (click)="onStartSpotTrade('up')"
             [disabled]="isTradeButtonDisabled"
             class="p-button-success w-full sm:w-auto flex-1 sm:flex-none">
@@ -79,7 +79,7 @@
             pRipple
             type="button"
             icon="pi pi-arrow-down"
-            [label]="'Down'"
+            [label]="'Down' | translate"
             (click)="onStartSpotTrade('down')"
             [disabled]="isTradeButtonDisabled"
             class="p-button-danger w-full sm:w-auto flex-1 sm:flex-none">
@@ -91,7 +91,7 @@
 <div *ngIf="isLoading" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
     <div class="bg-surface-0 dark:bg-surface-900 p-4 md:p-6 rounded-lg shadow-lg flex flex-col items-center gap-3 md:gap-4 w-full max-w-xs md:max-w-sm">
         <i class="pi pi-spin pi-spinner text-3xl md:text-4xl text-primary"></i>
-        <p class="text-surface-700 dark:text-surface-300 text-sm md:text-base text-center">Processing trade...</p>
+        <p class="text-surface-700 dark:text-surface-300 text-sm md:text-base text-center">{{ 'Processing trade...' | translate }}</p>
     </div>
 </div>
 
@@ -110,7 +110,7 @@
         <div class="flex items-center justify-between w-full px-2 md:px-0">
             <div class="flex items-center gap-2">
                 <i class="pi pi-chart-line text-primary text-xl md:text-2xl"></i>
-                <span class="font-semibold text-base md:text-lg">Trade in Progress</span>
+                <span class="font-semibold text-base md:text-lg">{{ 'Trade in Progress' | translate }}</span>
             </div>
         </div>
     </ng-template>
@@ -118,38 +118,38 @@
         <!-- Trade Details -->
         <div class="space-y-3 md:space-y-4">
             <div class="flex items-center justify-between pb-2 md:pb-3 border-b border-surface-200 dark:border-surface-700">
-                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">Symbol:</span>
+                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">{{ 'Symbol' | translate }}:</span>
                 <span class="text-surface-900 dark:text-surface-0 font-semibold text-base md:text-lg break-words text-right ml-2">{{ tradeDetails.symbol }}</span>
             </div>
             
             <div class="flex items-center justify-between pb-2 md:pb-3 border-b border-surface-200 dark:border-surface-700">
-                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">Amount:</span>
+                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">{{ 'Amount' | translate }}:</span>
                 <span class="text-surface-900 dark:text-surface-0 font-semibold text-base md:text-lg">${{ tradeDetails.enteredAmount.toFixed(2) }}</span>
             </div>
             
             <div class="flex items-center justify-between pb-2 md:pb-3 border-b border-surface-200 dark:border-surface-700">
-                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">Time:</span>
+                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">{{ 'Time' | translate }}:</span>
                 <span class="text-surface-900 dark:text-surface-0 font-semibold text-sm md:text-base">{{ tradeDetails.time }}</span>
             </div>
             
             <div class="flex items-center justify-between pb-2 md:pb-3 border-b border-surface-200 dark:border-surface-700">
-                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">Direction:</span>
+                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">{{ 'Direction' | translate }}:</span>
                 <span [class]="tradeDetails.direction === 'up' ? 'text-green-500' : 'text-red-500'" class="font-semibold text-sm md:text-base">
-                    {{ tradeDetails.direction === 'up' ? 'Up' : 'Down' }}
+                    {{ (tradeDetails.direction === 'up' ? 'Up' : 'Down') | translate }}
                     <i [class]="tradeDetails.direction === 'up' ? 'pi pi-arrow-up' : 'pi pi-arrow-down'" class="ml-1"></i>
                 </span>
             </div>
             
             <div class="flex items-center justify-between pb-2 md:pb-3 border-b border-surface-200 dark:border-surface-700">
-                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">Return:</span>
+                <span class="text-surface-600 dark:text-surface-400 font-medium text-xs md:text-sm">{{ 'Return' | translate }}:</span>
                 <span class="text-primary font-semibold text-base md:text-lg">${{ tradeDetails.returnAmount.toFixed(2) }}</span>
             </div>
             
             <!-- Timer Progress Bar -->
             <div class="pt-3 md:pt-4">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-surface-600 dark:text-surface-400 text-xs md:text-sm">Time Remaining:</span>
-                    <span class="text-surface-900 dark:text-surface-0 font-semibold text-xs md:text-sm">{{ timerSeconds }} Seconds</span>
+                    <span class="text-surface-600 dark:text-surface-400 text-xs md:text-sm">{{ 'Time Remaining' | translate }}:</span>
+                    <span class="text-surface-900 dark:text-surface-0 font-semibold text-xs md:text-sm">{{ timerSeconds }} {{ 'Seconds' | translate }}</span>
                 </div>
                 <p-progressbar [value]="timerProgress" [style]="{ height: '8px' }">
                     <ng-template pTemplate="content" let-value>
@@ -166,7 +166,7 @@
                 pButton 
                 pRipple
                 type="button"
-                label="Close"
+                [label]="'Close' | translate"
                 icon="pi pi-check"
                 (click)="closeSuccessDialog()"
                 class="p-button-primary w-full sm:w-auto text-sm md:text-base">
@@ -188,7 +188,7 @@
     <ng-template pTemplate="header">
         <div class="flex items-center gap-2 px-2 md:px-0">
             <i class="pi pi-check-circle text-green-500 text-xl md:text-2xl"></i>
-            <span class="font-semibold text-base md:text-lg">Trade Completed</span>
+            <span class="font-semibold text-base md:text-lg">{{ 'Trade Completed' | translate }}</span>
         </div>
     </ng-template>
     <div class="py-2 md:py-4 px-2 md:px-0">
@@ -198,15 +198,15 @@
             </div>
             <div>
                 <h3 class="text-lg md:text-xl font-semibold text-surface-900 dark:text-surface-0 mb-2">
-                    Trade Completed Successfully!
+                    {{ 'Trade Completed Successfully!' | translate }}
                 </h3>
                 <p class="text-sm md:text-base text-surface-600 dark:text-surface-400 px-2">
-                    Your trade has been processed and your balance has been updated.
+                    {{ 'Your trade has been processed and your balance has been updated.' | translate }}
                 </p>
             </div>
             <div *ngIf="tradeDetails" class="bg-surface-100 dark:bg-surface-800 p-3 md:p-4 rounded-lg space-y-2 mx-2 md:mx-0">
                 <div class="flex justify-between items-center">
-                    <span class="text-xs md:text-sm text-surface-600 dark:text-surface-400">Return Amount:</span>
+                    <span class="text-xs md:text-sm text-surface-600 dark:text-surface-400">{{ 'Return Amount' | translate }}:</span>
                     <span class="text-primary font-semibold text-base md:text-lg">${{ tradeDetails.returnAmount.toFixed(2) }}</span>
                 </div>
             </div>
@@ -218,7 +218,7 @@
                 pButton 
                 pRipple
                 type="button"
-                label="Try Again"
+                [label]="'Try Again' | translate"
                 icon="pi pi-refresh"
                 (click)="onTryAgain()"
                 class="p-button-outlined p-button-secondary w-full sm:w-auto text-sm md:text-base">
@@ -227,7 +227,7 @@
                 pButton 
                 pRipple
                 type="button"
-                label="Move to Dashboard"
+                [label]="'Move to Dashboard' | translate"
                 icon="pi pi-home"
                 (click)="onMoveToDashboard()"
                 class="p-button-primary w-full sm:w-auto text-sm md:text-base">

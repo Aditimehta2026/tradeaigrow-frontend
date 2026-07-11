@@ -1,5 +1,5 @@
 <div class="card mb-8 p-4 md:p-6">
-    <div class="font-semibold text-xl mb-4">Trade History</div>
+    <div class="font-semibold text-xl mb-4">{{ 'Trade History' | translate }}</div>
     
     <!-- Card-based layout for mobile -->
     <div class="space-y-4" *ngIf="tradeHistory.length > 0">
@@ -21,7 +21,7 @@
                             'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300': trade.direction === 'down' 
                         }" class="px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                         <i [class]="trade.direction === 'up' ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
-                        {{ trade.direction === 'up' ? 'Up' : 'Down' }}
+                        {{ (trade.direction === 'up' ? 'Up' : 'Down') | translate }}
                     </span>
                 </div>
             </div>
@@ -30,23 +30,23 @@
             <div class="grid grid-cols-2 gap-3 md:gap-4">
                 <!-- Coin -->
                 <div class="flex flex-col">
-                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Coin</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">{{ 'Coin' | translate }}</span>
                     <span class="text-sm md:text-base font-semibold text-surface-900 dark:text-surface-0">
-                        {{ trade.coinname || 'N/A' }}
+                        {{ trade.coinname || ('N/A' | translate) }}
                     </span>
                 </div>
 
                 <!-- Timing -->
                 <div class="flex flex-col">
-                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Timing</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">{{ 'Timing' | translate }}</span>
                     <span class="text-sm md:text-base font-semibold text-surface-900 dark:text-surface-0">
-                        {{ trade.timing || 'N/A' }}
+                        {{ trade.timing || ('N/A' | translate) }}
                     </span>
                 </div>
 
                 <!-- Balance -->
                 <div class="flex flex-col">
-                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Balance</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">{{ 'Balance' | translate }}</span>
                     <span class="text-sm md:text-base font-semibold text-surface-900 dark:text-surface-0">
                         {{ trade.balance | currency: 'USD' }}
                     </span>
@@ -54,7 +54,7 @@
 
                 <!-- Gain/Loss -->
                 <div class="flex flex-col">
-                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">Gain/Loss</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400 mb-1">{{ 'Gain/Loss' | translate }}</span>
                     <span [ngClass]="{ 
                             'text-green-600 dark:text-green-400': trade.todayGain >= 0, 
                             'text-red-600 dark:text-red-400': trade.todayGain < 0 
@@ -66,32 +66,32 @@
         </div>
     </div>
     <!-- Dialog FOR EACH DETAILED CARD  -->
-    <p-dialog header="Trade Details" [(visible)]="displayTradeDialog" [modal]="true" [closable]="true"
+    <p-dialog [header]="'Trade Details' | translate" [(visible)]="displayTradeDialog" [modal]="true" [closable]="true"
         [draggable]="false" [resizable]="false" [style]="{ width: '32rem', maxWidth: '95vw' }"
         (onHide)="closeTradeDialog()">
         <div *ngIf="selectedTrade" class="space-y-3">
             <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-                <span class="text-surface-500">Coin</span>
-                <span class="font-semibold">{{ selectedTrade.coinname || 'N/A' }}</span>
+                <span class="text-surface-500">{{ 'Coin' | translate }}</span>
+                <span class="font-semibold">{{ selectedTrade.coinname || ('N/A' | translate) }}</span>
             </div>
 
             <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-                <span class="text-surface-500">Direction</span>
-                <span class="font-semibold">{{ selectedTrade.direction || 'N/A' }}</span>
+                <span class="text-surface-500">{{ 'Direction' | translate }}</span>
+                <span class="font-semibold">{{ selectedTrade.direction || ('N/A' | translate) }}</span>
             </div>
 
             <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-                <span class="text-surface-500">Timing</span>
-                <span class="font-semibold">{{ selectedTrade.timing || 'N/A' }}</span>
+                <span class="text-surface-500">{{ 'Timing' | translate }}</span>
+                <span class="font-semibold">{{ selectedTrade.timing || ('N/A' | translate) }}</span>
             </div>
 
             <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-                <span class="text-surface-500">Balance</span>
+                <span class="text-surface-500">{{ 'Balance' | translate }}</span>
                 <span class="font-semibold">{{ selectedTrade.balance | currency:'USD' }}</span>
             </div>
 
             <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-                <span class="text-surface-500">Gain/Loss</span>
+                <span class="text-surface-500">{{ 'Gain/Loss' | translate }}</span>
                 <span class="font-bold" [ngClass]="{
           'text-green-600 dark:text-green-400': selectedTrade.todayGain >= 0,
           'text-red-600 dark:text-red-400': selectedTrade.todayGain < 0
@@ -101,7 +101,7 @@
             </div>
 
             <div class="flex justify-between">
-                <span class="text-surface-500">Date</span>
+                <span class="text-surface-500">{{ 'Date' | translate }}</span>
                 <span class="font-semibold">{{ selectedTrade.date | date:'medium' }}</span>
             </div>
         </div>
@@ -111,7 +111,7 @@
     <div *ngIf="tradeHistory.length === 0" class="text-center py-12">
         <div class="flex flex-col items-center gap-3">
             <i class="pi pi-inbox text-5xl text-surface-400"></i>
-            <p class="text-surface-600 dark:text-surface-400 text-sm md:text-base">No trade history found</p>
+            <p class="text-surface-600 dark:text-surface-400 text-sm md:text-base">{{ 'No trade history found' | translate }}</p>
         </div>
     </div>
 </div>

@@ -10,6 +10,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Router, RouterModule } from '@angular/router';
 import { DashboardData } from '../../service/dashboard-data';
 import { Subscription } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 declare const TradingView: any;
 
@@ -24,7 +25,7 @@ declare const TradingView: any;
     InputNumberModule,
     DialogModule,
     ProgressBarModule,
-    RouterModule],
+    RouterModule,TranslatePipe],
   templateUrl: './commodity-trading.html',
   styleUrl: './commodity-trading.scss'
 })

@@ -6,11 +6,12 @@ import { AppMenuitem } from './app.menuitem';
 import { ButtonModule } from 'primeng/button';
 import { LayoutService } from '../service/layout.service';
 import { AvatarModule } from 'primeng/avatar';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, AppMenuitem, RouterModule, ButtonModule, AvatarModule],
+    imports: [CommonModule, AppMenuitem, RouterModule, ButtonModule, AvatarModule,TranslatePipe],
     templateUrl: './app.menu.html',
 })
 export class AppMenu {

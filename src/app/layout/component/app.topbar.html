@@ -9,11 +9,22 @@
             </a>
         </div>
 
-        <div class="layout-topbar-actions">
+         <div class="layout-topbar-actions">
             <div class="layout-config-menu">
                 <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
                     <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
                 </button>
+                <!-- Laptop: full language select next to theme toggle -->
+                <div class="topbar-lang-desktop">
+                    <p-select
+                        [options]="languages"
+                        [(ngModel)]="selectedLang"
+                        optionLabel="label"
+                        optionValue="value"
+                        (onChange)="changeLanguage($event.value)"
+                        styleClass="w-36"
+                    />
+                </div>
             </div>
 
             <button class="layout-topbar-menu-button layout-topbar-action" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
@@ -22,15 +33,26 @@
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
+                    <!-- Mobile: language inside ⋮ menu with Profile / Quit -->
+                    <div class="layout-topbar-action topbar-lang-mobile">
+                        <i class="pi pi-globe"></i>
+                        <p-select
+                            [options]="languages"
+                            [(ngModel)]="selectedLang"
+                            optionLabel="label"
+                            optionValue="value"
+                            (onChange)="changeLanguage($event.value)"
+                            styleClass="w-full"
+                        />
+                    </div>
                     <button type="button" class="layout-topbar-action" (click)="openProfile()">
                         <i class="pi pi-user"></i>
-                        <span>Profile</span>
+                        <span>{{ 'Profile' | translate }}</span>
                     </button>
                     <button type="button" class="layout-topbar-action" (click)="openConfirmation()">
                         <i class="pi pi-sign-out"></i>
-                        <span>Quit</span>
+                        <span>{{ 'Quit' | translate }}</span>
                     </button>
-                 
                 </div>
             </div>
         </div>
@@ -40,11 +62,11 @@
 <p-dialog header="Confirmation" [(visible)]="displayConfirmation" [style]="{ width: '350px' }" [modal]="true">
     <div class="flex items-center justify-center">
         <i class="pi pi-exclamation-triangle mr-4" style="font-size: 2rem"></i>
-        <span>Are you sure you want to logout?</span>
+        <span>{{ 'Are you sure you want to logout?' | translate }}</span>
     </div>
     <ng-template #footer>
-        <p-button label="No" icon="pi pi-times" (click)="closeConfirmation()" text severity="secondary" />
-        <p-button label="Yes" icon="pi pi-check" (click)="logOutConfirmation()" severity="danger" outlined autofocus />
+        <p-button label="{{ 'No' | translate }}"  icon="pi pi-times" (click)="closeConfirmation()" text severity="secondary" />
+        <p-button label="{{ 'Yes' | translate }}" icon="pi pi-check" (click)="logOutConfirmation()" severity="danger" outlined autofocus />
     </ng-template>
 </p-dialog>
 
@@ -60,41 +82,41 @@
     <ng-template pTemplate="header">
         <div class="flex items-center gap-2">
             <i class="pi pi-user text-primary"></i>
-            <span class="font-semibold text-lg">My Account</span>
+            <span class="font-semibold text-lg">{{ 'My Account' | translate }}</span>
         </div>
     </ng-template>
 
     <div class="flex flex-col gap-3">
         <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
-            <span class="text-sm text-surface-500">Username</span>
+            <span class="text-sm text-surface-500">{{ 'Username' | translate }}</span>
             <span class="font-semibold text-base text-surface-900 dark:text-surface-0 break-words text-right">
                 {{ userName || '—' }}
             </span>
         </div>
 
         <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
-            <span class="text-sm text-surface-500 shrink-0">Email</span>
+            <span class="text-sm text-surface-500 shrink-0">{{ 'Email' | translate }}</span>
             <span class="font-medium text-sm text-surface-900 dark:text-surface-0 break-all text-right">
                 {{ userEmail || '—' }}
             </span>
         </div>
 
         <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
-            <span class="text-sm text-surface-500 shrink-0">UID</span>
+            <span class="text-sm text-surface-500 shrink-0">{{ 'UID' | translate }}</span>
             <span class="font-medium text-sm text-surface-900 dark:text-surface-0 break-all text-right">
                 {{ userUid || '—' }}
             </span>
         </div>
 
         <div class="flex items-center justify-between gap-3 border-b border-surface-200 dark:border-surface-700 pb-3">
-            <span class="text-sm text-surface-500">Balance</span>
+            <span class="text-sm text-surface-500">{{ 'Balance' | translate }}</span>
             <span class="font-bold text-lg text-surface-900 dark:text-surface-0 text-right">
                 ${{ balance | number:'1.0-2' }}
             </span>
         </div>
     </div>
     <div class="flex items-center justify-between gap-3 pb-1 mt-4 border-b border-surface-200 dark:border-surface-700 pb-3">
-        <span class="text-sm text-surface-500">Region</span>
+        <span class="text-sm text-surface-500">{{ 'Region' | translate }}</span>
         <p-selectButton
             [options]="regionOptions"
             [(ngModel)]="selectedRegion"
@@ -106,7 +128,7 @@
         </p-selectButton>
     </div>
     <div class="flex items-center justify-between gap-3 pb-1 mt-4">
-        <span class="text-sm text-surface-500">Verification Center</span>
+        <span class="text-sm text-surface-500">{{ 'Verification Center' | translate }}</span>
 
         <ng-container *ngIf="isIdentityVerified === true; else verifiedPending">
             <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-semibold
@@ -121,14 +143,14 @@
                            bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300
                            hover:bg-amber-200 transition-colors cursor-pointer">
                 <i class="pi pi-exclamation-triangle"></i>
-                {{ verificationStatus || 'pending' }}
+                {{ verificationStatus || ('Pending' | translate) }}
             </button>
         </ng-template>
     </div>
     <p-divider class="!my-4"></p-divider>
 
     <p-button
-        label="Logout"
+        label="{{ 'Logout' | translate }}"
         icon="pi pi-sign-out"
         severity="danger"
         [outlined]="true"
@@ -143,7 +165,7 @@
     <ng-template pTemplate="header">
         <div class="flex items-center gap-2">
             <i class="pi pi-shield text-primary text-xl"></i>
-            <span class="font-semibold text-lg">Identity Verification</span>
+            <span class="font-semibold text-lg">{{ 'Identity Verification' | translate }}</span>
         </div>
     </ng-template>
 
@@ -152,8 +174,7 @@
         <div class="flex items-start gap-2">
             <i class="pi pi-info-circle text-amber-600 dark:text-amber-400 mt-0.5"></i>
             <p class="text-xs sm:text-sm text-amber-800 dark:text-amber-300 m-0 leading-relaxed">
-                Identity verification document is required to enable deposits and withdrawals.
-                Please upload a valid government-issued ID.
+                {{ 'Identity verification document is required to enable deposits and withdrawals. Please upload a valid government-issued ID.' | translate }}
             </p>
         </div>
     </div>
@@ -162,7 +183,7 @@
         <!-- Document Type -->
         <div class="flex flex-col gap-2">
             <label class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
-                Document Type <span class="text-red-500">*</span>
+                {{ 'Document Type' | translate }} <span class="text-red-500">*</span>
             </label>
             <p-select [(ngModel)]="documentType" name="documentType" [options]="documentTypeOptions"
                 optionLabel="label" optionValue="value" placeholder="Select document type" fluid />
@@ -171,7 +192,7 @@
         <!-- Document Number -->
         <div class="flex flex-col gap-2">
             <label class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
-                Document Number <span class="text-red-500">*</span>
+                {{ 'Document Type' | translate }} <span class="text-red-500">*</span>
             </label>
             <input pInputText [(ngModel)]="documentNumber" name="documentNumber"
                 placeholder="Enter document number" class="w-full" />
@@ -180,7 +201,7 @@
         <!-- File Upload (reuse menudemo pattern) -->
         <div class="flex flex-col gap-2">
             <label class="text-xs sm:text-sm font-medium text-surface-700 dark:text-surface-300">
-                ID Document <span class="text-red-500">*</span>
+                {{ 'ID Document' | translate }} {{ 'is required' | translate }} <span class="text-red-500">*</span>
             </label>
             <div class="card flex flex-wrap gap-6 items-center justify-between m-0">
                 <p-fileupload #verifyFileUpload mode="basic" chooseLabel="Choose" chooseIcon="pi pi-upload"
@@ -188,25 +209,25 @@
             </div>
             <span *ngIf="showDocError && (!verifyFileUpload.files || verifyFileUpload.files.length === 0)"
                   class="text-xs text-red-600 dark:text-red-400 mt-1">
-                ID Document is required. Please upload a file.
+                {{ 'ID Document is required. Please upload a file.' | translate }}
             </span>
         </div>
     </form>
 
     <ng-template pTemplate="footer">
         <div class="flex flex-col sm:flex-row justify-end gap-2">
-            <p-button label="Cancel" icon="pi pi-times" severity="secondary" [outlined]="true"
+            <p-button label="'Cancel' | translate" icon="pi pi-times" severity="secondary" [outlined]="true"
                 (onClick)="closeVerifyDialog()" />
-            <p-button label="Submit" icon="pi pi-check" severity="success" (onClick)="verifyIdentity(verifyFileUpload)" />
+            <p-button label="'Submit' | translate" icon="pi pi-check" severity="success" (onClick)="verifyIdentity(verifyFileUpload)" />
         </div>
     </ng-template>
 </p-dialog>
 
 <div *ngIf="isLoading" class="loading-overlay">
     <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner"></p-progressSpinner>
-  </div>
+</div>
 
-    <p-dialog [(visible)]="showVerifySuccessDialog"
+<p-dialog [(visible)]="showVerifySuccessDialog"
           [modal]="true"
           [style]="{ width: '95%', maxWidth: '460px' }"
           [closable]="false"
@@ -217,7 +238,7 @@
         <div class="flex items-center gap-2">
             <i class="pi pi-check-circle text-green-500 text-2xl"></i>
             <span class="font-semibold text-base sm:text-lg">
-                Document Uploaded Successfully
+                {{ 'Document Uploaded Successfully' | translate }}
             </span>
         </div>
     </ng-template>
@@ -233,19 +254,22 @@
             </div>
 
             <p class="text-sm sm:text-base text-surface-700 dark:text-surface-200 leading-relaxed m-0">
-                Your verification document has been uploaded successfully.
+                {{ 'Your verification document has been uploaded successfully.' | translate }}
             </p>
 
             <p class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 leading-relaxed m-0">
-                Our team will review your submission and update your verification status shortly.
+                {{ 'Our team will review your submission and update your verification status shortly.' | translate }}
             </p>
 
             <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-3 mt-2">
                 <div class="flex items-start gap-2 text-left">
                     <i class="pi pi-info-circle text-primary mt-0.5"></i>
                     <p class="text-xs sm:text-sm text-surface-600 dark:text-surface-400 m-0">
-                        You'll be notified once the review is complete.
-                        Status: <span class="font-semibold text-amber-600 dark:text-amber-400">Pending review</span>
+                        {{ "You'll be notified once the review is complete." | translate }}
+                        {{ 'Status:' | translate }}
+                        <span class="font-semibold text-amber-600 dark:text-amber-400">
+                            {{ 'Pending review' | translate }}
+                        </span>
                     </p>
                 </div>
             </div>
@@ -254,7 +278,7 @@
 
     <ng-template pTemplate="footer">
         <div class="flex justify-end">
-            <p-button label="Got it"
+            <p-button [label]="'Got it' | translate"
                       icon="pi pi-check"
                       severity="success"
                       styleClass="w-full sm:w-auto"
@@ -264,7 +288,7 @@
 </p-dialog>
 
 <!-- for error -->
- <p-dialog [(visible)]="showVerifyErrorDialog"
+<p-dialog [(visible)]="showVerifyErrorDialog"
           [modal]="true"
           [style]="{ width: '95%', maxWidth: '440px' }"
           [closable]="false"
@@ -275,7 +299,7 @@
         <div class="flex items-center gap-2">
             <i class="pi pi-times-circle text-red-500 text-2xl"></i>
             <span class="font-semibold text-base sm:text-lg">
-                Submission Failed
+                {{ 'Submission Failed' | translate }}
             </span>
         </div>
     </ng-template>
@@ -290,14 +314,14 @@
             </div>
 
             <p class="text-sm sm:text-base text-surface-700 dark:text-surface-200 leading-relaxed m-0">
-                {{ verifyErrorMessage || 'Something went wrong. Please try again.' }}
+                {{ verifyErrorMessage || ('Something went wrong. Please try again.' | translate) }}
             </p>
         </div>
     </div>
 
     <ng-template pTemplate="footer">
         <div class="flex justify-end">
-            <p-button label="Close"
+            <p-button [label]="'Close' | translate"
                       icon="pi pi-times"
                       severity="danger"
                       [outlined]="true"

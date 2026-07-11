@@ -3,13 +3,14 @@ import { Withdraw } from '@/pages/service/withdraw';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslatePipe } from '@ngx-translate/core';
 
 type WithdrawStatus = 'Completed' | 'Pending' | 'Failed';
 
 
 @Component({
   selector: 'app-withdrawal-history',
-  imports: [CommonModule, DialogModule,ProgressSpinnerModule],
+  imports: [TranslatePipe, CommonModule, DialogModule,ProgressSpinnerModule],
   templateUrl: './withdrawal-history.html',
   styleUrl: './withdrawal-history.scss'
 })

@@ -13,9 +13,11 @@ import { FileUpload } from 'primeng/fileupload';
 import { DashboardData } from '../../service/dashboard-data';
 import { Router } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-loan',
-  imports: [CommonModule, BreadcrumbModule, MenuModule, ButtonModule, ToastModule, FileUploadModule, FormsModule, InputNumberModule, SelectModule, DialogModule],
+  imports: [TranslatePipe,CommonModule, BreadcrumbModule, MenuModule, ButtonModule, ToastModule, FileUploadModule, FormsModule, InputNumberModule, SelectModule, DialogModule],
   templateUrl: './loan.html',
   styleUrl: './loan.scss',
   providers: [MessageService]

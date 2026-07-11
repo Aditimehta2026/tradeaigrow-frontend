@@ -10,12 +10,13 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Router, RouterModule } from '@angular/router';
 import { DashboardData } from '../../service/dashboard-data';
 import { Subscription } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 declare const TradingView: any;
 
 @Component({
   selector: 'app-spot-trade',
-  imports: [CommonModule, FormsModule, ButtonModule, RippleModule, InputTextModule, InputNumberModule, DialogModule, ProgressBarModule, RouterModule],
+  imports: [TranslatePipe,CommonModule, FormsModule, ButtonModule, RippleModule, InputTextModule, InputNumberModule, DialogModule, ProgressBarModule, RouterModule],
   templateUrl: './spot-trade.html',
   styleUrl: './spot-trade.scss'
 })

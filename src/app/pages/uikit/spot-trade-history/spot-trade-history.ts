@@ -4,10 +4,11 @@ import { TableModule } from 'primeng/table';
 import { DashboardData } from '../../service/dashboard-data';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-spot-trade-history',
-  imports: [CommonModule, TableModule, DialogModule, ProgressSpinnerModule],
+  imports: [TranslatePipe,CommonModule, TableModule, DialogModule, ProgressSpinnerModule],
   templateUrl: './spot-trade-history.html',
   styleUrl: './spot-trade-history.scss'
 })

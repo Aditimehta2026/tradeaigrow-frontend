@@ -1,9 +1,9 @@
 <div class="flex items-center justify-between px-4 py-3 mb-2 border-b border-surface-200 dark:border-surface-700 lg:hidden">
     <span class="flex items-center gap-2 min-w-0">
-        <img src="assets/demo/images/logo/trade-AIgrow-logo-new.png" alt="Logo" class="h-8 w-8 shrink-0" />
+        <img src="assets/demo/images/logo/trade-AIgrow-logo-new.png" alt="{{ 'Logo' | translate }}" class="h-8 w-8 shrink-0" />
         <span class="font-semibold text-lg truncate text-surface-900 dark:text-surface-0">TradeAIGrow</span>
     </span>
-    <p-button icon="pi pi-times" severity="secondary" [text]="true" rounded (onClick)="closeMenu()" aria-label="Close menu" />
+    <p-button icon="pi pi-times" severity="secondary" [text]="true" rounded (onClick)="closeMenu()" [attr.aria-label]="'Close menu' | translate" />
 </div>
     <ul class="layout-menu">
         <ng-container *ngFor="let item of model; let i = index">
@@ -17,5 +17,5 @@
             <span class="font-semibold text-sm truncate">{{ userName }}</span>
             <span class="text-xs text-surface-500 truncate">{{ userEmail }}</span>
         </div>
-        <p-button icon="pi pi-cog" severity="secondary" [text]="true" rounded aria-label="Settings" />
+        <p-button icon="pi pi-cog" severity="secondary" [text]="true" rounded [attr.aria-label]="'Settings' | translate" />
     </div>

@@ -6,11 +6,12 @@ import { TableModule } from 'primeng/table';
 import { DashboardData as DashboardService } from '../../service/dashboard-data';
 import { ChartModule } from 'primeng/chart';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     standalone: true,
     selector: 'app-recent-sales-widget',
-    imports: [CommonModule, TableModule, ButtonModule, RippleModule,ChartModule,ProgressSpinnerModule],
+    imports: [CommonModule, TableModule, ButtonModule, RippleModule,ChartModule,ProgressSpinnerModule,TranslatePipe],
     templateUrl: './recentsaleswidget.html'
 })
 export class RecentSalesWidget implements OnInit {

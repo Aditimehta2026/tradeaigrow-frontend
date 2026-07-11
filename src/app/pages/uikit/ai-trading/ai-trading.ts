@@ -13,6 +13,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { finalize } from 'rxjs/operators';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface AITradingData {
      period: string;
@@ -35,7 +36,7 @@ const aitradingData: AITradingData[] = [
 
 @Component({
   selector: 'app-ai-trading',
-  imports: [CommonModule, DataViewModule, FormsModule, SelectButtonModule, PickListModule, OrderListModule, TagModule, ButtonModule, DialogModule, InputNumberModule,ProgressSpinnerModule],
+  imports: [TranslatePipe,CommonModule, DataViewModule, FormsModule, SelectButtonModule, PickListModule, OrderListModule, TagModule, ButtonModule, DialogModule, InputNumberModule,ProgressSpinnerModule],
   templateUrl: './ai-trading.html',
   styleUrl: './ai-trading.scss'
 })

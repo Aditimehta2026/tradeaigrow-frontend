@@ -5,13 +5,14 @@ import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { TagModule } from 'primeng/tag';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-ai-trade-history',
   templateUrl: './ai-trade-history.html',
   styleUrl: './ai-trade-history.scss',
-  imports: [CommonModule, TableModule, DialogModule,TagModule,ProgressSpinnerModule]
+  imports: [TranslatePipe,CommonModule, TableModule, DialogModule,TagModule,ProgressSpinnerModule]
 })
 export class AiTradeHistory {
   AItradeHistory: any[] = [];

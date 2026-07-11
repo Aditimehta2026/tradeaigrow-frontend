@@ -19,3 +19,29 @@
     width: 80px !important;
     height: 80px !important;
   }
+/* Language: topbar on desktop, inside ⋮ menu on mobile (matches layout 991px) */
+.topbar-lang-desktop {
+    display: block;
+}
+
+.topbar-lang-mobile {
+    display: none !important;
+}
+
+@media (max-width: 991px) {
+    .topbar-lang-desktop {
+        display: none !important;
+    }
+
+    .topbar-lang-mobile {
+        display: flex !important;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+
+        p-select {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+}

@@ -1,14 +1,14 @@
 <div class="card mb-8 p-4 md:p-6">
     <div class="flex items-center justify-between mb-5">
         <div>
-            <h2 class="text-xl md:text-2xl font-semibold m-0">AI Trade History</h2>
+            <h2 class="text-xl md:text-2xl font-semibold m-0">{{ 'AI Trade History' | translate }}</h2>
             <p class="text-sm text-surface-500 dark:text-surface-400 mt-1 mb-0">
-                Your recent AI trading records
+                {{ 'Your recent AI trading records' | translate }}
             </p>
         </div>
         <div class="hidden md:flex items-center gap-2 text-surface-500 dark:text-surface-400 text-sm">
             <i class="pi pi-chart-line"></i>
-            <span>Total: {{ AItradeHistory.length }}</span>
+            <span>{{ 'Total' | translate }}: {{ AItradeHistory.length }}</span>
         </div>
     </div>
 
@@ -26,7 +26,7 @@
                     <div
                         class="text-xs md:text-sm text-surface-500 dark:text-surface-400 mt-1 inline-flex items-center gap-1">
                         <i class="pi pi-clock"></i>
-                        <span>{{ trade.durationInDays }} days</span>
+                        <span>{{ trade.durationInDays }} {{ 'days' | translate }}</span>
                     </div>
                 </div>
 
@@ -47,14 +47,14 @@
             <!-- Amount + ROI -->
             <div class="grid grid-cols-2 gap-3 mb-4">
                 <div class="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
-                    <div class="text-xs text-blue-700 dark:text-blue-300 mb-1">Invested Amount</div>
+                    <div class="text-xs text-blue-700 dark:text-blue-300 mb-1">{{ 'Invested Amount' | translate }}</div>
                     <div class="font-semibold text-blue-700 dark:text-blue-300 text-sm md:text-base">
                         {{ trade.amount | currency:'USD':'symbol':'1.0-0' }}
                     </div>
                 </div>
 
                 <div class="rounded-lg bg-purple-50 dark:bg-purple-900/20 p-3">
-                    <div class="text-xs text-purple-700 dark:text-purple-300 mb-1">Daily ROI</div>
+                    <div class="text-xs text-purple-700 dark:text-purple-300 mb-1">{{ 'Daily ROI' | translate }}</div>
                     <div class="font-semibold text-purple-700 dark:text-purple-300 text-sm md:text-base">
                         {{ trade.dailyROI }}%
                     </div>
@@ -64,26 +64,26 @@
             <!-- Balances -->
             <div class="space-y-2 mb-4">
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-surface-500 dark:text-surface-400">Balance Before AI Trade</span>
+                    <span class="text-surface-500 dark:text-surface-400">{{ 'Balance Before AI Trade' | translate }}</span>
                     <span class="font-medium text-surface-800 dark:text-surface-100">
                         {{ trade.oldBalance | currency:'USD':'symbol':'1.0-0' }}
                     </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-surface-500 dark:text-surface-400">Balance After AI Trade</span>
+                    <span class="text-surface-500 dark:text-surface-400">{{ 'Balance After AI Trade' | translate }}</span>
                     <span class="font-semibold text-emerald-600 dark:text-emerald-400">
                         {{ trade.newBalance | currency:'USD':'symbol':'1.0-0' }}
                     </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-surface-500 dark:text-surface-400">Strategy Profit</span>
+                    <span class="text-surface-500 dark:text-surface-400">{{ 'Strategy Profit' | translate }}</span>
                     <span class="font-semibold text-sky-600 dark:text-sky-400">
                         {{ (trade.totalProfit ?? 0) | currency:'USD':'symbol':'1.0-0' }}
                     </span>
                 </div>
                 
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-surface-500 dark:text-surface-400">Projected Payout</span>
+                    <span class="text-surface-500 dark:text-surface-400">{{ 'Projected Payout' | translate }}</span>
                     <span class="font-semibold text-indigo-600 dark:text-indigo-400">
                         {{ (trade.finalAmount ?? trade.newBalance ?? 0) | currency:'USD':'symbol':'1.0-0' }}
                     </span>
@@ -94,12 +94,12 @@
             <div class="pt-3 border-t border-surface-200 dark:border-surface-700 text-xs md:text-sm space-y-2">
                 <div class="flex items-center gap-2 text-orange-600 dark:text-orange-300">
                     <i class="pi pi-calendar"></i>
-                    <span>Created: {{ trade.tradeCreatedAt | date:'medium' }}</span>
+                    <span>{{ 'Created' | translate }}: {{ trade.tradeCreatedAt | date:'medium' }}</span>
                 </div>
 
                 <div class="flex items-center gap-2 text-rose-600 dark:text-rose-300">
                     <i class="pi pi-hourglass"></i>
-                    <span>Ends: {{ trade.tradeEndDate | date:'medium' }}</span>
+                    <span>{{ 'Ends' | translate }}: {{ trade.tradeEndDate | date:'medium' }}</span>
                 </div>
             </div>
         </div>
@@ -109,16 +109,16 @@
     <div *ngIf="AItradeHistory.length === 0" class="text-center py-14">
         <div class="flex flex-col items-center gap-3">
             <i class="pi pi-inbox text-5xl text-surface-400"></i>
-            <h3 class="m-0 text-lg font-semibold text-surface-700 dark:text-surface-200">No AI Trades Yet</h3>
+            <h3 class="m-0 text-lg font-semibold text-surface-700 dark:text-surface-200">{{ 'No AI Trades Yet' | translate }}</h3>
             <p class="m-0 text-sm text-surface-500 dark:text-surface-400">
-                Your AI trade history will appear here once you start trading.
+                {{ 'Your AI trade history will appear here once you start trading.' | translate }}
             </p>
         </div>
     </div>
 </div>
 
 <p-dialog
-    header="AI Trade Details"
+    [header]="'AI Trade Details' | translate"
     [(visible)]="displayTradeDialog"
     [modal]="true"
     [closable]="true"
@@ -129,12 +129,12 @@
 >
     <div *ngIf="selectedTrade" class="space-y-3">
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Duration</span>
-            <span class="font-semibold">{{ selectedTrade.tradeDuration || 'N/A' }}</span>
+            <span class="text-surface-500">{{ 'Duration' | translate }}</span>
+            <span class="font-semibold">{{ selectedTrade.tradeDuration || ('N/A' | translate) }}</span>
         </div>
 
         <div class="flex justify-between items-center border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Status</span>
+            <span class="text-surface-500">{{ 'Status' | translate }}</span>
             <p-tag
                 icon="pi pi-sparkles"
                 [value]="selectedTrade.status | titlecase"
@@ -153,35 +153,35 @@
         </div>
 
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Invested</span>
+            <span class="text-surface-500">{{ 'Invested' | translate }}</span>
             <span class="font-semibold">{{ selectedTrade.amount | currency:'USD':'symbol':'1.0-0' }}</span>
         </div>
 
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Daily ROI</span>
-            <span class="font-semibold">{{ selectedTrade.dailyROI ? (selectedTrade.dailyROI) : 'N/A' }}%</span>
+            <span class="text-surface-500">{{ 'Daily ROI' | translate }}</span>
+            <span class="font-semibold">{{ selectedTrade.dailyROI ? (selectedTrade.dailyROI) : ('N/A' | translate) }}%</span>
         </div>
 
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Balance Before AI Trade</span>
+            <span class="text-surface-500">{{ 'Balance Before AI Trade' | translate }}</span>
             <span class="font-semibold">{{ selectedTrade.oldBalance | currency:'USD':'symbol':'1.0-0' }}</span>
         </div>
 
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Balance After AI Trade</span>
+            <span class="text-surface-500">{{ 'Balance After AI Trade' | translate }}</span>
             <span class="font-semibold text-emerald-600 dark:text-emerald-400">
                 {{ selectedTrade.newBalance | currency:'USD':'symbol':'1.0-0' }}
             </span>
         </div>
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Strategy Profit</span>
+            <span class="text-surface-500">{{ 'Strategy Profit' | translate }}</span>
             <span class="font-semibold text-sky-600 dark:text-sky-400">
                 {{ (selectedTrade.totalProfit ?? 0) | currency:'USD':'symbol':'1.0-0' }}
             </span>
         </div>
         
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Projected Payout</span>
+            <span class="text-surface-500">{{ 'Projected Payout' | translate }}</span>
             <span class="font-semibold text-indigo-600 dark:text-indigo-400">
                 {{ (selectedTrade.finalAmount ?? selectedTrade.newBalance ?? 0) | currency:'USD':'symbol':'1.0-0' }}
             </span>
@@ -189,12 +189,12 @@
         
 
         <div class="flex justify-between border-b border-surface-200 dark:border-surface-700 pb-2">
-            <span class="text-surface-500">Created</span>
+            <span class="text-surface-500">{{ 'Created' | translate }}</span>
             <span class="font-semibold">{{ selectedTrade.tradeCreatedAt | date:'medium' }}</span>
         </div>
 
         <div class="flex justify-between">
-            <span class="text-surface-500">Ends</span>
+            <span class="text-surface-500">{{ 'Ends' | translate }}</span>
             <span class="font-semibold">{{ selectedTrade.tradeEndDate | date:'medium' }}</span>
         </div>
     </div>

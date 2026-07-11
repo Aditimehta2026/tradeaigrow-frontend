@@ -9,6 +9,7 @@ import { FluidModule } from 'primeng/fluid';
 import { Router } from '@angular/router';
 import { DashboardData } from '@/pages/service/dashboard-data';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
@@ -20,7 +21,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         ToastModule,
         DialogModule,
         FluidModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        TranslatePipe
 
     ],
     templateUrl: './withdrawal.html',

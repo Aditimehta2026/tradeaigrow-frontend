@@ -21,6 +21,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FileUpload } from 'primeng/fileupload';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LanguageService } from '@/core/services/language.service';
 
 @Component({
     selector: 'app-topbar',
@@ -28,7 +30,7 @@ import { FileUpload } from 'primeng/fileupload';
     imports: [RouterModule, CommonModule, StyleClassModule, ConfirmDialogModule, DialogModule, ButtonModule,
         MenubarModule, IconFieldModule, InputIconModule,
         MenuModule, DrawerModule, DividerModule, FormsModule, SelectButtonModule, SelectModule, FileUploadModule, InputTextModule,
-        ProgressSpinnerModule,FileUpload
+        ProgressSpinnerModule,FileUpload,TranslatePipe
     ],
     templateUrl: './app.topbar.html',
     styleUrl: './app.topbar.scss',
@@ -71,12 +73,14 @@ export class AppTopbar {
     // error for too many request
     showVerifyErrorDialog: boolean = false;
     verifyErrorMessage: string = '';
+    selectedLang = 'en';
 
     constructor(public layoutService: LayoutService,
-        public confirmationService: ConfirmationService, public router: Router, public dashboardData: DashboardData) { }
+        public confirmationService: ConfirmationService, public router: Router, public dashboardData: DashboardData,public languageService: LanguageService) { }
     ngOnInit(): void {
         this.getUserName();
         this.buildProfileMenu();
+        this.selectedLang = this.languageService.current;
     }
 
     getUserName() {
@@ -258,6 +262,13 @@ export class AppTopbar {
         this.verifyErrorMessage = '';
         this.resetVerifyForm();
     }
+    changeLanguage(lang: string) {
+        this.languageService.setLanguage(lang);
+        this.selectedLang = lang;
+    }
+    get languages() {
+        return this.languageService.languages;
+      }
 
 
 }

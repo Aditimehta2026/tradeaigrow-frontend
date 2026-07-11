@@ -7,10 +7,11 @@ import { FluidModule } from 'primeng/fluid';
 import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-support',
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, FluidModule, TextareaModule, ToastModule],
+  imports: [TranslatePipe,CommonModule, FormsModule, InputTextModule, ButtonModule, FluidModule, TextareaModule, ToastModule],
   templateUrl: './support.html',
   styleUrl: './support.scss',
   providers: [MessageService]

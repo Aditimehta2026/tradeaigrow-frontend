@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
+
 
 interface Event {
   id: number;
@@ -14,7 +16,7 @@ interface Event {
 
 @Component({
   selector: 'app-upcoming-events',
-  imports: [CommonModule,ButtonModule],
+  imports: [CommonModule,ButtonModule,TranslatePipe],
   templateUrl: './upcoming-events.html',
   styleUrl: './upcoming-events.scss'
 })

@@ -4,11 +4,12 @@ import { TableModule } from 'primeng/table';
 import { DashboardData } from '../../service/dashboard-data';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-multiasset-trade-history',
-  imports: [CommonModule, TableModule, DialogModule,ProgressSpinnerModule],
+  imports: [TranslatePipe,CommonModule, TableModule, DialogModule,ProgressSpinnerModule],
   templateUrl: './multiasset-trade-history.html',
   styleUrl: './multiasset-trade-history.scss'
 })

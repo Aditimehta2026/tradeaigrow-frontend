@@ -2,7 +2,7 @@
     <div class="flex mb-6">
         <div class="card flex flex-col gap-6 w-full">
 
-            <div class="font-semibold text-xl">Deposit</div>
+            <div class="font-semibold text-xl">{{ 'Deposit' | translate }}</div>
             <p-select [options]="CoinsList" [(ngModel)]="selectedCoin" placeholder="Select Coin" optionLabel="name"
                 [filter]="true" [showClear]="true" (ngModelChange)="onCoinChange($event)">
                 <ng-template #selectedItem let-coin>
@@ -23,10 +23,10 @@
 </p-fluid>
 
 <div class="card">
-    <div class="font-semibold text-xl mb-4">Image</div>
+    <div class="font-semibold text-xl mb-4">{{ 'Image' | translate }}</div>
     <p-image [src]="selectedCoinImage" alt="Image" width="250" />
     <div class="mb-2 mt-2 font-medium break-words overflow-wrap-anywhere">{{selectedCoinAddress}}</div>
-    <p-button label="Copy" severity="help" (onClick)="copyToClipboard(selectedCoinAddress)" />
+    <p-button label="{{ 'Copy' | translate }}" severity="help" (onClick)="copyToClipboard(selectedCoinAddress)" />
     <p-toast />
 </div>
 

@@ -3,9 +3,9 @@
         <div class="card flex flex-col gap-6 sm:gap-8 w-full">
                   <!-- Header Section -->
             <div class="flex flex-col gap-2">
-                <div class="font-semibold text-xl sm:text-2xl">Customer Support</div>
+                <div class="font-semibold text-xl sm:text-2xl">{{ 'Customer Support' | translate }}</div>
                 <span class="text-xs sm:text-sm text-surface-500 dark:text-surface-400">
-                    Get in touch with us through Telegram or submit a support request form below.
+                    {{ 'Get in touch with us through Telegram or submit a support request form below.' | translate }}
                 </span>
             </div>
 
@@ -13,21 +13,21 @@
             <div class="flex flex-col gap-4 p-4 sm:p-6 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700">
                 <div class="flex items-center gap-2">
                     <i class="pi pi-send text-[#0088cc] text-xl sm:text-2xl"></i>
-                    <div class="font-semibold text-base sm:text-lg">Telegram Support</div>
+                    <div class="font-semibold text-base sm:text-lg">{{ 'Telegram Support' | translate }}</div>
                 </div>
                 <div class="flex flex-col gap-3 sm:gap-4">
                     <div>
-                        <div class="font-medium mb-1 sm:mb-2 text-sm sm:text-base text-surface-900 dark:text-surface-0">How do I get customer care support?</div>
-                        <p class="text-xs sm:text-sm text-surface-600 dark:text-surface-300">You can reach out to us via Telegram for instant support.</p>
+                        <div class="font-medium mb-1 sm:mb-2 text-sm sm:text-base text-surface-900 dark:text-surface-0">{{ 'How do I get customer care support?' | translate }}</div>
+                        <p class="text-xs sm:text-sm text-surface-600 dark:text-surface-300">{{ 'You can reach out to us via Telegram for instant support.' | translate }}</p>
                     </div>
                     <div>
-                        <div class="font-medium mb-1 sm:mb-2 text-sm sm:text-base text-surface-900 dark:text-surface-0">What is your response time?</div>
-                        <p class="text-xs sm:text-sm text-surface-600 dark:text-surface-300">We will respond to your request within 12-24 hours.</p>
+                        <div class="font-medium mb-1 sm:mb-2 text-sm sm:text-base text-surface-900 dark:text-surface-0">{{ 'What is your response time?' | translate }}</div>
+                        <p class="text-xs sm:text-sm text-surface-600 dark:text-surface-300">{{ 'We will respond to your request within 12-24 hours.' | translate }}</p>
                     </div>
                 </div>
                 <div class="pt-2">
                     <p-button 
-                        label="Contact via Telegram" 
+                        label="{{ 'Contact via Telegram' | translate }}" 
                         severity="primary" 
                         icon="pi pi-send" 
                         styleClass="w-full sm:w-auto"
@@ -40,7 +40,7 @@
             <!-- Divider -->
             <div class="flex items-center gap-4">
                 <div class="flex-1 border-t border-surface-200 dark:border-surface-700"></div>
-                <span class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 font-medium">OR</span>
+                <span class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 font-medium">{{ 'OR' | translate }}</span>
                 <div class="flex-1 border-t border-surface-200 dark:border-surface-700"></div>
             </div>
 
@@ -48,29 +48,29 @@
             <div class="flex flex-col gap-4 sm:gap-6">
                 <div class="flex items-center gap-2">
                     <i class="pi pi-envelope text-primary text-xl sm:text-2xl"></i>
-                    <div class="font-semibold text-base sm:text-lg">Submit a Support Request</div>
+                    <div class="font-semibold text-base sm:text-lg">{{ 'Submit a Support Request' | translate }}</div>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
                     <div class="flex flex-col gap-2 flex-1">
-                        <label for="fullName" class="text-sm font-medium text-surface-700 dark:text-surface-300">Full Name</label>
+                        <label for="fullName" class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'Full Name' | translate }}</label>
                         <input 
                             pInputText 
                             id="fullName" 
                             type="text" 
                             [(ngModel)]="fullName" 
-                            placeholder="Enter your full name" 
+                            placeholder="{{ 'Enter your full name' | translate }}" 
                             required 
                             class="w-full"
                         />
                     </div>
                     <div class="flex flex-col gap-2 flex-1">
-                        <label for="email" class="text-sm font-medium text-surface-700 dark:text-surface-300">Email Address</label>
+                        <label for="email" class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'Email Address' | translate }}</label>
                         <input 
                             pInputText 
                             id="email" 
                             type="email" 
                             [(ngModel)]="email" 
-                            placeholder="Enter your email address" 
+                            placeholder="{{ 'Enter your email address' | translate }}" 
                             required 
                             class="w-full"
                         />
@@ -78,13 +78,13 @@
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <label for="message" class="text-sm font-medium text-surface-700 dark:text-surface-300">How can we help?</label>
+                    <label for="message" class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'How can we help?' | translate }}</label>
                     <textarea 
                         pTextarea 
                         id="message" 
                         rows="4" 
                         [(ngModel)]="message"  
-                        placeholder="Enter your message" 
+                        placeholder="{{ 'Enter your message' | translate }}" 
                         required
                         class="w-full"
                     ></textarea>
@@ -94,7 +94,7 @@
                     <p-button 
                         (click)="showSuccessViaToast()" 
                         [disabled]="!isFormValid()" 
-                        label="Submit Request" 
+                        label="{{ 'Submit Request' | translate }}" 
                         severity="success"
                         icon="pi pi-send"
                         styleClass="w-full sm:w-auto"

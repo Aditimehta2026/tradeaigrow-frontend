@@ -2,7 +2,7 @@
     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 px-1 sm:px-2 py-1">
       <div>
         <span class="block text-[11px] sm:text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400 font-semibold mb-1.5">
-          EST total value (USDT)
+          {{ 'EST total value (USDT)' | translate }}
         </span>
   
         <div class="text-surface-900 dark:text-surface-0 font-bold text-3xl sm:text-5xl leading-tight">
@@ -10,7 +10,7 @@
         </div>
   
         <div class="mt-1.5 flex items-center gap-2 text-xs sm:text-sm">
-          <span class="text-surface-500 dark:text-surface-400">Last trade:</span>
+          <span class="text-surface-500 dark:text-surface-400">{{ 'Last trade:' | translate }}</span>
           <span
             class="inline-flex items-center gap-1 font-semibold"
             [ngClass]="todayGain >= 0
@@ -25,7 +25,7 @@
       <button
         pButton
         type="button"
-        label="Deposit"
+        label="{{ 'Deposit' | translate }}"
         icon="pi pi-plus"
         routerLink="/app/page/deposit"
         styleClass="w-full sm:w-auto h-11 sm:h-14 px-4 sm:px-6 text-sm sm:text-lg font-semibold">
@@ -45,7 +45,7 @@
           <i class="pi pi-fw pi-chart-scatter text-sm sm:text-base"></i>
         </div>
         <span class="text-[10px] sm:text-[11px] font-semibold text-surface-700 dark:text-surface-200 leading-tight text-center">
-          Spot
+          {{ 'Spot' | translate }}
         </span>
       </div>
   
@@ -59,7 +59,7 @@
           <i class="pi pi-bolt text-sm sm:text-base"></i>
         </div>
         <span class="text-[10px] sm:text-[11px] font-semibold text-surface-700 dark:text-surface-200 leading-tight text-center">
-          AI
+          {{ 'AI' | translate }}
         </span>
       </div>
   
@@ -75,7 +75,7 @@
         </div>
         <span
           class="text-[10px] sm:text-[11px] font-semibold text-surface-700 dark:text-surface-200 leading-tight text-center">
-          Commodity
+          {{ 'Commodity' | translate }}
         </span>
       </div>
         <!-- Loan -->
@@ -88,7 +88,7 @@
           <i class="pi pi-fw pi-money-bill text-sm sm:text-base"></i>
         </div>
         <span class="text-[10px] sm:text-[11px] font-semibold text-surface-700 dark:text-surface-200 leading-tight text-center">
-          Loan
+          {{ 'Loan' | translate }}
         </span>
       </div>
     </div>

@@ -4,10 +4,11 @@ import { DashboardData } from '../../../service/dashboard-data';
 import { Subscription } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-balance-header',
-  imports: [CommonModule, RouterModule, ButtonModule],
+  imports: [CommonModule, RouterModule, ButtonModule,TranslatePipe],
   templateUrl: './account-balance-header.html',
   styleUrl: './account-balance-header.scss'
 })
