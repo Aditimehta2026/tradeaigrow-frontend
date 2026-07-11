@@ -7,17 +7,21 @@ export class LanguageService {
   private readonly STORAGE_KEY = 'app_language';
 
  readonly languages = [
-    { label: 'English', value: 'en' },      
-    { label: 'Français', value: 'fr' },   
-    { label: 'Español', value: 'es' },      
-    { label: 'Deutsch', value: 'de' },      
-    { label: 'Português', value: 'pt' },    
-    { label: 'العربية', value: 'ar' },      
-    { label: 'हिन्दी', value: 'hi' } 
+    { label: 'English', value: 'en' },
+    { label: 'Français', value: 'fr' },
+    { label: 'Español', value: 'es' },
+    { label: 'Deutsch', value: 'de' },
+    { label: 'Português', value: 'pt' },
+    { label: 'العربية', value: 'ar' },
+    { label: 'हिन्दी', value: 'hi' },
+    { label: '日本語', value: 'ja' },
+    { label: 'Italiano', value: 'it' },
+    { label: 'Русский', value: 'ru' },
+    { label: '한국어', value: 'ko' },
   ];
 
 constructor() {
-    this.translate.addLangs(['en', 'hi', 'es', 'fr', 'de', 'pt', 'ar']);
+    this.translate.addLangs(['en', 'hi', 'es', 'fr', 'de', 'pt', 'ar', 'ja', 'it', 'ru', 'ko']);
     const saved = localStorage.getItem(this.STORAGE_KEY) || 'en';
     this.translate.use(this.languages.some(x => x.value === saved) ? saved : 'en');
   }
