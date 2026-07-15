@@ -19,3 +19,27 @@
     width: 80px !important;
     height: 80px !important;
   }
+
+
+  
+  .gold { background: #d4a017; }
+  .silver { background: #9ca3af; }
+  .oil { background: #374151; }
+  .brent { background: #2563eb; }
+  .gas { background: #059669; }
+  .copper { background: #b45309; }
+  .platinum { background: #6d28d9; }
+  .palladium { background: #7c3aed; }
+
+  .commodity-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px; 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
