@@ -1,0 +1,348 @@
+<!-- Forex Trade Form -->
+<div class="card mb-8 p-4 md:p-6">
+    <div class="flex items-center justify-between gap-2 mb-4">
+        <div class="flex items-center gap-2 min-w-0">
+            <div class="font-semibold text-base sm:text-lg md:text-xl truncate">{{ title }}</div>
+            <button
+                type="button"
+                class="shrink-0 p-1 rounded-full text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors"
+                (click)="showDisclaimerDialog = true"
+                [attr.aria-label]="'Risk disclaimer'">
+                <i class="pi pi-exclamation-circle text-base sm:text-lg"></i>
+            </button>
+        </div>
+    
+        <p-button
+            label="History"
+            severity="help"
+            icon="pi pi-history"
+            styleClass="shrink-0 whitespace-nowrap"
+            routerLink="/app/page/forex-trade-history" />
+    </div>
+    <!-- Forex Pair Selector -->
+<div class="mb-4">
+    <div class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 mb-2 flex items-center gap-1.5">
+        <i class="pi pi-globe text-sky-500"></i>
+        <span>{{ 'Currency Pairs' | translate }}</span>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+        <button
+            *ngFor="let pair of forexPairs"
+            type="button"
+            (click)="changeSymbol(pair.value)"
+            [class]="currentSymbol === pair.value
+                ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 shadow-sm'
+                : 'border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-200 hover:border-sky-300 dark:hover:border-sky-700'"
+            class="flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 sm:py-3
+                   transition-all duration-200 cursor-pointer min-h-[44px]">
+            <span class="text-xs sm:text-sm font-semibold tracking-wide">{{ pair.base }}</span>
+            <span
+                [class]="currentSymbol === pair.value
+                    ? 'bg-sky-400/60 dark:bg-sky-400/40'
+                    : 'bg-surface-300 dark:bg-surface-600'"
+                class="w-px h-4 sm:h-5 shrink-0"></span>
+            <span class="text-xs sm:text-sm font-semibold tracking-wide">{{ pair.quote }}</span>
+        </button>
+    </div>
+</div>
+    
+    <div [id]="containerId" [style.height.px]="height" class="w-full overflow-hidden rounded-lg" style="min-height: 250px;" [style.min-height.px]="250"></div>
+
+     <!-- Return Cards Section -->
+<div class="mt-4">
+    <div class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 mb-2">
+        {{ 'Potential return' | translate }}
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div
+            *ngFor="let card of returnCards; let i = index"
+            (click)="selectCard(i)"
+            [class]="selectedCardIndex === i
+                ? 'bg-sky-50 dark:bg-sky-900/30 border-sky-500 border-2 shadow-sm'
+                : 'bg-surface-100 dark:bg-surface-800 border-surface-200 dark:border-surface-700 border hover:border-sky-300 dark:hover:border-sky-700'"
+            class="p-3 md:p-4 rounded-xl h-full flex flex-col transition-all duration-200 cursor-pointer">
+            <div class="text-xs md:text-sm text-surface-600 dark:text-surface-400 mb-1">{{ card.time }}</div>
+            <div
+                [class]="selectedCardIndex === i
+                    ? 'text-sky-600 dark:text-sky-300'
+                    : 'text-surface-900 dark:text-surface-0'"
+                class="text-xl md:text-2xl font-bold">
+                {{ card.return }}
+            </div>
+            <div class="text-xs text-surface-500 mt-1">{{ 'Potential return' | translate }}</div>
+        </div>
+    </div>
+
+    <p class="text-[11px] sm:text-xs text-surface-500 dark:text-surface-400 mt-2 m-0">
+        Returns are not guaranteed and depend on market conditions.
+    </p>
+</div>
+    
+    <!-- Input Fields Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div class="flex flex-col">
+            <label class="text-xs md:text-sm font-medium text-surface-700 dark:text-surface-300 mb-2 break-words">
+                <span class="block md:inline">{{'Amount' | translate}}</span>
+                <span class="block md:inline text-xs text-surface-500 dark:text-surface-400 mt-1 md:mt-0 md:ml-1">
+                    (Range: {{ returnCards[selectedCardIndex].min.toLocaleString() }} - {{ returnCards[selectedCardIndex].max.toLocaleString() }})
+                </span>
+            </label>
+            <input 
+                pInputText 
+                type="number"
+                [(ngModel)]="userEnteramount"
+                (input)="onAmountChange()"
+                placeholder="{{'Enter amount' | translate}}"
+                [class]="amountError ? 'p-invalid' : ''"
+                class="w-full text-sm md:text-base" />
+            <small *ngIf="amountError" class="text-red-500 mt-1 text-xs">{{ amountError }}</small>
+        </div>
+        <div class="flex flex-col">
+            <label class="text-xs md:text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">{{'Expected Return' | translate}}</label>
+            <input 
+                pInputText 
+                type="text" 
+                [(ngModel)]="expectedReturn"
+                readonly
+                class="w-full text-sm md:text-base" />
+        </div>
+    </div>
+    
+    <!-- Buy / Sell Buttons -->
+<div class="flex flex-col sm:flex-row gap-2 mt-4">
+    <button
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-arrow-up"
+        [label]="'Buy' | translate"
+        (click)="onStartForexTrade('up')"
+        [disabled]="isTradeButtonDisabled"
+        class="p-button-success w-full sm:w-auto flex-1 sm:flex-none">
+    </button>
+    <button
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-arrow-down"
+        [label]="'Sell' | translate"
+        (click)="onStartForexTrade('down')"
+        [disabled]="isTradeButtonDisabled"
+        class="p-button-danger w-full sm:w-auto flex-1 sm:flex-none">
+    </button>
+</div>
+</div>
+
+<!-- Loading Overlay -->
+<div *ngIf="isLoading" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+    <div class="bg-surface-0 dark:bg-surface-900 p-4 md:p-6 rounded-lg shadow-lg flex flex-col items-center gap-3 md:gap-4 w-full max-w-xs md:max-w-sm">
+        <i class="pi pi-spin pi-spinner text-3xl md:text-4xl text-primary"></i>
+        <p class="text-surface-700 dark:text-surface-300 text-sm md:text-base text-center">{{'Processing trade...' | translate}}</p>
+    </div>
+</div>
+
+<!-- Trade Dialog with Timer -->
+<p-dialog
+    [(visible)]="showSuccessDialog"
+    [modal]="true"
+    [closable]="false"
+    (onHide)="closeSuccessDialog()"
+    [draggable]="false"
+    [resizable]="false"
+    [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+    [style]="{ width: '90%', maxWidth: '420px' }">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <div class="flex items-center justify-center w-9 h-9 rounded-full bg-sky-100 dark:bg-sky-900/40">
+                <i class="pi pi-spinner-dotted text-sky-600 dark:text-sky-300"></i>
+            </div>
+            <span class="font-semibold text-base sm:text-lg">{{ 'Trade in Progress' | translate }}</span>
+        </div>
+    </ng-template>
+
+    <div *ngIf="tradeDetails" class="flex flex-col gap-3 sm:gap-4">
+        <!-- Pair + Side badges -->
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 dark:bg-sky-900/30
+                         text-sky-700 dark:text-sky-300 text-sm font-semibold border border-sky-200 dark:border-sky-800">
+                <i class="pi pi-globe text-xs"></i>
+                {{ tradeDetails.symbol }}
+            </span>
+            <span
+                [class]="tradeDetails.direction === 'up'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                    : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'"
+                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold">
+                <i [class]="tradeDetails.direction === 'up' ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                {{ tradeDetails.direction === 'up' ? ('Buy' | translate) : ('Sell' | translate) }}
+            </span>
+        </div>
+
+        <!-- Details card -->
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700
+                    bg-surface-50 dark:bg-surface-800/60 p-3 sm:p-4 space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm text-surface-500">{{ 'Amount' | translate }}</span>
+                <span class="text-sm sm:text-base font-semibold">${{ tradeDetails.enteredAmount.toFixed(2) }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm text-surface-500">{{ 'Time' | translate }}</span>
+                <span class="text-sm sm:text-base font-semibold">{{ tradeDetails.time }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm text-surface-500">{{ 'Potential return' | translate }}</span>
+                <span class="text-sm sm:text-base font-bold text-sky-600 dark:text-sky-300">
+                    ${{ tradeDetails.returnAmount.toFixed(2) }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="rounded-xl border border-sky-200 dark:border-sky-800
+                    bg-sky-50 dark:bg-sky-900/20 p-3 sm:p-4">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs sm:text-sm text-surface-600 dark:text-surface-400">
+                    {{ 'Time Remaining' | translate }}
+                </span>
+                <span class="text-sm font-bold text-sky-700 dark:text-sky-300">
+                    {{ timerSeconds }}s
+                </span>
+            </div>
+            <p-progressbar [value]="timerProgress" [showValue]="false" [style]="{ height: '10px' }"></p-progressbar>
+            <div class="text-right text-[11px] text-surface-500 mt-1">{{ round(timerProgress) }}%</div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end w-full" *ngIf="timerSeconds === 0">
+            <p-button
+                [label]="'Close' | translate"
+                icon="pi pi-check"
+                severity="info"
+                styleClass="w-full sm:w-auto"
+                (onClick)="closeSuccessDialog()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+
+<!-- Trade Completion Dialog -->
+<p-dialog
+    [(visible)]="showCompletionDialog"
+    [modal]="true"
+    [closable]="false"
+    [draggable]="false"
+    [resizable]="false"
+    [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+    [style]="{ width: '90%', maxWidth: '400px' }">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <div class="flex items-center justify-center w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/40">
+                <i class="pi pi-check text-green-600 dark:text-green-300"></i>
+            </div>
+            <span class="font-semibold text-base sm:text-lg">{{ 'Trade Completed' | translate }}</span>
+        </div>
+    </ng-template>
+
+    <div class="flex flex-col items-center text-center gap-3 sm:gap-4 py-1">
+        <div class="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full
+                    bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+            <i class="pi pi-check-circle text-4xl sm:text-5xl text-green-500"></i>
+        </div>
+
+        <div>
+            <h3 class="text-lg sm:text-xl font-semibold text-surface-900 dark:text-surface-0 m-0 mb-1">
+                {{ 'Trade Completed Successfully!' | translate }}
+            </h3>
+            <p class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 m-0 px-1">
+                {{ 'Your trade has been processed and your balance has been updated.' | translate }}
+            </p>
+        </div>
+
+        <div *ngIf="tradeDetails"
+             class="w-full rounded-xl border border-surface-200 dark:border-surface-700
+                    bg-surface-50 dark:bg-surface-800/60 p-3 sm:p-4 space-y-2.5 text-left">
+            <div class="flex justify-between items-center">
+                <span class="text-xs sm:text-sm text-surface-500">{{ 'Pair' | translate }}</span>
+                <span class="text-sm font-semibold">{{ tradeDetails.symbol }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-xs sm:text-sm text-surface-500">{{ 'Side' | translate }}</span>
+                <span
+                    [class]="tradeDetails.direction === 'up' ? 'text-green-500' : 'text-red-500'"
+                    class="text-sm font-semibold">
+                    {{ tradeDetails.direction === 'up' ? ('Buy' | translate) : ('Sell' | translate) }}
+                </span>
+            </div>
+            <div class="flex justify-between items-center pt-1 border-t border-surface-200 dark:border-surface-700">
+                <span class="text-xs sm:text-sm text-surface-500">{{ 'Return Amount' | translate }}</span>
+                <span class="text-base sm:text-lg font-bold text-sky-600 dark:text-sky-300">
+                    ${{ tradeDetails.returnAmount.toFixed(2) }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex flex-col sm:flex-row gap-2 w-full sm:justify-end">
+            <p-button
+                [label]="'Try Again' | translate"
+                icon="pi pi-refresh"
+                [outlined]="true"
+                severity="secondary"
+                styleClass="w-full sm:w-auto"
+                (onClick)="onTryAgain()" />
+            <p-button
+                [label]="'Move to Dashboard' | translate"
+                icon="pi pi-home"
+                severity="success"
+                styleClass="w-full sm:w-auto"
+                (onClick)="onMoveToDashboard()" />
+        </div>
+    </ng-template>
+</p-dialog>
+
+
+<!-- Risk Disclaimer Dialog -->
+<p-dialog
+    [(visible)]="showDisclaimerDialog"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+    [style]="{ width: '90%', maxWidth: '420px' }"
+    styleClass="p-fluid">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <i class="pi pi-exclamation-circle text-amber-500 text-lg sm:text-xl"></i>
+            <span class="font-semibold text-base sm:text-lg">Disclaimer</span>
+        </div>
+    </ng-template>
+
+    <div class="flex flex-col gap-3 sm:gap-4">
+        <div
+            class="rounded-lg border border-amber-200 dark:border-amber-800
+                   bg-amber-50 dark:bg-amber-900/20 p-3 sm:p-4">
+            <p class="m-0 text-sm sm:text-base leading-relaxed text-surface-700 dark:text-surface-300">
+                This platform does not guarantee profits. All returns depend on market conditions,
+                and losses are possible. Please trade responsibly.
+            </p>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end w-full">
+            <p-button
+                label="Got it"
+                icon="pi pi-check"
+                severity="warn"
+                styleClass="w-full sm:w-auto"
+                (onClick)="showDisclaimerDialog = false" />
+        </div>
+    </ng-template>
+</p-dialog>

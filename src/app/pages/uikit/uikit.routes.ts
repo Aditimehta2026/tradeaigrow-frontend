@@ -12,11 +12,15 @@ import { SpotTrade } from './spot-trade/spot-trade';
 import { SpotTradeHistory } from './spot-trade-history/spot-trade-history';
 import { Loan } from './loan/loan';
 import { Support } from './support/support';
+import { ForexTradeForm } from './forex-trade-form/forex-trade-form';
+import { ForexTradeHistory } from './forex-trade-history/forex-trade-history';
 
 export default [
     { path: 'deposit', data: { breadcrumb: 'Deposit' }, component: Deposit },
     { path: 'deposit-history', data: { breadcrumb: 'Deposit History' }, component: DepositHistory },
     { path: 'withdrawal-history', data: { breadcrumb: 'Withdrawal History' }, component: WithdrawalHistory },
+    { path: 'forex-trade', data: { breadcrumb: 'Forex Trade' }, component: ForexTradeForm },
+    { path: 'forex-trade-history', data: { breadcrumb: 'Forex Trade History' }, component: ForexTradeHistory },
     { path: 'support', data: { breadcrumb: 'Support' }, component: Support },
     { path: 'ai-trading', data: { breadcrumb: 'AI Trading' }, component: AiTrading },
     { path: 'ai-trade-history', data: { breadcrumb: 'AI Trade History' }, component: AiTradeHistory },

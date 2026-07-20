@@ -41,6 +41,7 @@ export class AppMenu {
                     { label: 'Withdrawal History', icon: 'pi pi-fw pi-history', routerLink: ['/app/page/withdrawal-history'] },
                     { label: 'Spot Trade', icon: 'pi pi-fw pi-chart-scatter', routerLink: ['/app/page/spot-trade'] },
                     { label: 'Trade History', icon: 'pi pi-fw pi-history', routerLink: ['/app/page/spot-trade-history'] },
+                    { label: 'Forex Trade', icon: 'pi pi-fw pi-dollar', routerLink: ['/app/page/forex-trade'] },
                     { label: 'Events', icon: 'pi pi-fw pi-calendar', routerLink: ['/app/page/upcoming-events'] },
                     // { label: 'AI Trading', icon: 'pi pi-fw pi-chart-line', routerLink: ['/app/page/ai-trading'] },
                     { label: 'Loan', icon: 'pi pi-fw pi-money-bill', routerLink: ['/app/page/loan'] },
