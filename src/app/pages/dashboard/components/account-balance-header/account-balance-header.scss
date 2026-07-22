@@ -1,0 +1,10 @@
+:host ::ng-deep .action-tile {
+    .p-ink {
+      border-radius: inherit;
+    }
+  
+    &.action-spot .p-ink   { background: rgba(99, 102, 241, 0.35); }
+    &.action-ai .p-ink    { background: rgba(139, 92, 246, 0.35); }
+    &.action-commodity .p-ink  { background: rgba(16, 185, 129, 0.35); }
+    &.action-forex .p-ink { background: rgba(245, 158, 11, 0.35); }
+  }
