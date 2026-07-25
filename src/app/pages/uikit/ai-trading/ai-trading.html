@@ -1,6 +1,20 @@
 <div class="flex flex-col">
     <div class="card">
-        <div class="font-semibold text-xl mb-6">{{ 'AI Quantification Trading' | translate }}</div>
+        <div class="flex items-center justify-between gap-2 mb-6">
+            <div class="flex items-center gap-2 min-w-0">
+                <div class="font-semibold text-base sm:text-lg md:text-xl truncate">
+                    {{ 'AI Quantification Trading' | translate }}
+                </div>
+                <button type="button"
+                    class="shrink-0 p-1 rounded-full text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors"
+                    (click)="showDisclaimerDialog = true" [attr.aria-label]="'Risk disclaimer' | translate">
+                    <i class="pi pi-exclamation-circle text-base sm:text-lg"></i>
+                </button>
+            </div>
+    
+            <p-button [label]="'History' | translate" severity="help" icon="pi pi-history"
+                styleClass="shrink-0 whitespace-nowrap" routerLink="/app/page/ai-trade-history" />
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div *ngFor="let item of aitradingData; let i = index" (click)="selectTradingPlan(item)"
                 class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded-lg flex flex-col gap-4 opacity-100">
@@ -103,3 +117,42 @@
   <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner">
   </p-progressSpinner>
 </div>
+
+<p-dialog
+    [(visible)]="showDisclaimerDialog"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+    [style]="{ width: '90%', maxWidth: '420px' }"
+    styleClass="p-fluid">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <i class="pi pi-exclamation-circle text-amber-500 text-lg sm:text-xl"></i>
+            <span class="font-semibold text-base sm:text-lg">Disclaimer</span>
+        </div>
+    </ng-template>
+
+    <div class="flex flex-col gap-3 sm:gap-4">
+        <div
+            class="rounded-lg border border-amber-200 dark:border-amber-800
+                   bg-amber-50 dark:bg-amber-900/20 p-3 sm:p-4">
+            <p class="m-0 text-sm sm:text-base leading-relaxed text-surface-700 dark:text-surface-300">
+                This platform does not guarantee profits. All returns depend on market conditions,
+                and losses are possible. Please trade responsibly.
+            </p>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end w-full">
+            <p-button
+                label="Got it"
+                icon="pi pi-check"
+                severity="warn"
+                styleClass="w-full sm:w-auto"
+                (onClick)="showDisclaimerDialog = false" />
+        </div>
+    </ng-template>
+</p-dialog>

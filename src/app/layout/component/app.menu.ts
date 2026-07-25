@@ -70,12 +70,7 @@ export class AppMenu {
                                 label: 'Trade Here',       // Final action
                                 icon: 'pi pi-fw pi-chart-line',
                                 routerLink: ['/app/page/ai-trading']
-                            },
-                            {
-                                label: 'Trade History',    // Sub-menu for history
-                                icon: 'pi pi-fw pi-clock',
-                                routerLink: ['/app/page/ai-trade-history']
-                            },
+                            }
                             // {
                             //     label: 'Login',
                             //     icon: 'pi pi-fw pi-sign-in',
