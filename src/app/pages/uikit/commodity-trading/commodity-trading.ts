@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { DashboardData } from '../../service/dashboard-data';
 import { Subscription } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SelectModule } from 'primeng/select';
 
 declare const TradingView: any;
 
@@ -25,7 +26,9 @@ declare const TradingView: any;
     InputNumberModule,
     DialogModule,
     ProgressBarModule,
-    RouterModule,TranslatePipe],
+    RouterModule,
+    TranslatePipe,
+    SelectModule],
   templateUrl: './commodity-trading.html',
   styleUrl: './commodity-trading.scss'
 })
@@ -34,7 +37,7 @@ export class CommodityTrading {
   @Input() interval: string = 'D'; // D, W, M, 1, 5, 15, 30, 60, 240
   @Input() theme: 'light' | 'dark' = 'dark';
   @Input() height: number = 300;
-  @Input() title: string = 'Multi-Asset Trading Chart';
+  @Input() title: string = 'Multi-Asset';
 
   containerId: string = `tradingview_${Math.random().toString(36).substring(2, 11)}`;
   private scriptLoaded: boolean = false;
@@ -82,14 +85,42 @@ export class CommodityTrading {
   currentBalance: number = 0;
   private userDataSubscription?: Subscription;
 
-  coins = [
-    { label: 'GOLD', value: 'OANDA:XAUUSD' },
-    { label: 'SILVER', value: 'OANDA:XAGUSD' },
-    { label: 'PLATINUM', value: 'OANDA:XPTUSD' },
-    { label: 'PALLADIUM', value: 'OANDA:XPDUSD' },
-    { label: 'WTI OIL', value: 'TVC:USOIL' },
-    { label: 'BRENT', value: 'TVC:UKOIL' }
-  ];
+  commodities: any[] = [];
+  selectedCommodity: any = null;
+  showDisclaimerDialog: boolean = false;
+
+  private tvByName: Record<string, string> = {
+    'Gold': 'TVC:GOLD',
+    'Silver': 'OANDA:XAGUSD',
+    'Crude Oil WTI': 'TVC:USOIL',
+    'Brent Crude': 'TVC:UKOIL',
+    'Natural Gas': 'TVC:NGAS',
+    'Copper': 'COMEX:HG1!',
+    'Platinum': 'OANDA:XPTUSD',
+    'Palladium': 'OANDA:XPDUSD',
+  };
+
+  commodityBadge: Record<string, { text: string; class: string }> = {
+    'GC=F': { text: 'GC', class: 'gold' },
+    'SI=F': { text: 'SI', class: 'silver' },
+    'CL=F': { text: 'CL', class: 'oil' },
+    'BZ=F': { text: 'BZ', class: 'brent' },
+    'NG=F': { text: 'NG', class: 'gas' },
+    'HG=F': { text: 'HG', class: 'copper' },
+    'PL=F': { text: 'PL', class: 'platinum' },
+    'PA=F': { text: 'PA', class: 'palladium' },
+  };
+
+   private badgeByName: Record<string, { text: string; class: string }> = {
+    'Gold': { text: 'GC', class: 'gold' },
+    'Silver': { text: 'SI', class: 'silver' },
+    'Crude Oil WTI': { text: 'CL', class: 'oil' },
+    'Brent Crude': { text: 'BZ', class: 'brent' },
+    'Natural Gas': { text: 'NG', class: 'gas' },
+    'Copper': { text: 'HG', class: 'copper' },
+    'Platinum': { text: 'PL', class: 'platinum' },
+    'Palladium': { text: 'PA', class: 'palladium' },
+  };
 
   returnCards = [
     { time: '30 Seconds', return: '20.00%', min: 5000, max: 20000, returnPercent: 20, seconds: 30 },
@@ -114,8 +145,12 @@ export class CommodityTrading {
     private dashboardData: DashboardData
   ) { }
 
+   ngOnInit(): void {
+    this.loadCommoditiesFromLocalStorage();
+  }
+
   ngAfterViewInit(): void {
-    this.currentSymbol = this.symbol;
+    this.currentSymbol = this.selectedCommodity?.value ?? this.symbol;
     this.currentInterval = this.interval;
     this.loadTradingViewScript();
 
@@ -129,6 +164,25 @@ export class CommodityTrading {
 
     // Fetch balance from API
     this.fetchUserData();
+  }
+
+   loadCommoditiesFromLocalStorage(): void {
+    const raw = localStorage.getItem('tableData_commodities');
+    if (!raw) return;
+    try {
+      this.commodities = JSON.parse(raw).map((p: any) => ({
+        ...p,
+        value: this.tvByName[p.name] ?? this.symbol,
+        badge: this.commodityBadge[p.symbol] ?? this.badgeByName[p.name],
+      }));
+      this.selectedCommodity =
+        this.commodities.find((c) => c.name === 'Gold') ?? this.commodities[0];
+      if (this.selectedCommodity) {
+        this.currentSymbol = this.selectedCommodity.value;
+      }
+    } catch {
+      this.commodities = [];
+    }
   }
 
   private getUserEmail(): string {
@@ -456,8 +510,8 @@ export class CommodityTrading {
 
   // Helper method to extract coin name from symbol
   private getCoinName(symbol: string): string {
-    const coin = this.coins.find(c => c.value === symbol);
-    if (coin) return coin.label;
+    const item = this.commodities.find((c) => c.value === symbol);
+    if (item?.name) return item.name;
     const parts = symbol.split(':');
     return parts.length > 1 ? parts[1] : symbol;
   }
