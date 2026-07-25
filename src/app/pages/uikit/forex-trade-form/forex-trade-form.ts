@@ -11,12 +11,13 @@ import { RouterModule, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DashboardData } from '@/pages/service/dashboard-data';
 import { ForexTrade } from '@/pages/service/forex-trade';
+import { SelectModule } from 'primeng/select';
 
 declare const TradingView: any;
 
 @Component({
   selector: 'app-forex-trade-form',
-  imports: [CommonModule, FormsModule, ButtonModule, RippleModule, InputTextModule, InputNumberModule, DialogModule, ProgressBarModule, RouterModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, ButtonModule, RippleModule, InputTextModule, InputNumberModule, DialogModule, ProgressBarModule, RouterModule, TranslatePipe, SelectModule],
   templateUrl: './forex-trade-form.html',
   styleUrl: './forex-trade-form.scss'
 })
@@ -26,7 +27,7 @@ export class ForexTradeForm {
   interval: string = 'D';
   theme: 'light' | 'dark' = 'dark';
   height: number = 300;
-  title: string = 'Forex Trade Chart';
+  title: string = 'Forex';
 
   containerId: string = `tradingview_${Math.random().toString(36).substring(2, 11)}`;
   private scriptLoaded: boolean = false;
@@ -35,16 +36,7 @@ export class ForexTradeForm {
   currentInterval: string = this.interval;
   showDisclaimerDialog: boolean = false;
 
-  forexPairs = [
-    { base: 'EUR', quote: 'USD', value: 'FX:EURUSD' },
-    { base: 'GBP', quote: 'USD', value: 'FX:GBPUSD' },
-    { base: 'USD', quote: 'JPY', value: 'FX:USDJPY' },
-    { base: 'AUD', quote: 'USD', value: 'FX:AUDUSD' },
-    { base: 'USD', quote: 'CAD', value: 'FX:USDCAD' },
-    { base: 'USD', quote: 'CHF', value: 'FX:USDCHF' },
-    { base: 'NZD', quote: 'USD', value: 'FX:NZDUSD' },
-    { base: 'EUR', quote: 'GBP', value: 'FX:EURGBP' }
-  ];
+  forexPairs: any[] = [];
 
   // ===== Trade form =====
   selectedCardIndex: number = 0;
@@ -86,6 +78,8 @@ export class ForexTradeForm {
     returnAmount: number;
   } | null = null;
 
+  selectedPair: any = null;
+
   constructor(
     private router: Router,
     private ngZone: NgZone,
@@ -94,6 +88,11 @@ export class ForexTradeForm {
   ) {}
 
   // ===== Lifecycle =====
+
+   ngOnInit(): void {
+    this.loadForexPairsFromLocalStorage();
+  }
+
   ngAfterViewInit(): void {
     this.currentSymbol = this.symbol;
     this.currentInterval = this.interval;
@@ -142,6 +141,24 @@ export class ForexTradeForm {
           console.error('Error fetching user data:', err);
         }
       });
+    }
+  }
+
+   loadForexPairsFromLocalStorage(): void {
+    const raw = localStorage.getItem('tableData_forex');
+    if (!raw) return;
+    try {
+      this.forexPairs = JSON.parse(raw).map((p: any) => ({
+        ...p,
+        value: 'FX:' + p.name.replace('/', ''),
+      }));
+      this.selectedPair =
+        this.forexPairs.find((p) => p.name === 'EUR/USD') ?? this.forexPairs[0];
+      if (this.selectedPair) {
+        this.currentSymbol = this.selectedPair.value;
+      }
+    } catch {
+      this.forexPairs = [];
     }
   }
 

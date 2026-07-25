@@ -23,28 +23,33 @@
 <div class="mb-4">
     <div class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 mb-2 flex items-center gap-1.5">
         <i class="pi pi-globe text-sky-500"></i>
-        <span>{{ 'Currency Pairs' | translate }}</span>
+        <span>{{ 'Forex Markets' | translate }}</span>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-        <button
-            *ngFor="let pair of forexPairs"
-            type="button"
-            (click)="changeSymbol(pair.value)"
-            [class]="currentSymbol === pair.value
-                ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 shadow-sm'
-                : 'border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 text-surface-700 dark:text-surface-200 hover:border-sky-300 dark:hover:border-sky-700'"
-            class="flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 sm:py-3
-                   transition-all duration-200 cursor-pointer min-h-[44px]">
-            <span class="text-xs sm:text-sm font-semibold tracking-wide">{{ pair.base }}</span>
-            <span
-                [class]="currentSymbol === pair.value
-                    ? 'bg-sky-400/60 dark:bg-sky-400/40'
-                    : 'bg-surface-300 dark:bg-surface-600'"
-                class="w-px h-4 sm:h-5 shrink-0"></span>
-            <span class="text-xs sm:text-sm font-semibold tracking-wide">{{ pair.quote }}</span>
-        </button>
-    </div>
+    <p-select
+      [options]="forexPairs"
+      [(ngModel)]="selectedPair"
+      optionLabel="name"
+      dataKey="name"
+      [filter]="true"
+      filterBy="name"
+      [showClear]="false"
+      (ngModelChange)="changeSymbol($event?.value)"
+      styleClass="w-full">
+      <ng-template #selectedItem let-pair>
+        <div class="flex items-center gap-2">
+          <img *ngFor="let code of pair.flags" [src]="'https://flagcdn.com/20x15/' + code + '.png'" width="20" height="15" [alt]="code" />
+          <span class="font-semibold">{{ pair.name }}</span>
+        </div>
+      </ng-template>
+      <ng-template #item let-pair>
+        <div class="flex items-center gap-2">
+          <img *ngFor="let code of pair.flags" [src]="'https://flagcdn.com/20x15/' + code + '.png'" width="20" height="15" [alt]="code" />
+          <span>{{ pair.name }}</span>
+        </div>
+      </ng-template>
+    </p-select>
+   
 </div>
     
     <div [id]="containerId" [style.height.px]="height" class="w-full overflow-hidden rounded-lg" style="min-height: 250px;" [style.min-height.px]="250"></div>
