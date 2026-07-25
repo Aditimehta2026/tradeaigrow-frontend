@@ -63,7 +63,7 @@ export class AppMenu {
                 routerLink: ['/pages'],
                 items: [
                     {
-                        label: 'Start AI Trade',      // Sub-menu label
+                        label: 'AI Trade',      // Sub-menu label
                         icon: 'pi pi-fw pi-play',     // Icon to indicate starting action
                         items: [
                             {
@@ -118,7 +118,7 @@ export class AppMenu {
                 routerLink: ['/pages'],
                 items: [
                     {
-                        label: 'Start MultiAsset Trade',
+                        label: 'MultiAsset Trade',
                         icon: 'pi pi-fw pi-globe',
                         items: [
                             {
