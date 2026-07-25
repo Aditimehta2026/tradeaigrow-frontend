@@ -37,7 +37,7 @@ export class Support {
     }
   }
   openTelegram() {
-    const telegramUsername = 'Signalswaps';
+    const telegramUsername = 'Tradeaigrowsupport';
     const message = encodeURIComponent('Hello, I need support.');
     const url = `https://t.me/${telegramUsername}?text=${message}`;
     window.open(url, '_blank', 'noopener,noreferrer');
