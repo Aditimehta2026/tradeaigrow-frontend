@@ -1,19 +1,66 @@
 <div class="card mb-8 p-4 md:p-6">
-    <div class="font-semibold text-lg md:text-xl mb-4">{{ title }}</div>
-    
-    <!-- Coin Selection Buttons -->
-    <div class="flex gap-2 mb-4 flex-wrap">
-        <button
-            *ngFor="let coin of coins"
+    <div class="flex items-center justify-between gap-2 mb-4">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="font-semibold text-base sm:text-lg md:text-xl truncate">
+            {{ title | translate }}
+          </div>
+          <button
             type="button"
-            pButton
-            pRipple
-            [label]="coin.label"
-            [class]="currentSymbol === coin.value ? 'p-button-primary' : 'p-button-outlined'"
-            (click)="changeSymbol(coin.value)"
-            class="text-xs md:text-sm flex-1 min-w-[60px] md:flex-none">
-        </button>
-    </div>
+            class="shrink-0 p-1 rounded-full text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-colors"
+            (click)="showDisclaimerDialog = true"
+            [attr.aria-label]="'Risk disclaimer' | translate">
+            <i class="pi pi-exclamation-circle text-base sm:text-lg"></i>
+          </button>
+        </div>
+      
+        <p-button
+          [label]="'History' | translate"
+          severity="help"
+          icon="pi pi-history"
+          styleClass="shrink-0 whitespace-nowrap"
+          routerLink="/app/page/spot-trade-history" />
+      </div>
+    
+    <div class="mb-4">
+        <div class="text-xs sm:text-sm text-surface-500 dark:text-surface-400 mb-2 flex items-center gap-1.5">
+          <span>{{ 'Crypto Markets' | translate }}</span>
+        </div>
+      
+        <p-select
+          [options]="cryptoCoins"
+          [(ngModel)]="selectedCoin"
+          optionLabel="name"
+          dataKey="symbol"
+          [filter]="true"
+          filterBy="name,symbol"
+          [showClear]="false"
+          (ngModelChange)="changeSymbol($event?.value)"
+          styleClass="w-full">
+      
+          <ng-template #selectedItem let-coin>
+            <div class="flex items-center gap-2 min-w-0">
+              <img
+                [src]="coin.image"
+                class="w-7 h-7 rounded-full object-cover shrink-0 ring-1 ring-surface-200 dark:ring-surface-600"
+                [alt]="coin.name" />
+              <div class="flex flex-col leading-tight min-w-0">
+                <span class="font-semibold text-sm truncate">{{ coin.name }}</span>
+                <span class="text-[10px] text-surface-500 uppercase">{{ coin.symbol }}</span>
+              </div>
+            </div>
+          </ng-template>
+      
+          <ng-template #item let-coin>
+            <div class="flex items-center gap-2 py-0.5">
+              <img [src]="coin.image" class="w-8 h-8 rounded-full object-cover shrink-0" [alt]="coin.name" />
+              <div class="flex flex-col leading-tight">
+                <span class="font-semibold text-sm">{{ coin.name }}</span>
+                <span class="text-xs text-surface-500 uppercase">{{ coin.symbol }}</span>
+              </div>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
     
     <div [id]="containerId" [style.height.px]="height" class="w-full overflow-hidden rounded-lg" style="min-height: 250px;" [style.min-height.px]="250"></div>
     
@@ -232,6 +279,46 @@
                 (click)="onMoveToDashboard()"
                 class="p-button-primary w-full sm:w-auto text-sm md:text-base">
             </button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Risk Disclaimer Dialog -->
+<p-dialog
+    [(visible)]="showDisclaimerDialog"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+    [style]="{ width: '90%', maxWidth: '420px' }"
+    styleClass="p-fluid">
+
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <i class="pi pi-exclamation-circle text-amber-500 text-lg sm:text-xl"></i>
+            <span class="font-semibold text-base sm:text-lg">Disclaimer</span>
+        </div>
+    </ng-template>
+
+    <div class="flex flex-col gap-3 sm:gap-4">
+        <div
+            class="rounded-lg border border-amber-200 dark:border-amber-800
+                   bg-amber-50 dark:bg-amber-900/20 p-3 sm:p-4">
+            <p class="m-0 text-sm sm:text-base leading-relaxed text-surface-700 dark:text-surface-300">
+                This platform does not guarantee profits. All returns depend on market conditions,
+                and losses are possible. Please trade responsibly.
+            </p>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end w-full">
+            <p-button
+                label="Got it"
+                icon="pi pi-check"
+                severity="warn"
+                styleClass="w-full sm:w-auto"
+                (onClick)="showDisclaimerDialog = false" />
         </div>
     </ng-template>
 </p-dialog>

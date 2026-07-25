@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnDestroy, NgZone } from '@angular/core';
+import { Component, Input, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -11,12 +11,15 @@ import { Router, RouterModule } from '@angular/router';
 import { DashboardData } from '../../service/dashboard-data';
 import { Subscription } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SelectModule } from 'primeng/select';
 
 declare const TradingView: any;
 
 @Component({
   selector: 'app-spot-trade',
-  imports: [TranslatePipe,CommonModule, FormsModule, ButtonModule, RippleModule, InputTextModule, InputNumberModule, DialogModule, ProgressBarModule, RouterModule],
+  imports: [TranslatePipe,CommonModule, FormsModule, ButtonModule,
+     RippleModule, InputTextModule, InputNumberModule, DialogModule,
+      ProgressBarModule, RouterModule,SelectModule],
   templateUrl: './spot-trade.html',
   styleUrl: './spot-trade.scss'
 })
@@ -25,7 +28,7 @@ export class SpotTrade {
   @Input() interval: string = 'D'; // D, W, M, 1, 5, 15, 30, 60, 240
   @Input() theme: 'light' | 'dark' = 'dark';
   @Input() height: number = 300;
-  @Input() title: string = 'Trading Chart';
+  @Input() title: string = 'Crypto';
 
   containerId: string = `tradingview_${Math.random().toString(36).substring(2, 11)}`;
   private scriptLoaded: boolean = false;
@@ -73,16 +76,8 @@ export class SpotTrade {
   currentBalance: number = 0;
   private userDataSubscription?: Subscription;
 
-  coins = [
-      { label: 'BTC', value: 'BINANCE:BTCUSDT' },
-      { label: 'ETH', value: 'BINANCE:ETHUSDT' },
-      { label: 'LTC', value: 'BINANCE:LTCUSDT' },
-      { label: 'SUI', value: 'BINANCE:SUIUSDT' },
-      { label: 'BNB', value: 'BINANCE:BNBUSDT' },
-      { label: 'SOL', value: 'BINANCE:SOLUSDT' },
-      { label: 'XRP', value: 'BINANCE:XRPUSDT' },
-      { label: 'DOGE', value: 'BINANCE:DOGEUSDT' }
-  ];
+  private allowedSpotSymbols = new Set(['btc', 'eth', 'ltc', 'sui', 'bnb', 'sol', 'xrp', 'doge']);
+
 
   returnCards = [
       { time: '30 Seconds', return: '5.00%', min: 200, max: 4000, returnPercent: 5, seconds: 30 },
@@ -101,14 +96,22 @@ export class SpotTrade {
   // button
   isTradeButtonDisabled: boolean =true;
 
+    showDisclaimerDialog: boolean = false;
+  selectedCoin: any = null;
+  cryptoCoins: any[] = [];
+
   constructor(
       private router: Router,
       private ngZone: NgZone,
       private dashboardData: DashboardData
   ) { }
 
+    ngOnInit(): void {
+    this.loadCryptoFromLocalStorage();
+  }
+
   ngAfterViewInit(): void {
-      this.currentSymbol = this.symbol;
+      this.currentSymbol = this.selectedCoin?.value ?? this.symbol;
       this.currentInterval = this.interval;
       this.loadTradingViewScript();
 
@@ -168,6 +171,27 @@ export class SpotTrade {
       return symbol;
   }
 
+  loadCryptoFromLocalStorage(): void {
+    const raw = localStorage.getItem('tableData_crypto');
+    if (!raw) return;
+    try {
+      this.cryptoCoins = JSON.parse(raw)
+        .filter((p: any) => this.allowedSpotSymbols.has(String(p.symbol).toLowerCase()))
+        .map((p: any) => ({
+          ...p,
+          value: 'BINANCE:' + String(p.symbol).toUpperCase() + 'USDT',
+        }));
+      this.selectedCoin =
+        this.cryptoCoins.find((c) => c.symbol?.toLowerCase() === 'btc') ??
+        this.cryptoCoins[0];
+      if (this.selectedCoin) {
+        this.currentSymbol = this.selectedCoin.value;
+      }
+    } catch {
+      this.cryptoCoins = [];
+    }
+  }
+
   // Helper method for Math.round in template
   round(value: number): number {
       return Math.round(value);
@@ -199,8 +223,6 @@ export class SpotTrade {
   onAmountChange(): void {
 
       this.tradeButtonValidation();
-
-
       this.amountError = '';
       const amountNum = parseFloat(this.userEnteramount);
       const selectedCard = this.returnCards[this.selectedCardIndex];
@@ -454,7 +476,10 @@ export class SpotTrade {
 
   // Helper method to extract coin name from symbol
   private getCoinName(symbol: string): string {
-      // Convert "BINANCE:BTCUSDT" to "BTC"
+      const item = this.cryptoCoins.find((c) => c.value === symbol);
+      if (item?.symbol) {
+          return String(item.symbol).toUpperCase();
+      }
       const parts = symbol.split(':');
       if (parts.length > 1) {
           const pair = parts[1];
