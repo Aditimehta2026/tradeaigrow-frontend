@@ -131,11 +131,6 @@ export class AppMenu {
                                 label: 'Commodity Trading',
                                 icon: 'pi pi-fw pi-chart-line',
                                 routerLink: ['/app/page/commodity-trading']
-                            },
-                            {
-                                label: 'Trade History',
-                                icon: 'pi pi-fw pi-clock',
-                                routerLink: ['/app/page/multiasset-trade-history']
                             }
                         ]
                     }
