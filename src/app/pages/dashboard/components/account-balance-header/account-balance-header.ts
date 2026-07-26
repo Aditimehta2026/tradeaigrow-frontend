@@ -66,7 +66,11 @@ export class AccountBalanceHeader {
   constructor(private dashboardData: DashboardData, private router: Router) { }
 
   ngOnInit(): void {
-    // Subscribe to user data from API via BehaviorSubject
+    this.getUserData();
+  }
+
+  getUserData(){
+        // Subscribe to user data from API via BehaviorSubject
     this.subscription = this.dashboardData.userData$.subscribe((userData) => {
       if (userData) {
         // Extract dashboardData from the API response
@@ -82,6 +86,14 @@ export class AccountBalanceHeader {
   }
   goTo(path: string): void {
     this.router.navigate([path]);
+  }
+  get statCardsView() {
+    return [
+      { key: 'balance', label: 'Balance', value: this.balance, bgColor: '#10B981', icon: 'pi-wallet' },
+      { key: 'totalDeposit', label: 'Total deposit', value: this.totalDeposit, bgColor: '#99A1AF', icon: 'pi-arrow-down-left' },
+      { key: 'totalWithdrawal', label: 'Total withdrawal', value: this.totalWithdrawal, bgColor: '#4A5565', icon: 'pi-arrow-up-right' },
+      { key: 'todayPnl', label: 'Today PnL', value: this.todayPnl, bgColor: '#FFAA40', icon: 'pi-chart-bar' },
+    ];
   }
   ngOnDestroy(): void {
     if (this.subscription) {

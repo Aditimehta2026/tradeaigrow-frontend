@@ -1,37 +1,35 @@
-<div class="col-span-12">
-    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 px-1 sm:px-2 py-1">
-      <div>
-        <span class="block text-[11px] sm:text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400 font-semibold mb-1.5">
-          {{ 'EST total value (USDT)' | translate }}
-        </span>
-  
-        <div class="text-surface-900 dark:text-surface-0 font-bold text-3xl sm:text-5xl leading-tight">
-          ${{ balance | number: '1.0-2' }}
+<div class="col-span-12 flex flex-col gap-3 sm:gap-4">
+  <!-- Row 1: Welcome only -->
+  <div
+    class="rounded-2xl bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 shadow-sm p-4 sm:p-5">
+    <p class="m-0 text-sm sm:text-base text-surface-700 dark:text-surface-200 leading-relaxed">
+      Hello! Welcome to
+      <span class="font-semibold text-emerald-500 dark:text-emerald-400">TradeAiGrow</span>!
+      Before you start, please complete your profile so we can know you better.
+    </p>
+  </div>
+
+  <!-- Row 2: Stat cards only -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    @for (card of statCardsView; track card.key) {
+    <div
+      class="relative rounded-2xl p-5 sm:p-6 min-h-[112px] sm:min-h-[128px] overflow-hidden flex flex-col justify-end"
+      [style.background-color]="card.bgColor">
+      <i class="pi absolute top-4 right-5 sm:top-4 sm:right-6 text-white/95 shrink-0" style="font-size: 1.5rem;"
+        [ngClass]="card.icon"></i>
+      <div class="min-w-0 pr-10 sm:pr-11">
+        <div class="text-base sm:text-lg font-semibold text-white/95 truncate">
+          {{ card.label | translate }}
         </div>
-  
-        <div class="mt-1.5 flex items-center gap-2 text-xs sm:text-sm">
-          <span class="text-surface-500 dark:text-surface-400">{{ 'Last trade:' | translate }}</span>
-          <span
-            class="inline-flex items-center gap-1 font-semibold"
-            [ngClass]="todayGain >= 0
-              ? 'text-emerald-600 dark:text-emerald-400'
-              : 'text-red-600 dark:text-red-400'">
-            <i class="pi" [ngClass]="todayGain >= 0 ? 'pi-arrow-up-right' : 'pi-arrow-down-right'"></i>
-            {{ todayGain >= 0 ? '+' : '-' }}${{ (todayGain < 0 ? -todayGain : todayGain) | number: '1.0-2' }}
-          </span>
+        <div class="text-2xl sm:text-3xl font-bold text-white mt-2 sm:mt-2.5 truncate">
+          @if (card.key === 'todayPnl') {
+          {{ todayPnl >= 0 ? '+' : '-' }}${{ (todayPnl < 0 ? -todayPnl : todayPnl) | number: '1.0-2' }} } @else { ${{
+            card.value | number: '1.0-2' }} } </div>
         </div>
       </div>
-  
-      <button
-        pButton
-        type="button"
-        label="{{ 'Deposit' | translate }}"
-        icon="pi pi-plus"
-        routerLink="/app/page/deposit"
-        styleClass="w-full sm:w-auto h-11 sm:h-14 px-4 sm:px-6 text-sm sm:text-lg font-semibold">
-      </button>
-    </div>
+      }
   </div>
+</div>
 
  <div class="col-span-12 mt-3">
     <h3 class="text-lg font-semibold mb-2">
