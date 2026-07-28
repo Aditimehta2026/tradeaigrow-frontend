@@ -1,58 +1,43 @@
-<div class="card mb-8!">
-    <div class="flex items-center justify-between mb-6">
-        <div class="font-semibold text-xl">{{ 'Features' | translate }}</div>
-    </div>
+<div class="mb-8">
+  <h3 class="text-lg sm:text-xl font-semibold text-surface-900 dark:text-surface-0 mb-3 sm:mb-4">
+    {{ 'Quick links' | translate }}
+  </h3>
 
-    <span class="block text-muted-color font-medium mb-4">{{ 'Support' | translate }}</span>
-    <ul class="p-0 mx-0 mt-0 mb-6 list-none"  (click)="goToSupport()">
-        <li class="flex items-center py-2 border-b border-surface">
-            <div class="w-12 h-12 flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-full mr-4 shrink-0">
-                <i class="pi pi-question-circle text-xl! text-blue-500"></i>
-            </div>
-            <span class="text-surface-900 dark:text-surface-0 leading-normal"
-                >
-                <span class="font-bold text-blue-600 hover:underline">
-                    {{ 'Click here' | translate }}
-                  </span>{{ 'to Get quick help and assistance whenever you need it.' | translate }}
-            </span>
-        </li>
-    </ul>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    @for (link of quickLinks; track link.labelKey) {
+      <div
+        pRipple
+        role="button"
+        tabindex="0"
+        (click)="link.action()"
+        (keydown.enter)="link.action()"
+        [class]="link.rippleClass"
+        class="group relative overflow-hidden rounded-2xl min-h-[120px] sm:min-h-[132px]
+               flex flex-col items-center justify-center gap-2 sm:gap-2.5 p-4 sm:p-5
+               cursor-pointer select-none text-center
+               bg-white dark:bg-surface-900
+               border border-surface-200 dark:border-surface-700
+               shadow-sm hover:shadow-md dark:shadow-none
+               transition-all duration-200
+               active:scale-[0.98] sm:hover:-translate-y-0.5">
 
-    <span class="block text-muted-color font-medium mb-4">{{ 'Deposit' | translate }}</span>
-    <ul class="p-0 m-0 list-none mb-6" (click)="goToDeposit()">
-        <li class="flex items-center py-2 border-b border-surface">
-            <div class="w-12 h-12 flex items-center justify-center bg-pink-100 dark:bg-pink-400/10 rounded-full mr-4 shrink-0">
-                <i class="pi pi-arrow-down text-xl! text-pink-500"></i>
-            </div>
-            <span class="text-surface-900 dark:text-surface-0 leading-normal"
-                ><span class="font-bold text-blue-600 hover:underline">
-                    {{ 'Click here' | translate }}
-                  </span> {{ 'to Easily add funds to your account in a secure way.' | translate }}
-            </span>
-        </li>
-    </ul>
-    <span class="block text-muted-color font-medium mb-4">{{ 'Events' | translate }}</span>
-    <ul class="p-0 m-0 list-none mb-6" (click)="goToEvents()">
-        <li class="flex items-center py-2 border-b border-surface">
-            <div class="w-12 h-12 flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-full mr-4 shrink-0">
-                <i class="pi pi-calendar text-xl! text-purple-500"></i>
-            </div>
-            <span class="text-surface-900 dark:text-surface-0 leading-normal"><span class="font-bold text-blue-600 hover:underline">
-                {{ 'Click here' | translate }}
-              </span> {{ 'to View and participate in upcoming activities and updates.' | translate }}</span>
-        </li>
-    </ul>
+        <div class="absolute inset-x-0 top-0 h-1" [ngClass]="link.topBar"></div>
 
-    <span class="block text-muted-color font-medium mb-4">{{ 'Withdraw' | translate }}</span>
-    <ul class="p-0 m-0 list-none" (click)="goToWithdraw()">
-        <li class="flex items-center py-2 border-b border-surface">
-            <div class="w-12 h-12 flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-full mr-4 shrink-0">
-                <i class="pi pi-arrow-up text-xl! text-green-500"></i>
-            </div>
-            <span class="text-surface-900 dark:text-surface-0 leading-normal"><span class="font-bold text-blue-600 hover:underline">
-                {{ 'Click here' | translate }}
-              </span> {{ 'to Safely transfer your money from your account to your bank or wallet.' | translate }}
-</span>
-        </li>
-    </ul>
+        <div
+          class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0
+                 ring-1 ring-surface-200/80 dark:ring-surface-600"
+          [ngClass]="link.iconBg">
+          <i class="pi" style="font-size: 1.3rem;" [ngClass]="link.icon"></i>
+        </div>
+
+        <span class="relative font-semibold text-sm sm:text-base text-surface-900 dark:text-surface-0">
+          {{ link.labelKey | translate }}
+        </span>
+
+        <span class="relative text-[10px] sm:text-xs text-muted-color leading-snug line-clamp-2 px-1">
+          {{ link.descKey | translate }}
+        </span>
+      </div>
+    }
+  </div>
 </div>
