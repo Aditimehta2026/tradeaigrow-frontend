@@ -76,7 +76,7 @@ export class SpotTrade {
   currentBalance: number = 0;
   private userDataSubscription?: Subscription;
 
-  private allowedSpotSymbols = new Set(['btc', 'eth', 'ltc', 'sui', 'bnb', 'sol', 'xrp', 'doge']);
+  private allowedSpotSymbols = new Set(['btc', 'eth', 'ltc', 'sui', 'bnb', 'sol', 'xrp', 'doge','usdt', 'usdc', 'trx']);
 
 
   returnCards = [
