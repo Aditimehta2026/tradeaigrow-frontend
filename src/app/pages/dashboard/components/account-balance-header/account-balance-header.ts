@@ -89,7 +89,7 @@ export class AccountBalanceHeader {
   }
   get statCardsView() {
     return [
-      { key: 'balance', label: 'Balance', value: this.balance, bgColor: '#10B981', icon: 'pi-wallet' },
+      { key: 'balance', label: 'Total balance', value: this.balance, bgColor: '#10B981', icon: 'pi-wallet' },
       { key: 'totalDeposit', label: 'Total deposit', value: this.totalDeposit, bgColor: '#99A1AF', icon: 'pi-arrow-down-left' },
       { key: 'totalWithdrawal', label: 'Total withdrawal', value: this.totalWithdrawal, bgColor: '#4A5565', icon: 'pi-arrow-up-right' },
       { key: 'todayPnl', label: 'Today PnL', value: this.todayPnl, bgColor: '#FFAA40', icon: 'pi-chart-bar' },
