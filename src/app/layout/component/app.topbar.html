@@ -149,14 +149,14 @@
                     <button
                         type="button"
                         class="profile-drawer-lang-trigger"
-                        (click)="openNewsDialog()">
+                        (click)="openUpdatesDialog()">
                         <span class="profile-drawer-action-icon">
                             <i class="pi pi-bell"></i>
                         </span>
                         <div class="text-left min-w-0 flex-1">
                             <div class="text-sm font-medium text-surface-900 dark:text-surface-0">{{ 'News' | translate }}</div>
                         </div>
-                        <span class="profile-drawer-news-badge">{{ newsItems.length }}</span>
+                        <span class="profile-drawer-news-badge">{{ updateItems.length }}</span>
                         <i class="pi pi-angle-right text-surface-400 shrink-0"></i>
                     </button>
                 </li>
@@ -216,7 +216,7 @@
 </p-dialog>
 
 <p-dialog
-    [(visible)]="showNewsDialog"
+    [(visible)]="showUpdatesDialog"
     [modal]="true"
     [draggable]="false"
     [resizable]="false"
@@ -235,7 +235,7 @@
     <div class="news-dialog-greeting">{{ 'Dear clients!' | translate }}</div>
 
     <div class="news-dialog-list">
-        @for (item of newsItems; track item.id) {
+        @for (item of updateItems; track item.id) {
             <article class="news-card">
                 <div class="news-card-meta">
                     <span class="news-card-tag">{{ item.tag }}</span>

@@ -75,12 +75,11 @@ export class AppTopbar {
     verifyErrorMessage: string = '';
     selectedLang = 'en';
     showLanguageDialog = false;
-    showNewsDialog = false;
+    showUpdatesDialog = false;
 
-    readonly newsItems: any[] = [
+    readonly updateItems: any[] = [
         {
             id: 'tradeaigrow-arbitration',
-            date: '28 June 2026',
             tag: 'Arbitration',
             title: 'Synchronous inter-exchange service is going live',
             paragraphs: [
@@ -89,12 +88,11 @@ export class AppTopbar {
                 'We are finalizing the setup for TradeAiGrow partner cryptocurrency exchanges and adding external liquidity providers to exchanges in South America and Africa.',
                 'Within a few days, all our clients will be able to activate arbitration operations and begin to consistently receive arbitration profits through TradeAiGrow.',
                 'Now you can successfully register and get acquainted with the TradeAiGrow platform.',
-                'Stay tuned for news and updates. The TradeAiGrow team is always happy to help. Thank you for your participation.'
+                'Stay tuned for updates. The TradeAiGrow team is always happy to help. Thank you for your participation.'
             ]
         },
         {
             id: 'spot-trade',
-            date: '22 June 2026',
             tag: 'Spot Trade',
             title: 'Spot trading with real-time market data',
             paragraphs: [
@@ -105,7 +103,6 @@ export class AppTopbar {
         },
         {
             id: 'forex',
-            date: '18 June 2026',
             tag: 'Forex',
             title: 'Forex desk expanded for UK and US regions',
             paragraphs: [
@@ -116,7 +113,6 @@ export class AppTopbar {
         },
         {
             id: 'commodity',
-            date: '12 June 2026',
             tag: 'Commodity',
             title: 'Commodity markets: gold, oil, and metals',
             paragraphs: [
@@ -127,7 +123,6 @@ export class AppTopbar {
         },
         {
             id: 'ai-features',
-            date: '5 June 2026',
             tag: 'AI',
             title: 'AI-powered insights across the platform',
             paragraphs: [
@@ -346,12 +341,12 @@ export class AppTopbar {
         this.closeLanguageDialog();
     }
 
-    openNewsDialog(): void {
-        this.showNewsDialog = true;
+    openUpdatesDialog(): void {
+        this.showUpdatesDialog = true;
     }
 
-    closeNewsDialog(): void {
-        this.showNewsDialog = false;
+    closeUpdatesDialog(): void {
+        this.showUpdatesDialog = false;
     }
     get languages() {
         return this.languageService.languages;
