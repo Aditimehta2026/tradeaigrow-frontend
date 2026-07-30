@@ -81,6 +81,7 @@ export class AccountBalanceHeader {
         this.totalWithdrawal = Number(dashboardData?.totalWithdrawal ?? 0);
         this.todayPnl = Number(dashboardData?.todayPnl ?? 0);
         this.todayGain = Number(dashboardData?.todayGain ?? 0);
+        localStorage.setItem('balance', this.balance.toString());
       }
     });
   }

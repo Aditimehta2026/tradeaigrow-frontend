@@ -74,6 +74,70 @@ export class AppTopbar {
     showVerifyErrorDialog: boolean = false;
     verifyErrorMessage: string = '';
     selectedLang = 'en';
+    showLanguageDialog = false;
+    showNewsDialog = false;
+
+    readonly newsItems: any[] = [
+        {
+            id: 'tradeaigrow-arbitration',
+            date: '28 June 2026',
+            tag: 'Arbitration',
+            title: 'Synchronous inter-exchange service is going live',
+            paragraphs: [
+                'Welcome to the TradeAiGrow synchronous inter-exchange service!',
+                'All TradeAiGrow systems are ready to conduct secure transactions.',
+                'We are finalizing the setup for TradeAiGrow partner cryptocurrency exchanges and adding external liquidity providers to exchanges in South America and Africa.',
+                'Within a few days, all our clients will be able to activate arbitration operations and begin to consistently receive arbitration profits through TradeAiGrow.',
+                'Now you can successfully register and get acquainted with the TradeAiGrow platform.',
+                'Stay tuned for news and updates. The TradeAiGrow team is always happy to help. Thank you for your participation.'
+            ]
+        },
+        {
+            id: 'spot-trade',
+            date: '22 June 2026',
+            tag: 'Spot Trade',
+            title: 'Spot trading with real-time market data',
+            paragraphs: [
+                'TradeAiGrow Spot Trade is now fully integrated with live price feeds across major crypto pairs.',
+                'Execute market and limit orders with low latency, track open positions, and review your trade history from one unified dashboard.',
+                'New chart tools and order-book depth views help you make faster decisions in volatile markets.'
+            ]
+        },
+        {
+            id: 'forex',
+            date: '18 June 2026',
+            tag: 'Forex',
+            title: 'Forex desk expanded for UK and US regions',
+            paragraphs: [
+                'Our Forex module now supports extended sessions for GBP, EUR, and USD pairs with region-aware pricing.',
+                'Switch between UK and US market profiles in your account settings to align spreads and session windows with your trading strategy.',
+                'Historical performance charts and pip-based P&L summaries are available on the dashboard.'
+            ]
+        },
+        {
+            id: 'commodity',
+            date: '12 June 2026',
+            tag: 'Commodity',
+            title: 'Commodity markets: gold, oil, and metals',
+            paragraphs: [
+                'Commodity trading is live on TradeAiGrow with curated watchlists for precious metals, energy, and agricultural contracts.',
+                'Monitor spot and futures-style instruments, set price alerts, and diversify your portfolio beyond digital assets.',
+                'Risk controls and margin summaries are displayed before every order confirmation.'
+            ]
+        },
+        {
+            id: 'ai-features',
+            date: '5 June 2026',
+            tag: 'AI',
+            title: 'AI-powered insights across the platform',
+            paragraphs: [
+                'TradeAiGrow AI analyzes market trends, volatility, and cross-asset correlations to surface actionable signals on your dashboard.',
+                'Smart summaries highlight opportunities in Spot, Forex, and Commodity modules while respecting your risk preferences.',
+                'More AI-assisted tools—including portfolio rebalancing suggestions—will roll out throughout the summer.'
+            ]
+        }
+    ];
+
 
     constructor(public layoutService: LayoutService,
         public confirmationService: ConfirmationService, public router: Router, public dashboardData: DashboardData,public languageService: LanguageService) { }
@@ -91,10 +155,12 @@ export class AppTopbar {
             const parsed = JSON.parse(raw);
             const user = parsed?.data?.user ?? parsed;
 
-            this.userName = user?.username ?? '';
+            this.userName = user?.name ?? '';
             this.userEmail = user?.email ?? '';
             this.userUid = user?.uid ?? user?._id ?? user?.id ?? '';
-            this.balance = user?.balance != null ? String(user.balance) : '0.00';
+            this.balance = localStorage.getItem('balance') ?? '0.00';
+            console.log(this.userName,this.balance);
+            
         } catch (error) {
             console.error('Error parsing user data from localStorage:', error);
             this.userName = '';
@@ -266,9 +332,34 @@ export class AppTopbar {
         this.languageService.setLanguage(lang);
         this.selectedLang = lang;
     }
+
+    openLanguageDialog(): void {
+        this.showLanguageDialog = true;
+    }
+
+    closeLanguageDialog(): void {
+        this.showLanguageDialog = false;
+    }
+
+    selectLanguage(lang: string): void {
+        this.changeLanguage(lang);
+        this.closeLanguageDialog();
+    }
+
+    openNewsDialog(): void {
+        this.showNewsDialog = true;
+    }
+
+    closeNewsDialog(): void {
+        this.showNewsDialog = false;
+    }
     get languages() {
         return this.languageService.languages;
       }
+    
+      get currentLanguageLabel(): string {
+        return this.languages.find((lang) => lang.value === this.selectedLang)?.label ?? 'English';
+    }
 
 
 }
