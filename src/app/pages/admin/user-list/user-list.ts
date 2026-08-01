@@ -37,6 +37,7 @@ export class UserList implements OnInit {
   users: any[] = [];
   isLoading = false;
   errorMessage = '';
+  searchQuery = '';
 
   showEditDialog = false;
   showDeleteDialog = false;
@@ -109,5 +110,18 @@ export class UserList implements OnInit {
 
   getVerifiedSeverity(isVerified?: boolean): 'success' | 'danger' {
     return isVerified ? 'success' : 'danger';
+  }
+
+  get filteredUsers(): any[] {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) {
+      return this.users;
+    }
+
+    return this.users.filter((user) => {
+      const email = (user.email || '').toLowerCase();
+      const username = (user.username || '').toLowerCase();
+      return email.includes(query) || username.includes(query);
+    });
   }
 }

@@ -1,81 +1,163 @@
 <div class="card mb-8 p-4 md:p-6">
-  <div class="flex items-center justify-between mb-5">
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-5">
     <div>
       <h2 class="text-xl md:text-2xl font-semibold m-0">{{ 'User List' | translate }}</h2>
       <p class="text-sm text-surface-500 dark:text-surface-400 mt-1 mb-0">
         {{ 'All registered users' | translate }}
       </p>
     </div>
-    <span class="text-sm text-surface-500">{{ users.length }} {{ 'records' | translate }}</span>
+    <span class="text-sm text-surface-500">{{ filteredUsers.length }} {{ 'records' | translate }}</span>
+  </div>
+
+  <div *ngIf="!isLoading && users.length > 0" class="mb-4">
+    <input
+      pInputText
+      type="text"
+      [(ngModel)]="searchQuery"
+      [placeholder]="'Search email or username' | translate"
+      class="w-full"
+    />
   </div>
 
   <div *ngIf="errorMessage" class="mb-4 p-3 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
     {{ errorMessage }}
   </div>
 
-  <p-table
-    *ngIf="!isLoading && users.length > 0"
-    [value]="users"
-    [paginator]="true"
-    [rows]="10"
-    [rowsPerPageOptions]="[10, 25, 50]"
-    responsiveLayout="scroll"
-    [styleClass]="'p-datatable-sm'"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>{{ 'Email' | translate }}</th>
-        <th>{{ 'Username' | translate }}</th>
-        <th>{{ 'Role' | translate }}</th>
-        <th>{{ 'Balance' | translate }}</th>
-        <th>{{ 'Total Deposit' | translate }}</th>
-        <th>{{ 'Total Withdrawal' | translate }}</th>
-        <th>{{ 'Today PnL' | translate }}</th>
-        <th>{{ 'Verified' | translate }}</th>
-        <th style="width: 8rem">{{ 'Actions' | translate }}</th>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="body" let-user>
-      <tr>
-        <td>{{ user.email }}</td>
-        <td>{{ user.username || '-' }}</td>
-        <td>
+  <!-- Mobile: cards -->
+  <div class="space-y-4 md:hidden" *ngIf="!isLoading && filteredUsers.length > 0">
+    <div
+      *ngFor="let user of filteredUsers"
+      class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-4 shadow-sm"
+    >
+      <div class="flex items-start justify-between gap-3 mb-3">
+        <div class="min-w-0 flex-1">
+          <p class="font-semibold text-base truncate m-0">{{ user.email }}</p>
+          <p class="text-sm text-surface-500 dark:text-surface-400 mt-1 mb-0 truncate">
+            {{ user.username || '-' }}
+          </p>
+        </div>
+        <div class="flex flex-col items-end gap-1 shrink-0">
           <p-tag [value]="user.role || 'user'" [severity]="getRoleSeverity(user.role)" />
-        </td>
-        <td>{{ user.balance | currency:'USD':'symbol':'1.2-2' }}</td>
-        <td>{{ user.totalDeposit | currency:'USD':'symbol':'1.2-2' }}</td>
-        <td>{{ user.totalWithdrawal | currency:'USD':'symbol':'1.2-2' }}</td>
-        <td>{{ user.todayPnl | currency:'USD':'symbol':'1.2-2' }}</td>
-        <td>
           <p-tag
             [value]="user.isVerified ? ('Yes' | translate) : ('No' | translate)"
             [severity]="getVerifiedSeverity(user.isVerified)"
           />
-        </td>
-        <td>
-          <div class="flex gap-2">
-            <p-button
-              icon="pi pi-pencil"
-              [rounded]="true"
-              [outlined]="true"
-              severity="secondary"
-              (onClick)="onEdit(user)"
-              [attr.aria-label]="'Edit' | translate"
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div>
+          <span class="text-xs text-surface-500">{{ 'Balance' | translate }}</span>
+          <p class="font-semibold text-sm m-0 mt-1">{{ user.balance | currency:'USD':'symbol':'1.2-2' }}</p>
+        </div>
+        <div>
+          <span class="text-xs text-surface-500">{{ 'Today PnL' | translate }}</span>
+          <p class="font-semibold text-sm m-0 mt-1">{{ user.todayPnl | currency:'USD':'symbol':'1.2-2' }}</p>
+        </div>
+        <div>
+          <span class="text-xs text-surface-500">{{ 'Total Deposit' | translate }}</span>
+          <p class="font-medium text-sm m-0 mt-1">{{ user.totalDeposit | currency:'USD':'symbol':'1.2-2' }}</p>
+        </div>
+        <div>
+          <span class="text-xs text-surface-500">{{ 'Total Withdrawal' | translate }}</span>
+          <p class="font-medium text-sm m-0 mt-1">{{ user.totalWithdrawal | currency:'USD':'symbol':'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-3 border-t border-surface-200 dark:border-surface-700">
+        <p-button
+          [label]="'Edit' | translate"
+          icon="pi pi-pencil"
+          severity="secondary"
+          [outlined]="true"
+          styleClass="flex-1"
+          (onClick)="onEdit(user)"
+        />
+        <p-button
+          icon="pi pi-trash"
+          severity="danger"
+          [outlined]="true"
+          (onClick)="onDelete(user)"
+          [attr.aria-label]="'Delete' | translate"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop: table -->
+  <div class="hidden md:block" *ngIf="!isLoading && filteredUsers.length > 0">
+    <p-table
+      [value]="filteredUsers"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      responsiveLayout="scroll"
+      [styleClass]="'p-datatable-sm'"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ 'Email' | translate }}</th>
+          <th>{{ 'Username' | translate }}</th>
+          <th>{{ 'Role' | translate }}</th>
+          <th>{{ 'Balance' | translate }}</th>
+          <th>{{ 'Total Deposit' | translate }}</th>
+          <th>{{ 'Total Withdrawal' | translate }}</th>
+          <th>{{ 'Today PnL' | translate }}</th>
+          <th>{{ 'Verified' | translate }}</th>
+          <th style="width: 8rem">{{ 'Actions' | translate }}</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{ user.email }}</td>
+          <td>{{ user.username || '-' }}</td>
+          <td>
+            <p-tag [value]="user.role || 'user'" [severity]="getRoleSeverity(user.role)" />
+          </td>
+          <td>{{ user.balance | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>{{ user.totalDeposit | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>{{ user.totalWithdrawal | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>{{ user.todayPnl | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>
+            <p-tag
+              [value]="user.isVerified ? ('Yes' | translate) : ('No' | translate)"
+              [severity]="getVerifiedSeverity(user.isVerified)"
             />
-            <p-button
-              icon="pi pi-trash"
-              [rounded]="true"
-              [outlined]="true"
-              severity="danger"
-              (onClick)="onDelete(user)"
-              [attr.aria-label]="'Delete' | translate"
-            />
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <p-button
+                icon="pi pi-pencil"
+                [rounded]="true"
+                [outlined]="true"
+                severity="secondary"
+                (onClick)="onEdit(user)"
+                [attr.aria-label]="'Edit' | translate"
+              />
+              <p-button
+                icon="pi pi-trash"
+                [rounded]="true"
+                [outlined]="true"
+                severity="danger"
+                (onClick)="onDelete(user)"
+                [attr.aria-label]="'Delete' | translate"
+              />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && users.length > 0 && filteredUsers.length === 0" class="text-center py-12">
+    <div class="flex flex-col items-center gap-3">
+      <i class="pi pi-search text-5xl text-surface-400"></i>
+      <p class="text-surface-600 dark:text-surface-400 text-sm md:text-base">
+        {{ 'No users match your search' | translate }}
+      </p>
+    </div>
+  </div>
 
   <div *ngIf="!isLoading && !errorMessage && users.length === 0" class="text-center py-12">
     <div class="flex flex-col items-center gap-3">
@@ -93,6 +175,7 @@
   [draggable]="false"
   [resizable]="false"
   [style]="{ width: '95%', maxWidth: '480px' }"
+  [breakpoints]="{ '960px': '95vw', '640px': '98vw' }"
   [header]="'Edit User' | translate"
   (onHide)="closeEditDialog()"
 >
@@ -130,8 +213,10 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <p-button [label]="'Cancel' | translate" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="closeEditDialog()" />
-    <p-button [label]="'Save' | translate" icon="pi pi-check" (onClick)="saveUser()" />
+    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 w-full">
+      <p-button [label]="'Cancel' | translate" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="closeEditDialog()" />
+      <p-button [label]="'Save' | translate" icon="pi pi-check" (onClick)="saveUser()" />
+    </div>
   </ng-template>
 </p-dialog>
 
@@ -141,17 +226,20 @@
   [draggable]="false"
   [resizable]="false"
   [style]="{ width: '95%', maxWidth: '420px' }"
+  [breakpoints]="{ '960px': '95vw', '640px': '98vw' }"
   [header]="'Delete User' | translate"
   (onHide)="closeDeleteDialog()"
 >
-  <p class="m-0">
+  <p class="m-0 break-all">
     {{ 'Are you sure you want to delete' | translate }}
     <strong>{{ selectedUser?.email }}</strong>?
   </p>
 
   <ng-template pTemplate="footer">
-    <p-button [label]="'Cancel' | translate" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="closeDeleteDialog()" />
-    <p-button [label]="'Delete' | translate" icon="pi pi-trash" severity="danger" (onClick)="confirmDelete()" />
+    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 w-full">
+      <p-button [label]="'Cancel' | translate" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="closeDeleteDialog()" />
+      <p-button [label]="'Delete' | translate" icon="pi pi-trash" severity="danger" (onClick)="confirmDelete()" />
+    </div>
   </ng-template>
 </p-dialog>
 
