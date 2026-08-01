@@ -54,6 +54,19 @@ export class Authservice {
     return this.apiService.post<any>('auth/reset-password', payload);
   }
 
+    getRole(): 'admin' | 'user' {
+    try {
+      const parsed = JSON.parse(localStorage.getItem('user') || '{}');
+      return parsed?.data?.user?.role === 'admin' ? 'admin' : 'user';
+    } catch {
+      return 'user';
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.getRole() === 'admin';
+  }
+
 }
 
 

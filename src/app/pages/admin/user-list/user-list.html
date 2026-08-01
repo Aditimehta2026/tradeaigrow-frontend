@@ -1,0 +1,160 @@
+<div class="card mb-8 p-4 md:p-6">
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h2 class="text-xl md:text-2xl font-semibold m-0">{{ 'User List' | translate }}</h2>
+      <p class="text-sm text-surface-500 dark:text-surface-400 mt-1 mb-0">
+        {{ 'All registered users' | translate }}
+      </p>
+    </div>
+    <span class="text-sm text-surface-500">{{ users.length }} {{ 'records' | translate }}</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="mb-4 p-3 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
+    {{ errorMessage }}
+  </div>
+
+  <p-table
+    *ngIf="!isLoading && users.length > 0"
+    [value]="users"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    responsiveLayout="scroll"
+    [styleClass]="'p-datatable-sm'"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>{{ 'Email' | translate }}</th>
+        <th>{{ 'Username' | translate }}</th>
+        <th>{{ 'Role' | translate }}</th>
+        <th>{{ 'Balance' | translate }}</th>
+        <th>{{ 'Total Deposit' | translate }}</th>
+        <th>{{ 'Total Withdrawal' | translate }}</th>
+        <th>{{ 'Today PnL' | translate }}</th>
+        <th>{{ 'Verified' | translate }}</th>
+        <th style="width: 8rem">{{ 'Actions' | translate }}</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{ user.email }}</td>
+        <td>{{ user.username || '-' }}</td>
+        <td>
+          <p-tag [value]="user.role || 'user'" [severity]="getRoleSeverity(user.role)" />
+        </td>
+        <td>{{ user.balance | currency:'USD':'symbol':'1.2-2' }}</td>
+        <td>{{ user.totalDeposit | currency:'USD':'symbol':'1.2-2' }}</td>
+        <td>{{ user.totalWithdrawal | currency:'USD':'symbol':'1.2-2' }}</td>
+        <td>{{ user.todayPnl | currency:'USD':'symbol':'1.2-2' }}</td>
+        <td>
+          <p-tag
+            [value]="user.isVerified ? ('Yes' | translate) : ('No' | translate)"
+            [severity]="getVerifiedSeverity(user.isVerified)"
+          />
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <p-button
+              icon="pi pi-pencil"
+              [rounded]="true"
+              [outlined]="true"
+              severity="secondary"
+              (onClick)="onEdit(user)"
+              [attr.aria-label]="'Edit' | translate"
+            />
+            <p-button
+              icon="pi pi-trash"
+              [rounded]="true"
+              [outlined]="true"
+              severity="danger"
+              (onClick)="onDelete(user)"
+              [attr.aria-label]="'Delete' | translate"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div *ngIf="!isLoading && !errorMessage && users.length === 0" class="text-center py-12">
+    <div class="flex flex-col items-center gap-3">
+      <i class="pi pi-users text-5xl text-surface-400"></i>
+      <p class="text-surface-600 dark:text-surface-400 text-sm md:text-base">
+        {{ 'No users found' | translate }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  [(visible)]="showEditDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '95%', maxWidth: '480px' }"
+  [header]="'Edit User' | translate"
+  (onHide)="closeEditDialog()"
+>
+  <div class="flex flex-col gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-2">{{ 'Email' | translate }}</label>
+      <input pInputText [(ngModel)]="editUser.email" class="w-full" readonly />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-2">{{ 'Username' | translate }}</label>
+      <input pInputText [(ngModel)]="editUser.username" class="w-full" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-2">{{ 'Role' | translate }}</label>
+      <p-select
+        [(ngModel)]="editUser.role"
+        [options]="roleOptions"
+        optionLabel="label"
+        optionValue="value"
+        class="w-full"
+      />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-2">{{ 'Balance' | translate }}</label>
+      <p-inputNumber [(ngModel)]="editUser.balance" mode="currency" currency="USD" class="w-full" />
+    </div>
+
+    <div class="flex items-center gap-2">
+      <p-checkbox [(ngModel)]="editUser.isVerified" [binary]="true" inputId="isVerified" />
+      <label for="isVerified">{{ 'Verified' | translate }}</label>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'Cancel' | translate" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="closeEditDialog()" />
+    <p-button [label]="'Save' | translate" icon="pi pi-check" (onClick)="saveUser()" />
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="showDeleteDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '95%', maxWidth: '420px' }"
+  [header]="'Delete User' | translate"
+  (onHide)="closeDeleteDialog()"
+>
+  <p class="m-0">
+    {{ 'Are you sure you want to delete' | translate }}
+    <strong>{{ selectedUser?.email }}</strong>?
+  </p>
+
+  <ng-template pTemplate="footer">
+    <p-button [label]="'Cancel' | translate" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="closeDeleteDialog()" />
+    <p-button [label]="'Delete' | translate" icon="pi pi-trash" severity="danger" (onClick)="confirmDelete()" />
+  </ng-template>
+</p-dialog>
+
+<div *ngIf="isLoading" class="loading-overlay">
+  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner"></p-progressSpinner>
+</div>

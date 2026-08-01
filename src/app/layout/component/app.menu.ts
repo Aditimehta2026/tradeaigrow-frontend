@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { LayoutService } from '../service/layout.service';
 import { AvatarModule } from 'primeng/avatar';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Authservice } from '../../pages/auth/service/authservice';
 
 @Component({
     selector: 'app-menu',
@@ -20,7 +21,7 @@ export class AppMenu {
     userName = '';
     userEmail = '';
     userInitial = 'U';
-    constructor(private layoutService: LayoutService) { }
+    constructor(private layoutService: LayoutService,private authService: Authservice) { }
 
     ngOnInit() {
         this.initMenu();
@@ -83,6 +84,15 @@ export class AppMenu {
                 ]
             }
         ];
+
+        if (this.authService.isAdmin()) {
+            this.model.push({
+                label: 'Admin',
+                items: [
+                    { label: 'User List', icon: 'pi pi-fw pi-users', routerLink: ['/app/admin/users'] }
+                ]
+            });
+        }
     }
     closeMenu() {
         this.layoutService.layoutState.update((prev) => ({

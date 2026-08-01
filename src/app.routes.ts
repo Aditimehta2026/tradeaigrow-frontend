@@ -16,6 +16,7 @@ export const appRoutes: Routes = [
             {path:'dashboard',component:Dashboard},
             {path:'crud',component:Crud},
             { path: 'page', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
+            { path: 'admin', loadChildren: () => import('./app/pages/admin/admin.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
         ]
