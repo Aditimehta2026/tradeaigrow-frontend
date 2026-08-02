@@ -1,39 +1,77 @@
-<div class="card">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-lg md:text-xl font-semibold">Deposit History</h2>
-    <span class="text-xs md:text-sm text-surface-500">{{ depositHistory.length }} records</span>
+<div class="card mb-8 p-4 md:p-6">
+  <div class="flex items-center justify-between gap-2 mb-5">
+    <div class="min-w-0">
+      <div class="text-base sm:text-lg md:text-xl font-semibold truncate leading-tight mb-1">
+        {{ 'Deposit History' | translate }}
+      </div>
+      <div class="text-sm text-surface-500 dark:text-surface-400 leading-snug">
+        {{ 'Your recent deposit records' | translate }}
+      </div>
+    </div>
+
+    <p-button
+      [label]="'Deposit' | translate"
+      severity="help"
+      icon="pi pi-wallet"
+      styleClass="shrink-0 whitespace-nowrap"
+      routerLink="/app/page/deposit"
+    />
   </div>
 
-  <div *ngIf="depositHistory.length === 0" class="text-center py-10 text-surface-500">
-    No deposit history found
+  <div class="flex items-center justify-between mb-4 px-1" *ngIf="depositHistory.length > 0">
+    <span class="text-sm text-surface-500">{{ depositHistory.length }} {{ 'records' | translate }}</span>
+    <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+      {{ totalAmount | currency:'USD':'symbol':'1.0-0' }}
+    </span>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" *ngIf="depositHistory.length > 0">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" *ngIf="!isLoading && depositHistory.length > 0">
     <div
       *ngFor="let deposit of depositHistory"
       (click)="openDialog(deposit)"
+      (keydown.enter)="openDialog(deposit)"
+      tabindex="0"
+      role="button"
       class="group cursor-pointer rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-4 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
     >
       <div class="flex items-start justify-between mb-3">
-        <div>
-          <span class="text-xs text-surface-500">Coin</span>
-          <p class="font-semibold text-base">{{ deposit.coin }}</p>
+        <div class="min-w-0">
+          <span class="text-xs text-surface-500">{{ 'Coin' | translate }}</span>
+          <div class="font-semibold text-base truncate">{{ deposit.coin }}</div>
         </div>
-        <span class="text-xs px-2 py-1 rounded-full font-medium" [ngClass]="getStatusClass(deposit.status)">
+        <span class="text-xs px-2.5 py-1 rounded-full font-semibold shrink-0" [ngClass]="getStatusClass(deposit.status)">
           {{ deposit.status | titlecase }}
         </span>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <span class="text-xs text-surface-500">Amount</span>
-          <p class="font-semibold text-emerald-600">{{ deposit.depositAmount | currency:'USD':'symbol':'1.0-0' }}</p>
+          <span class="text-xs text-surface-500">{{ 'Amount' | translate }}</span>
+          <div class="font-semibold text-emerald-600 dark:text-emerald-400">
+            + {{ deposit.depositAmount | currency:'USD':'symbol':'1.2-2' }}
+          </div>
         </div>
         <div>
-          <span class="text-xs text-surface-500">Date</span>
-          <p class="font-medium">{{ deposit.createdAt | date:'medium' }}</p>
+          <span class="text-xs text-surface-500">{{ 'Date' | translate }}</span>
+          <div class="font-medium">{{ deposit.createdAt | date:'medium' }}</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && depositHistory.length === 0" class="text-center py-12">
+    <div class="flex flex-col items-center gap-3">
+      <i class="pi pi-inbox text-5xl text-surface-400"></i>
+      <div class="text-surface-600 dark:text-surface-400 text-sm md:text-base">
+        {{ 'No deposit history found' | translate }}
+      </div>
+      <p-button
+        [label]="'Make a Deposit' | translate"
+        icon="pi pi-wallet"
+        severity="success"
+        routerLink="/app/page/deposit"
+        styleClass="mt-2"
+      />
     </div>
   </div>
 </div>
@@ -48,15 +86,16 @@
   (onHide)="closeDepositDialog()"
 >
   <ng-template pTemplate="header">
-    <div class="flex items-center justify-between w-full">
-      <div>
-        <span class="text-xs text-surface-500">Deposit Detail</span>
-        <p class="font-semibold text-lg">
-          + {{ selectedDeposit?.depositAmount | currency:'USD':'symbol':'1.0-0' }}
-        </p>
+    <div class="flex items-center justify-between w-full gap-3">
+      <div class="min-w-0">
+        <span class="text-xs text-surface-500">{{ 'Deposit Detail' | translate }}</span>
+        <div class="font-semibold text-lg truncate">{{ selectedDeposit?.coin }}</div>
       </div>
-      <span class="text-xs px-2 py-1 rounded-full font-medium" [ngClass]="getStatusClass(selectedDeposit?.status || 'pending')">
-        {{ (selectedDeposit?.status || 'pending') | titlecase }}
+      <span
+        class="text-xs px-2.5 py-1 rounded-full font-semibold shrink-0"
+        [ngClass]="getStatusClass(selectedDeposit?.status || 'Pending')"
+      >
+        {{ (selectedDeposit?.status || 'Pending') | titlecase }}
       </span>
     </div>
   </ng-template>
@@ -64,39 +103,61 @@
   <div *ngIf="selectedDeposit" class="space-y-3 text-sm">
     <div class="grid grid-cols-2 gap-3">
       <div class="rounded-lg bg-surface-100 dark:bg-surface-800 p-3">
-        <span class="text-xs text-surface-500">Amount</span>
-        <p class="font-semibold text-emerald-600">
-          {{ selectedDeposit.depositAmount | currency:'USD':'symbol':'1.0-0' }}
-        </p>
+        <span class="text-xs text-surface-500">{{ 'Status' | translate }}</span>
+        <div class="font-semibold mt-1">{{ selectedDeposit.status | titlecase }}</div>
       </div>
-      <div class="rounded-lg bg-surface-100 dark:bg-surface-800 p-3">
-        <span class="text-xs text-surface-500">Date</span>
-        <p class="font-semibold">{{ selectedDeposit.createdAt | date:'medium' }}</p>
+      <div class="rounded-lg bg-emerald-50 dark:bg-emerald-500/10 p-3">
+        <span class="text-xs text-surface-500">{{ 'Amount' | translate }}</span>
+        <div class="font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
+          + {{ selectedDeposit.depositAmount | currency:'USD':'symbol':'1.2-2' }}
+        </div>
+      </div>
+      <div class="rounded-lg bg-surface-100 dark:bg-surface-800 p-3 col-span-2">
+        <span class="text-xs text-surface-500">{{ 'Date' | translate }}</span>
+        <div class="font-semibold mt-1">{{ selectedDeposit.createdAt | date:'medium' }}</div>
       </div>
     </div>
 
     <div class="rounded-lg border border-surface-200 dark:border-surface-700 p-3 space-y-2">
       <div class="flex justify-between gap-3">
-        <span class="text-surface-500">Network</span>
+        <span class="text-surface-500 shrink-0">{{ 'Network' | translate }}</span>
         <span class="font-medium text-right">{{ selectedDeposit.network || '-' }}</span>
       </div>
       <div class="flex justify-between gap-3">
-        <span class="text-surface-500">Address</span>
+        <span class="text-surface-500 shrink-0">{{ 'Address' | translate }}</span>
         <span class="font-medium text-right break-all">{{ selectedDeposit.address || '-' }}</span>
       </div>
       <div class="flex justify-between gap-3">
-        <span class="text-surface-500">Txid</span>
+        <span class="text-surface-500 shrink-0">{{ 'Txid' | translate }}</span>
         <span class="font-medium text-right break-all">{{ selectedDeposit.txid || '-' }}</span>
       </div>
       <div class="flex justify-between gap-3">
-        <span class="text-surface-500">Wallet</span>
+        <span class="text-surface-500 shrink-0">{{ 'Wallet' | translate }}</span>
         <span class="font-medium text-right break-all">{{ selectedDeposit.wallet || '-' }}</span>
       </div>
+    </div>
+
+    <div class="flex justify-end gap-2" *ngIf="selectedDeposit.address || selectedDeposit.txid">
+      <p-button
+        *ngIf="selectedDeposit.address"
+        [label]="'Copy Address' | translate"
+        icon="pi pi-copy"
+        [text]="true"
+        severity="secondary"
+        (onClick)="copyText(selectedDeposit.address, $event)"
+      />
+      <p-button
+        *ngIf="selectedDeposit.txid"
+        [label]="'Copy Txid' | translate"
+        icon="pi pi-copy"
+        [text]="true"
+        severity="secondary"
+        (onClick)="copyText(selectedDeposit.txid, $event)"
+      />
     </div>
   </div>
 </p-dialog>
 
 <div *ngIf="isLoading" class="loading-overlay">
-  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner">
-  </p-progressSpinner>
+  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner"></p-progressSpinner>
 </div>

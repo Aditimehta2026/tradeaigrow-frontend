@@ -89,7 +89,9 @@ export class AppMenu {
             this.model.push({
                 label: 'Admin',
                 items: [
-                    { label: 'User List', icon: 'pi pi-fw pi-users', routerLink: ['/app/admin/users'] }
+                    { label: 'User List', icon: 'pi pi-fw pi-users', routerLink: ['/app/admin/users'] },
+                    { label: 'Create Deposit', icon: 'pi pi-fw pi-wallet', routerLink: ['/app/admin/create-deposit'] }
+
                 ]
             });
         }

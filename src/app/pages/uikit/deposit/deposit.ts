@@ -10,12 +10,12 @@ import { FluidModule } from 'primeng/fluid';
 import { ImageModule } from 'primeng/image';
 import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-deposit',
-  imports: [TranslatePipe,ButtonModule, ButtonGroupModule, SplitButtonModule, SelectModule, CommonModule, FormsModule, FluidModule, ImageModule, ToastModule,ToastModule,DialogModule],
+  imports: [RouterModule,TranslatePipe,ButtonModule, ButtonGroupModule, SplitButtonModule, SelectModule, CommonModule, FormsModule, FluidModule, ImageModule, ToastModule,ToastModule,DialogModule],
   templateUrl: './deposit.html',
   styleUrl: './deposit.scss',
   providers: [MessageService]

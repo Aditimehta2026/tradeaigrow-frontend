@@ -11,4 +11,7 @@ export class Admin {
   getAllUsers(): Observable<any> {
     return this.apiService.post<any>('admin/users', {});
   }
+  createDeposit(payload: any): Observable<any> {
+    return this.apiService.post<any>('deposit/create', payload);
+  }
 }
