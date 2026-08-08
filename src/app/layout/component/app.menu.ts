@@ -38,7 +38,6 @@ export class AppMenu {
                 items: [
                     { label: 'Deposit', icon: 'pi pi-fw pi-wallet', routerLink: ['/app/page/deposit'] },
                     { label: 'Withdraw', icon: 'pi pi-fw pi-arrow-down', routerLink: ['/app/page/withdraw'] },
-                    { label: 'Withdrawal History', icon: 'pi pi-fw pi-history', routerLink: ['/app/page/withdrawal-history'] },
                     { label: 'Spot Trade', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/app/page/spot-trade'] },
                     { label: 'Forex Trade', icon: 'pi pi-fw pi-dollar', routerLink: ['/app/page/forex-trade'] },
                     { label: 'Events', icon: 'pi pi-fw pi-calendar', routerLink: ['/app/page/upcoming-events'] },

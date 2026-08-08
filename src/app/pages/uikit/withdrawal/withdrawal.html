@@ -1,125 +1,395 @@
 <p-fluid>
-    <div class="flex mt-4 sm:mt-8 px-4 sm:px-0">
-        <div class="card flex flex-col gap-6 w-full p-4 sm:p-6">
-            <div class="font-semibold text-xl sm:text-2xl">{{ 'Withdraw Funds' | translate }}</div>
-            <div class="flex flex-col md:flex-row gap-4 md:gap-6">
-                <div class="flex flex-col gap-2 w-full">
-                    <label for="EnterAmountUSDT">{{ 'Enter Amount(USDT)' | translate }}</label>
-                    <input pInputText id="EnterAmountUSDT" type="number" [(ngModel)]="withdrawAmount" placeholder="{{ 'Enter amount' | translate }}" required />
-                </div>
-                <div class="flex flex-col gap-2 w-full">
-                    <label for="EnterWalletAddress">{{ 'USDT (ERC20) Wallet Address' | translate }}</label>
-                    <input pInputText id="EnterWalletAddress" type="text" placeholder="{{ 'Enter USDT (ERC20) wallet address' | translate }}" [(ngModel)]="walletAddress" required />
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row gap-6">
-                <p-button (click)="withdrawMoney()" [disabled]="!isFormValid" label="{{ 'Withdraw' | translate }}" severity="success" styleClass="w-full sm:w-auto" />
-            </div>
+  <div class="flex mt-4 sm:mt-8 px-4 sm:px-0">
+    <div class="card flex flex-col gap-6 w-full p-4 sm:p-6">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <div class="font-semibold text-base sm:text-lg md:text-xl truncate leading-tight mb-1">
+            {{ 'Withdraw Funds' | translate }}
+          </div>
+          <div class="text-sm text-surface-500 dark:text-surface-400 leading-snug">
+            {{ 'Transfer crypto to your external wallet securely' | translate }}
+          </div>
         </div>
+        <p-button
+          [label]="'History' | translate"
+          severity="help"
+          icon="pi pi-history"
+          styleClass="shrink-0 whitespace-nowrap"
+          routerLink="/app/page/withdrawal-history"
+        />
+      </div>
+
+      <!-- Balance & limits -->
+      <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-gradient-to-br from-indigo-50/80 to-violet-50/50 dark:from-indigo-500/10 dark:to-violet-500/5 p-4 sm:p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <span class="text-xs uppercase tracking-wide text-surface-500 font-medium">{{ 'Available Balance' | translate }}</span>
+            <div class="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-surface-0 mt-1">
+              {{ availableBalance | number:'1.2-2' }}
+              <span class="text-base font-semibold text-indigo-600 dark:text-indigo-400">USDT</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 sm:gap-4 text-sm">
+            <div class="rounded-lg bg-white/70 dark:bg-surface-900/60 px-3 py-2 border border-surface-200/80 dark:border-surface-700">
+              <span class="text-xs text-surface-500 block">{{ 'Minimum Withdrawal' | translate }}</span>
+              <span class="font-semibold">{{ minWithdrawal }} USDT</span>
+            </div>
+            <div class="rounded-lg bg-white/70 dark:bg-surface-900/60 px-3 py-2 border border-surface-200/80 dark:border-surface-700">
+              <span class="text-xs text-surface-500 block">{{ 'Maximum Withdrawal' | translate }}</span>
+              <span class="font-semibold">{{ maxWithdrawal | number }} USD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Withdrawal form -->
+      <div class="flex flex-col gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-2">
+            <label for="selectCoin" class="font-medium text-sm">{{ 'Select Coin' | translate }}</label>
+            <p-select
+              inputId="selectCoin"
+              [options]="coinsList"
+              [(ngModel)]="selectedCoin"
+              optionLabel="name"
+              placeholder="Select coin"
+              [filter]="true"
+              class="w-full"
+              (ngModelChange)="onCoinChange($event)"
+            >
+              <ng-template #selectedItem let-coin>
+                <div class="flex items-center gap-2">
+                  <img [src]="coin.image" [alt]="coin.name" class="w-6 h-6 rounded-full" />
+                  <span>{{ coin.code }}</span>
+                </div>
+              </ng-template>
+              <ng-template #item let-coin>
+                <div class="flex items-center gap-2">
+                  <img [src]="coin.image" [alt]="coin.name" class="w-6 h-6 rounded-full" />
+                  <span>{{ coin.name }} ({{ coin.code }})</span>
+                </div>
+              </ng-template>
+            </p-select>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="selectNetwork" class="font-medium text-sm">{{ 'Select Network' | translate }}</label>
+            <p-select
+              inputId="selectNetwork"
+              [options]="networkOptions"
+              [(ngModel)]="selectedNetwork"
+              placeholder="Select network"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="walletAddress" class="font-medium text-sm">{{ 'Wallet Address' | translate }}</label>
+          <input
+            pInputText
+            id="walletAddress"
+            type="text"
+            [(ngModel)]="walletAddress"
+            placeholder="{{ 'Enter recipient wallet address' | translate }}"
+            class="w-full font-mono text-sm"
+          />
+          <span class="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
+            <i class="pi pi-exclamation-triangle"></i>
+            {{ 'Ensure the network matches your wallet. Wrong network may result in permanent loss.' | translate }}
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between gap-2">
+            <label for="withdrawAmount" class="font-medium text-sm">{{ 'Amount' | translate }}</label>
+            <button
+              type="button"
+              class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline"
+              (click)="setMaxAmount()"
+            >
+              {{ 'Max' | translate }}
+            </button>
+          </div>
+          <p-inputNumber
+            inputId="withdrawAmount"
+            [(ngModel)]="withdrawAmount"
+            mode="decimal"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="8"
+            placeholder="0.00"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Fee calculation -->
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-900/50 p-4 space-y-3">
+          <div class="flex items-center gap-2 mb-1">
+            <i class="pi pi-calculator text-primary-500"></i>
+            <span class="font-semibold text-sm">{{ 'Fee Calculation' | translate }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-surface-500">{{ 'Withdrawal Amount' | translate }}</span>
+            <span class="font-medium">{{ withdrawAmount || 0 | number:'1.2-8' }} {{ selectedCoin?.symbol || 'USDT' }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-surface-500">{{ 'Network Fee' | translate }}</span>
+            <span class="font-medium text-rose-600 dark:text-rose-400">- {{ networkFee | number:'1.2-8' }} {{ selectedCoin?.symbol || 'USDT' }}</span>
+          </div>
+          <div class="border-t border-surface-200 dark:border-surface-700 pt-3 flex justify-between">
+            <span class="font-semibold">{{ 'You Will Receive' | translate }}</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">
+              {{ receiveAmount | number:'1.2-8' }} {{ selectedCoin?.symbol || 'USDT' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Security verification -->
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 p-4 sm:p-5 space-y-4">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-shield text-emerald-600 dark:text-emerald-400"></i>
+            <span class="font-semibold">{{ 'Security Verification' | translate }}</span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="securityPassword" class="text-sm font-medium">{{ 'Account Password' | translate }}</label>
+            <p-password
+              inputId="securityPassword"
+              [(ngModel)]="securityPassword"
+              [toggleMask]="true"
+              [feedback]="false"
+              placeholder="Enter your password"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            />
+          </div>
+        </div>
+
+        <p-button
+          [label]="'Secure Withdrawal' | translate"
+          icon="pi pi-shield"
+          severity="success"
+          styleClass="w-full sm:w-auto"
+          [disabled]="!isFormValid"
+          [loading]="isVerifying"
+          (onClick)="authenticateWithdrawal()"
+        />
+      </div>
     </div>
+  </div>
 </p-fluid>
 
-<!-- Success Dialog -->
-<p-dialog 
-    [(visible)]="showSuccessDialog" 
-    [modal]="true" 
-    [style]="{width: '90%', maxWidth: '450px'}"
-    [closable]="false"
-    [draggable]="false"
-    [resizable]="false"
-    [breakpoints]="{'960px': '90%', '640px': '95%'}">
-    <ng-template pTemplate="header">
-        <div class="flex items-center gap-2 px-2 md:px-0">
-            <i class="pi pi-check-circle text-green-500 text-xl md:text-2xl"></i>
-            <span class="font-semibold text-base md:text-lg">{{ 'Withdrawal Request Submitted' | translate }}</span>
-        </div>
-    </ng-template>
-    <div class="py-2 md:py-4 px-2 md:px-0">
-        <div class="text-center space-y-3 md:space-y-4">
-            <div>
-                <h3 class="text-lg md:text-xl font-semibold text-surface-900 dark:text-surface-0 mb-2">
-                    {{ 'Your withdrawal request has been successfully submitted!' | translate }}
-                </h3>
-                <p class="text-sm md:text-base text-surface-600 dark:text-surface-400 px-2">
-                    {{ 'Our customer support team will contact you shortly to guide you regarding the tax and other applicable charges. Please wait patiently while we process your request.' | translate }}
-                </p>
-            </div>
-        </div>
+<!-- Confirm withdrawal dialog -->
+<p-dialog
+  [(visible)]="showConfirmDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '95%', maxWidth: '480px' }"
+  [breakpoints]="{ '960px': '95vw', '640px': '98vw' }"
+  (onHide)="closeConfirmDialog()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-exclamation-circle text-amber-500 text-xl"></i>
+      <span class="font-semibold text-lg">{{ 'Confirm Withdrawal' | translate }}</span>
     </div>
-    <ng-template pTemplate="footer">
-        <div class="flex justify-end px-2 md:px-0 pb-2 md:pb-0">
-            <button 
-                pButton 
-                pRipple
-                type="button"
-                label="{{ 'OK' | translate }}"
-                icon="pi pi-check"
-                (click)="onDialogOk()"
-                class="p-button-primary w-full sm:w-auto text-sm md:text-base">
-            </button>
-        </div>
-    </ng-template>
+  </ng-template>
+
+  <div class="space-y-4 text-sm">
+    <p class="text-surface-600 dark:text-surface-400 m-0">
+      {{ 'Please review your withdrawal details before confirming.' | translate }}
+    </p>
+
+    <div class="rounded-xl bg-surface-100 dark:bg-surface-800 p-4 space-y-3">
+      <div class="flex justify-between gap-3">
+        <span class="text-surface-500">{{ 'Coin' | translate }}</span>
+        <span class="font-semibold">{{ selectedCoin?.code }}</span>
+      </div>
+      <div class="flex justify-between gap-3">
+        <span class="text-surface-500">{{ 'Network' | translate }}</span>
+        <span class="font-semibold text-right">{{ selectedNetwork }}</span>
+      </div>
+      <div class="flex justify-between gap-3">
+        <span class="text-surface-500">{{ 'Wallet Address' | translate }}</span>
+        <span class="font-medium text-right break-all max-w-[60%]">{{ walletAddress }}</span>
+      </div>
+      <div class="flex justify-between gap-3">
+        <span class="text-surface-500">{{ 'Amount' | translate }}</span>
+        <span class="font-semibold">{{ withdrawAmount | number:'1.2-8' }} {{ selectedCoin?.symbol }}</span>
+      </div>
+      <div class="flex justify-between gap-3">
+        <span class="text-surface-500">{{ 'Network Fee' | translate }}</span>
+        <span class="font-medium text-rose-600">- {{ networkFee | number:'1.2-8' }}</span>
+      </div>
+      <div class="border-t border-surface-200 dark:border-surface-600 pt-3 flex justify-between">
+        <span class="font-semibold">{{ 'You Receive' | translate }}</span>
+        <span class="font-bold text-emerald-600">{{ receiveAmount | number:'1.2-8' }} {{ selectedCoin?.symbol }}</span>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 w-full">
+      <p-button
+        [label]="'Cancel' | translate"
+        icon="pi pi-times"
+        severity="secondary"
+        [outlined]="true"
+        styleClass="w-full sm:w-auto"
+        (onClick)="closeConfirmDialog()"
+      />
+      <p-button
+        [label]="'Confirm Withdrawal' | translate"
+        icon="pi pi-check"
+        severity="success"
+        styleClass="w-full sm:w-auto"
+        [loading]="isSubmitting"
+        [disabled]="isSubmitting"
+        (onClick)="confirmWithdrawal()"
+      />
+    </div>
+  </ng-template>
 </p-dialog>
 
-
-<!-- Loan Application Limit Dialog -->
- 
-<p-dialog 
-    [(visible)]="showLimitDialog" 
-    [modal]="true" 
-    [style]="{width: '90%', maxWidth: '450px'}"
-    [closable]="false"
-    [draggable]="false"
-    [resizable]="false"
-    [breakpoints]="{'960px': '90%', '640px': '95%'}"
-    [styleClass]="'p-dialog-sm md:p-dialog-md'">
-
-    <ng-template pTemplate="header">
-        <div class="flex items-center gap-2 px-2 md:px-0">
-            <i class="pi pi-info-circle text-orange-500 text-xl md:text-2xl"></i>
-            <span class="font-semibold text-base md:text-lg">Withdrawal Limit Reached</span>
-        </div>
-    </ng-template>
-
-    <div class="py-2 md:py-4 px-2 md:px-0">
-        <div class="text-center space-y-3 md:space-y-4">
-            <h2 class="text-lg md:text-xl font-semibold">Please try again later</h2>
-
-            <p class="text-sm md:text-base text-surface-600 dark:text-surface-400 px-2">
-                {{withdrawalErrorDetails}}
-            </p>
-        </div>
+<!-- Success dialog -->
+<p-dialog
+  [(visible)]="showSuccessDialog"
+  [modal]="true"
+  [style]="{ width: '90%', maxWidth: '450px' }"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-check-circle text-emerald-500 text-xl md:text-2xl"></i>
+      <span class="font-semibold text-base md:text-lg">{{ 'Withdrawal Request Submitted' | translate }}</span>
     </div>
+  </ng-template>
 
-    <ng-template pTemplate="footer">
-        <div class="flex flex-col sm:flex-row justify-end gap-2 px-2 md:px-0 pb-2 md:pb-0">
-            
-            <button 
-                pButton 
-                pRipple
-                type="button"
-                label="{{ 'No, Stay Here' | translate }}"
-                icon="pi pi-times"
-                (click)="closeDialog()"
-                class="p-button-outlined p-button-secondary w-full sm:w-auto text-sm md:text-base">
-            </button>
+  <div class="py-2 text-center space-y-3">
+    <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center">
+      <i class="pi pi-check text-3xl text-emerald-600 dark:text-emerald-400"></i>
+    </div>
+    <div class="font-semibold text-lg text-surface-900 dark:text-surface-0">
+      {{ 'Your withdrawal request has been successfully submitted!' | translate }}
+    </div>
+    <p class="text-sm text-surface-600 dark:text-surface-400 m-0 px-2 leading-relaxed">
+      {{ 'Our team will process your request shortly. You can track the status in your withdrawal history.' | translate }}
+    </p>
+  </div>
 
-            <button 
-                pButton 
-                pRipple
-                type="button"
-                label="{{ 'Contact Support' | translate }}"
-                icon="pi pi-headphones"
-                (click)="onMoveToSupport()"
-                class="p-button-primary w-full sm:w-auto text-sm md:text-base">
-            </button>
-
-        </div>
-    </ng-template>
-
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col sm:flex-row justify-end gap-2 w-full">
+      <p-button
+        [label]="'OK' | translate"
+        icon="pi pi-check"
+        severity="secondary"
+        [outlined]="true"
+        styleClass="w-full sm:w-auto"
+        (onClick)="onDialogOk()"
+      />
+      <p-button
+        [label]="'History' | translate"
+        icon="pi pi-history"
+        severity="success"
+        styleClass="w-full sm:w-auto"
+        (onClick)="goToHistory()"
+      />
+    </div>
+  </ng-template>
 </p-dialog>
 
-<div *ngIf="isLoading" class="loading-overlay">
-  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner">
-  </p-progressSpinner>
+<!-- Limit / error dialog -->
+<p-dialog
+  [(visible)]="showLimitDialog"
+  [modal]="true"
+  [style]="{ width: '90%', maxWidth: '450px' }"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-info-circle text-orange-500 text-xl md:text-2xl"></i>
+      <span class="font-semibold text-base md:text-lg">{{ 'Withdrawal Limit Reached' | translate }}</span>
+    </div>
+  </ng-template>
+
+  <div class="py-2 text-center space-y-3">
+    <div class="font-semibold text-lg">{{ 'Please try again later' | translate }}</div>
+    <p class="text-sm text-surface-600 dark:text-surface-400 m-0 px-2">{{ withdrawalErrorDetails }}</p>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col sm:flex-row justify-end gap-2 w-full">
+      <p-button
+        [label]="'No, Stay Here' | translate"
+        icon="pi pi-times"
+        severity="secondary"
+        [outlined]="true"
+        styleClass="w-full sm:w-auto"
+        (onClick)="closeDialog()"
+      />
+      <p-button
+        [label]="'Contact Support' | translate"
+        icon="pi pi-headphones"
+        severity="primary"
+        styleClass="w-full sm:w-auto"
+        (onClick)="onMoveToSupport()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Verification failed dialog -->
+<p-dialog
+  [(visible)]="showVerificationErrorDialog"
+  [modal]="true"
+  [style]="{ width: '90%', maxWidth: '420px' }"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [breakpoints]="{ '960px': '90%', '640px': '95%' }"
+  (onHide)="closeVerificationErrorDialog()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-shield text-rose-500 text-xl"></i>
+      <span class="font-semibold text-base md:text-lg">{{ 'Authentication Failed' | translate }}</span>
+    </div>
+  </ng-template>
+
+  <div class="py-2 text-center space-y-4">
+    <div class="w-16 h-16 mx-auto rounded-full bg-rose-100 dark:bg-rose-500/20 flex items-center justify-center">
+      <i class="pi pi-times text-3xl text-rose-600 dark:text-rose-400"></i>
+    </div>
+    <div class="font-semibold text-lg text-surface-900 dark:text-surface-0">
+      {{ verificationErrorMessage }}
+    </div>
+    <p class="text-sm text-surface-600 dark:text-surface-400 m-0 px-2 leading-relaxed">
+      {{ verificationErrorSuggestion }}
+    </p>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col sm:flex-row justify-end gap-2 w-full">
+      <p-button
+        [label]="'Try Again' | translate"
+        icon="pi pi-refresh"
+        severity="danger"
+        styleClass="w-full sm:w-auto"
+        (onClick)="closeVerificationErrorDialog()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<div *ngIf="isSubmitting || isVerifying" class="loading-overlay">
+  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner"></p-progressSpinner>
 </div>
