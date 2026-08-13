@@ -17,7 +17,20 @@
                 (click)="toggleDarkMode()">
                 <i [ngClass]="{ 'pi': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
             </button>
-
+             <button
+            type="button"
+            class="layout-topbar-action topbar-icon-btn topbar-notification-btn"
+            [attr.aria-label]="'Notifications' | translate"
+            (click)="openNotifications()">
+            <span class="topbar-bell-wrap">
+                <i class="pi pi-bell"></i>
+                @if (unreadNotificationCount > 0) {
+                    <span class="p-badge topbar-unread-badge">
+                        {{ unreadNotificationCount }}
+                    </span>
+                }
+            </span>
+        </button>
             <button
                 type="button"
                 class="layout-topbar-action topbar-profile-trigger"
@@ -26,11 +39,156 @@
                 <span class="topbar-profile-avatar" aria-hidden="true">
                     <i class="pi pi-user"></i>
                 </span>
-                <span class="topbar-profile-label hidden sm:inline">{{ 'Profile' | translate }}</span>
             </button>
         </div>
     </div>
 
+    <!-- Notification Drawer -->
+<p-drawer
+    [(visible)]="showNotificationDrawer"
+    position="right"
+    [modal]="true"
+    [dismissible]="true"
+    [showCloseIcon]="true"
+    styleClass="notification-drawer !w-full sm:!w-[380px]">
+
+    <ng-template pTemplate="header">
+        <div class="flex flex-col gap-3 w-full pr-2">
+            <div class="flex items-center justify-between gap-2">
+                <span class="font-semibold text-lg">{{ 'Notifications' | translate }}</span>
+                @if (unreadNotificationCount > 0) {
+                    <button
+                        type="button"
+                        class="topbar-notification-mark-all"
+                        (click)="markAllNotificationsRead()">
+                        {{ 'Mark all as read' | translate }}
+                    </button>
+                }
+            </div>
+            <div class="notification-filter-tabs">
+                <button
+                    type="button"
+                    class="notification-filter-tab"
+                    [class.notification-filter-tab--active]="notificationFilter === 'all'"
+                    (click)="setNotificationFilter('all')">
+                    {{ 'All' | translate }}
+                    <span class="notification-filter-count">{{ allNotificationCount }}</span>
+                </button>
+                <button
+                    type="button"
+                    class="notification-filter-tab"
+                    [class.notification-filter-tab--active]="notificationFilter === 'unread'"
+                    (click)="setNotificationFilter('unread')">
+                    {{ 'Unread' | translate }}
+                    <span class="notification-filter-count">{{ unreadNotificationCount }}</span>
+                </button>
+                <button
+                    type="button"
+                    class="notification-filter-tab"
+                    [class.notification-filter-tab--active]="notificationFilter === 'read'"
+                    (click)="setNotificationFilter('read')">
+                    {{ 'Read' | translate }}
+                    <span class="notification-filter-count">{{ readNotificationCount }}</span>
+                </button>
+            </div>
+        </div>
+    </ng-template>
+
+    <div class="notification-drawer-body">
+        @if (isNotificationsLoading) {
+            <div class="topbar-notification-empty">
+                <i class="pi pi-spin pi-spinner text-2xl text-surface-400"></i>
+            </div>
+        } @else if (filteredNotifications.length === 0) {
+            <div class="topbar-notification-empty">
+                <i class="pi pi-bell text-2xl text-surface-400"></i>
+                <p class="m-0 text-sm text-surface-500">{{ 'No notifications' | translate }}</p>
+            </div>
+        } @else {
+            <ul class="topbar-notification-list">
+                @for (item of filteredNotifications; track item.id) {
+                    <li
+                        class="topbar-notification-item"
+                        [class.topbar-notification-item--unread]="!item.isRead"
+                        (click)="openNotificationDetail(item)">
+                        <div class="topbar-notification-item-icon">
+                            <i [class]="notificationIcon(item.type)"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-start justify-between gap-2">
+                                <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">
+                                    {{ item.title }}
+                                </span>
+                                @if (!item.isRead) {
+                                    <span class="topbar-notification-dot shrink-0" aria-hidden="true"></span>
+                                }
+                            </div>
+                            <p class="m-0 mt-1 text-sm text-surface-600 dark:text-surface-300 line-clamp-2">
+                                {{ item.message }}
+                            </p>
+                            <span class="mt-2 block text-[11px] text-surface-400">
+                                {{ item.createdAt | date: 'medium' }}
+                            </span>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</p-drawer>
+<p-dialog
+    [(visible)]="showNotificationDialog"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: '95%', maxWidth: '440px' }"
+    styleClass="notification-detail-dialog"
+    (onHide)="closeNotificationDialog()">
+
+    <ng-template pTemplate="header">
+        <div class="notification-detail-header">
+            <span class="notification-detail-header-icon">
+                <i [class]="notificationIcon(selectedNotification?.type || 'admin')"></i>
+            </span>
+            <div class="min-w-0 flex-1">
+                <div class="notification-detail-eyebrow">{{ 'Notification' | translate }}</div>
+                <div class="notification-detail-title">
+                    {{ selectedNotification?.title || ('Notification' | translate) }}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    @if (selectedNotification) {
+        <div class="notification-detail-body">
+            <div class="notification-detail-meta">
+                <span class="notification-detail-type">Official</span>
+                <span class="notification-detail-date">
+                    <i class="pi pi-clock"></i>
+                    {{ selectedNotification.createdAt | date: 'medium' }}
+                </span>
+            </div>
+
+            <div class="notification-detail-message-card">
+                <p class="notification-detail-message">
+                    {{ selectedNotification.message }}
+                </p>
+            </div>
+        </div>
+    }
+
+    <ng-template pTemplate="footer">
+        <div class="notification-detail-footer">
+            <p-button
+                [label]="'Close' | translate"
+                icon="pi pi-check"
+                severity="primary"
+                styleClass="w-full sm:w-auto"
+                (onClick)="closeNotificationDialog()"
+            />
+        </div>
+    </ng-template>
+</p-dialog>
   <!-- Place p-dialog here, outside layout-topbar, without card wrapper -->
 <p-dialog header="Confirmation" [(visible)]="displayConfirmation" [style]="{ width: '350px' }" [modal]="true">
     <div class="flex items-center justify-center">

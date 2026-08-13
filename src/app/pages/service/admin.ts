@@ -14,4 +14,7 @@ export class Admin {
   createDeposit(payload: any): Observable<any> {
     return this.apiService.post<any>('deposit/create', payload);
   }
+  sendNotification(payload: any): Observable<any> {
+    return this.apiService.post<any>('notifications/send', payload);
+  }
 }

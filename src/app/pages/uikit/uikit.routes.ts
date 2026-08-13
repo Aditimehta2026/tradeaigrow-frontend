@@ -14,6 +14,7 @@ import { Loan } from './loan/loan';
 import { Support } from './support/support';
 import { ForexTradeForm } from './forex-trade-form/forex-trade-form';
 import { ForexTradeHistory } from './forex-trade-history/forex-trade-history';
+import { adminGuard } from '@/core/guards/admin.guard';
 
 export default [
     { path: 'deposit', data: { breadcrumb: 'Deposit' }, component: Deposit },

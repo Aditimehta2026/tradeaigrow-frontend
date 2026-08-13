@@ -1,18 +1,10 @@
-import { Component, viewChild } from '@angular/core';
-import { ConfirmationService, MenuItem } from 'primeng/api';
+import { Component, OnInit, viewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { StyleClassModule } from 'primeng/styleclass';
 import { LayoutService } from '../service/layout.service';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { MenubarModule } from 'primeng/menubar';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { MenuModule } from 'primeng/menu';
 import { DrawerModule } from 'primeng/drawer';
-import { DividerModule } from 'primeng/divider';
 import { FormsModule } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DashboardData } from '@/pages/service/dashboard-data';
@@ -20,63 +12,71 @@ import { SelectModule } from 'primeng/select';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { FileUpload } from 'primeng/fileupload';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LanguageService } from '@/core/services/language.service';
+import { Notification } from '@/pages/service/notification';
+
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, ConfirmDialogModule, DialogModule, ButtonModule,
-        MenubarModule, IconFieldModule, InputIconModule,
-        MenuModule, DrawerModule, DividerModule, FormsModule, SelectButtonModule, SelectModule, FileUploadModule, InputTextModule,
-        ProgressSpinnerModule,FileUpload,TranslatePipe
+    imports: [   RouterModule,
+        CommonModule,
+        DialogModule,
+        ButtonModule,
+        DrawerModule,
+        FormsModule,
+        SelectButtonModule,
+        SelectModule,
+        FileUploadModule,
+        InputTextModule,
+        ProgressSpinnerModule,
+        TranslatePipe
     ],
     templateUrl: './app.topbar.html',
-    styleUrl: './app.topbar.scss',
-    providers: [ConfirmationService]
+    styleUrl: './app.topbar.scss'
 })
-export class AppTopbar {
-    verifyFileUpload = viewChild<FileUpload>('verifyFileUpload');
-    items!: MenuItem[];
-    displayConfirmation: boolean = false;
-    userName: string = '';
-
-    balance: string = '0.00';
-    userEmail: string = '';
-    userUid: string = '';
-    profileItems: MenuItem[] = [];
-    showProfileDrawer: boolean = false;
-    selectedRegion: 'UK' | 'US' = 'UK';
-    regionOptions = [
+export class AppTopbar implements OnInit {
+    verifyFileUpload = viewChild<any>('verifyFileUpload');
+    displayConfirmation = false;
+    userName: any = '';
+    balance: any = '0.00';
+    userEmail: any = '';
+    userUid: any = '';
+    showProfileDrawer = false;
+    showNotificationDrawer = false;
+    notificationFilter: any = 'all';
+    selectedRegion: any = 'UK';
+    regionOptions: any[] = [
         { label: 'UK', value: 'UK' },
         { label: 'US', value: 'US' }
     ];
-
-    // Identity Verification
-    isIdentityVerified: boolean = false;
-    showVerifyDialog: boolean = false;
-    // form fields
-    documentType: 'passport' | 'driver_license' | 'national_id' | 'other' | null = null;
-    documentNumber: string = '';
-    documentTypeOptions = [
+    isIdentityVerified = false;
+    showVerifyDialog = false;
+    documentType: any = null;
+    documentNumber: any = '';
+    documentTypeOptions: any[] = [
         { label: 'Passport', value: 'passport' },
         { label: 'Driver License', value: 'driver_license' },
         { label: 'National ID', value: 'national_id' },
         { label: 'Other', value: 'other' }
     ];
-    showDocError: boolean = false;
-    verificationStatus: 'pending' | 'verified' | 'rejected' = 'pending';
-    showVerifySuccessDialog: boolean = false;
-
-    isLoading: boolean = false;
-    // error for too many request
-    showVerifyErrorDialog: boolean = false;
-    verifyErrorMessage: string = '';
-    selectedLang = 'en';
+    showDocError = false;
+    verificationStatus: any = 'pending';
+    showVerifySuccessDialog = false;
+    isLoading = false;
+    showVerifyErrorDialog = false;
+    verifyErrorMessage: any = '';
+    selectedLang: any = 'en';
     showLanguageDialog = false;
     showUpdatesDialog = false;
-
+    notifications: any[] = [];
+    isNotificationsLoading = false;
+    unreadNotificationCount: any = 0;
+    readNotificationCount: any = 0;
+    allNotificationCount: any = 0;
+    showNotificationDialog = false;
+    selectedNotification: any = null;
     readonly updateItems: any[] = [
         {
             id: 'tradeaigrow-arbitration',
@@ -133,13 +133,18 @@ export class AppTopbar {
         }
     ];
 
+    constructor(
+        public layoutService: LayoutService,
+        private router: Router,
+        private dashboardData: DashboardData,
+        private languageService: LanguageService,
+        private notificationService: Notification
+    ) {}
 
-    constructor(public layoutService: LayoutService,
-        public confirmationService: ConfirmationService, public router: Router, public dashboardData: DashboardData,public languageService: LanguageService) { }
     ngOnInit(): void {
         this.getUserName();
-        this.buildProfileMenu();
         this.selectedLang = this.languageService.current;
+        this.loadNotifications();
     }
 
     getUserName() {
@@ -152,10 +157,8 @@ export class AppTopbar {
 
             this.userName = user?.name ?? '';
             this.userEmail = user?.email ?? '';
-            this.userUid = user?.uid ?? user?._id ?? user?.id ?? '';
+            this.userUid = user?.id ?? '';
             this.balance = localStorage.getItem('balance') ?? '0.00';
-            console.log(this.userName,this.balance);
-            
         } catch (error) {
             console.error('Error parsing user data from localStorage:', error);
             this.userName = '';
@@ -170,97 +173,59 @@ export class AppTopbar {
         this.getVerificationHistory();
     }
 
-    closeProfile(): void {
-        this.showProfileDrawer = false;
-    }
-
-
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
     }
+
     openConfirmation() {
         this.displayConfirmation = true;
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to logout?',
-            header: 'Logout Confirmation',
-            icon: 'pi pi-exclamation-triangle',
-            acceptButtonStyleClass: 'p-button-danger',
-            accept: () => {
-                // User clicked Yes - proceed with logout
-                this.logOutConfirmation();
-            },
-            reject: () => {
-                // User clicked No - just close
-            }
-        });
     }
 
     logOutConfirmation() {
         this.displayConfirmation = false;
-        // Clear localStorage
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         localStorage.removeItem('dashboardDatas');
         localStorage.removeItem('selectedRegion');
-        // Navigate to login
+        localStorage.removeItem('tableData_crypto');
+        localStorage.removeItem('tableData_forex');
+        localStorage.removeItem('tableData_commodities');
         this.router.navigate(['/auth/login']);
     }
+
     closeConfirmation() {
         this.displayConfirmation = false;
     }
 
-    buildProfileMenu(): void {
-        this.profileItems = [
-            {
-                label: 'Profile',
-                icon: 'pi pi-user',
-                items: [
-                    {
-                        label: `User: ${this.userName}`,
-                        icon: 'pi pi-id-card',
-                        disabled: true
-                    },
-                    {
-                        label: `Balance: $${this.balance}`,
-                        icon: 'pi pi-wallet',
-                        disabled: true
-                    },
-                    { separator: true },
-                    {
-                        label: 'Logout',
-                        icon: 'pi pi-sign-out',
-                        command: () => this.openConfirmation()
-                    }
-                ]
-            }
-        ];
-    }
-    onRegionChange(value: 'UK' | 'US'): void {
+    onRegionChange(value: any): void {
         this.selectedRegion = value;
         localStorage.setItem('selectedRegion', value);
     }
 
     getVerificationHistory() {
-        this.isLoading= true;
-        if (!this.userEmail) return;
+        this.isLoading = true;
+        if (!this.userEmail) {
+            this.isLoading = false;
+            return;
+        }
 
         this.dashboardData.getVerificationHistory(this.userEmail).subscribe({
-            next: (res) => {
+            next: (res: any) => {
                 const list = res?.verificationHistory ?? res?.data ?? (Array.isArray(res) ? res : []);
-                const latest = list[0];
+                const latest: any = list[0];
 
                 this.isIdentityVerified = latest?.isKycVerified === true;
                 this.verificationStatus = this.normalizeStatus(latest?.status);
-                this.isLoading= false;
+                this.isLoading = false;
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.error('Verification history failed:', err);
-                this.isLoading= false;
+                this.isLoading = false;
             }
         });
     }
 
-    private normalizeStatus(status?: string): 'pending' | 'verified' | 'rejected' {
+    private normalizeStatus(status: any): any {
         const s = (status ?? 'pending').toLowerCase();
         if (s === 'verified' || s === 'approved') return 'verified';
         if (s === 'rejected') return 'rejected';
@@ -268,15 +233,15 @@ export class AppTopbar {
     }
 
     verifyIdentity(verifyFileUpload: any) {
-        const file = verifyFileUpload?.files?.[0] as File;
+        const file: any = verifyFileUpload?.files?.[0];
 
         if (!this.documentType || !this.documentNumber || !file) {
             this.showDocError = !file;
             return;
         }
-        this.isLoading= true;
+        this.isLoading = true;
 
-        const payload = new FormData();
+        const payload: any = new FormData();
         payload.append('documentType', this.documentType);
         payload.append('documentNumber', this.documentNumber);
         payload.append('file', file);
@@ -284,18 +249,17 @@ export class AppTopbar {
 
         this.dashboardData.verifyIdentity(payload).subscribe({
             next: () => {
-                this.isLoading=false;
-                this.showVerifySuccessDialog=true;
+                this.isLoading = false;
+                this.showVerifySuccessDialog = true;
                 this.getVerificationHistory();
                 this.closeVerifyDialog();
-                
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.error('Verification submit failed:', err);
                 this.resetVerifyForm();
-                 this.verifyErrorMessage = err.error.message || 'Something went wrong. Please try again.';
-                 this.isLoading=false;
-                 this.showVerifyErrorDialog = true;
+                this.verifyErrorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+                this.isLoading = false;
+                this.showVerifyErrorDialog = true;
             }
         });
     }
@@ -304,26 +268,31 @@ export class AppTopbar {
         this.showVerifyDialog = true;
         this.resetVerifyForm();
     }
+
     closeVerifyDialog() {
         this.showVerifyDialog = false;
         this.resetVerifyForm();
     }
+
     resetVerifyForm() {
         this.documentType = null;
         this.documentNumber = '';
         this.showDocError = false;
         this.verifyFileUpload()?.clear();
     }
+
     closeVerifySuccessDialog(): void {
         this.showVerifySuccessDialog = false;
         this.resetVerifyForm();
     }
+
     closeVerifyErrorDialog(): void {
         this.showVerifyErrorDialog = false;
         this.verifyErrorMessage = '';
         this.resetVerifyForm();
     }
-    changeLanguage(lang: string) {
+
+    changeLanguage(lang: any) {
         this.languageService.setLanguage(lang);
         this.selectedLang = lang;
     }
@@ -332,29 +301,122 @@ export class AppTopbar {
         this.showLanguageDialog = true;
     }
 
-    closeLanguageDialog(): void {
-        this.showLanguageDialog = false;
-    }
-
-    selectLanguage(lang: string): void {
+    selectLanguage(lang: any): void {
         this.changeLanguage(lang);
-        this.closeLanguageDialog();
+        this.showLanguageDialog = false;
     }
 
     openUpdatesDialog(): void {
         this.showUpdatesDialog = true;
     }
 
-    closeUpdatesDialog(): void {
-        this.showUpdatesDialog = false;
+    openNotifications(): void {
+        this.notificationFilter = 'all';
+        this.showNotificationDrawer = true;
+        this.loadNotifications();
     }
-    get languages() {
+
+    setNotificationFilter(filter: any): void {
+        this.notificationFilter = filter;
+    }
+
+    get filteredNotifications(): any[] {
+        if (this.notificationFilter === 'unread') {
+            return this.notifications.filter((n: any) => n.isRead !== true);
+        }
+        if (this.notificationFilter === 'read') {
+            return this.notifications.filter((n: any) => n.isRead === true);
+        }
+        return this.notifications;
+    }
+
+    loadNotifications(): void {
+        if (!this.userEmail) {
+            this.notifications = [];
+            this.refreshNotificationCounts();
+            return;
+        }
+
+        this.isNotificationsLoading = true;
+        this.notificationService.getNotifications({ email: this.userEmail }).subscribe({
+            next: (res: any) => {
+                this.notifications = (res?.data ?? []).map((n: any) => ({
+                    id: n.id,
+                    title: n.title,
+                    message: n.message,
+                    type: n.type || 'admin',
+                    isRead: n.isRead === true,
+                    createdAt: n.createdAt
+                }));
+                this.refreshNotificationCounts();
+                this.isNotificationsLoading = false;
+            },
+            error: () => {
+                this.notifications = [];
+                this.refreshNotificationCounts();
+                this.isNotificationsLoading = false;
+            }
+        });
+    }
+
+    private refreshNotificationCounts(): void {
+        this.allNotificationCount = this.notifications.length;
+        this.unreadNotificationCount = this.notifications.filter((n: any) => n.isRead !== true).length;
+        this.readNotificationCount = this.notifications.filter((n: any) => n.isRead === true).length;
+    }
+
+    openNotificationDetail(item: any): void {
+        this.selectedNotification = item;
+        this.showNotificationDialog = true;
+        this.markNotificationRead(item);
+    }
+
+    closeNotificationDialog(): void {
+        this.showNotificationDialog = false;
+        this.selectedNotification = null;
+    }
+
+    markNotificationRead(item: any): void {
+        if (item?.isRead === true) return;
+        item.isRead = true;
+        this.refreshNotificationCounts();
+        this.notificationService.markAsRead({ id: item.id }).subscribe({
+            error: () => {
+                item.isRead = false;
+                this.refreshNotificationCounts();
+            }
+        });
+    }
+
+    markAllNotificationsRead(): void {
+        if (!this.unreadNotificationCount) return;
+        this.notifications.forEach((n: any) => (n.isRead = true));
+        this.refreshNotificationCounts();
+        this.notificationService.markAllAsRead({}).subscribe({
+            error: () => this.loadNotifications()
+        });
+    }
+
+    notificationIcon(type: any): any {
+        switch (type) {
+            case 'welcome':
+                return 'pi pi-heart';
+            case 'deposit':
+                return 'pi pi-wallet';
+            case 'withdraw':
+                return 'pi pi-arrow-down';
+            case 'admin':
+                return 'pi pi-megaphone';
+            default:
+                return 'pi pi-bell';
+        }
+    }
+
+    get languages(): any {
         return this.languageService.languages;
-      }
-    
-      get currentLanguageLabel(): string {
-        return this.languages.find((lang) => lang.value === this.selectedLang)?.label ?? 'English';
     }
 
-
+    get currentLanguageLabel(): any {
+        return this.languages.find((lang: any) => lang.value === this.selectedLang)?.label ?? 'English';
+    }
 }

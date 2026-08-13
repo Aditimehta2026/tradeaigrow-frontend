@@ -89,7 +89,8 @@ export class AppMenu {
                 label: 'Admin',
                 items: [
                     { label: 'User List', icon: 'pi pi-fw pi-users', routerLink: ['/app/admin/users'] },
-                    { label: 'Create Deposit', icon: 'pi pi-fw pi-wallet', routerLink: ['/app/admin/create-deposit'] }
+                    { label: 'Create Deposit', icon: 'pi pi-fw pi-wallet', routerLink: ['/app/admin/create-deposit'] },
+                    { label: 'Send Notification', icon: 'pi pi-fw pi-bell', routerLink: ['/app/admin/send-notification'] }
 
                 ]
             });

@@ -1,0 +1,81 @@
+<p-fluid>
+  <div class="flex mt-4 sm:mt-8 px-4 sm:px-0">
+    <div class="card flex flex-col gap-6 w-full p-4 sm:p-6">
+      <div>
+        <h2 class="text-base sm:text-lg md:text-xl font-semibold m-0">{{ 'Send Notification' | translate }}</h2>
+        <p class="text-sm text-surface-500 dark:text-surface-400 mt-1 mb-0">
+          {{ 'Select a user and send a personal notification message' | translate }}
+        </p>
+      </div>
+
+      <form class="flex flex-col gap-5" (ngSubmit)="submit()">
+        <div class="flex flex-col gap-2">
+          <label for="userEmail" class="font-medium">{{ 'User' | translate }}</label>
+          <p-select
+            inputId="userEmail"
+            [(ngModel)]="form.email"
+            name="email"
+            [options]="userEmails"
+            [filter]="true"
+            placeholder="{{ 'Select user email' | translate }}"
+            class="w-full"
+            required
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="title" class="font-medium">{{ 'Title' | translate }}</label>
+          <input
+            pInputText
+            id="title"
+            [(ngModel)]="form.title"
+            name="title"
+            placeholder="{{ 'Enter notification title' | translate }}"
+            class="w-full"
+            required
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="message" class="font-medium">{{ 'Message' | translate }}</label>
+          <textarea
+            pTextarea
+            id="message"
+            rows="5"
+            [(ngModel)]="form.message"
+            name="message"
+            placeholder="{{ 'Write the notification message for this user' | translate }}"
+            class="w-full"
+            required
+          ></textarea>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <p-button
+            type="submit"
+            [label]="'Send Notification' | translate"
+            icon="pi pi-send"
+            severity="success"
+            [disabled]="!isFormValid || isSubmitting"
+            styleClass="w-full sm:w-auto"
+          />
+          <p-button
+            type="button"
+            [label]="'Reset' | translate"
+            icon="pi pi-refresh"
+            severity="secondary"
+            [outlined]="true"
+            (onClick)="resetForm()"
+            styleClass="w-full sm:w-auto"
+          />
+        </div>
+      </form>
+    </div>
+  </div>
+</p-fluid>
+
+<p-toast />
+
+<div *ngIf="isLoading || isSubmitting" class="loading-overlay">
+  <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner"></p-progressSpinner>
+</div>
