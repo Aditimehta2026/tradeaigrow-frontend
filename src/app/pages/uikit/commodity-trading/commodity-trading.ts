@@ -123,7 +123,7 @@ export class CommodityTrading {
   };
 
   returnCards = [
-    { time: '30 Seconds', return: '20.00%', min: 5000, max: 20000, returnPercent: 20, seconds: 30 },
+    { time: '30 Seconds', return: '20.00%', min: 500, max: 20000, returnPercent: 20, seconds: 30 },
     { time: '60 Seconds', return: '30.00%', min: 20000, max: 50000, returnPercent: 30, seconds: 60 },
     { time: '90 Seconds', return: '40.00%', min: 50000, max: 100000, returnPercent: 40, seconds: 90 },
     { time: '120 Seconds', return: '60.00%', min: 100000, max: 500000, returnPercent: 60, seconds: 120 }
