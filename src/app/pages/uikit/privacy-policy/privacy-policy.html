@@ -1,0 +1,42 @@
+<div class="flex flex-col mt-4 sm:mt-8 px-4 sm:px-0">
+    <div class="card flex flex-col gap-6 sm:gap-8 w-full">
+        <div class="flex flex-col gap-2">
+            <div class="font-semibold text-xl sm:text-2xl">{{ 'Privacy Policy' | translate }}</div>
+            <span class="text-xs sm:text-sm text-surface-500 dark:text-surface-400">
+                {{ 'Last updated' | translate }}: {{ lastUpdated }}
+            </span>
+        </div>
+
+        <p class="m-0 text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
+            {{ 'This Privacy Policy describes how TradeAIGrow collects, uses, and protects your information when you use our platform.' | translate }}
+        </p>
+
+        <div class="flex flex-col gap-5">
+            @for (section of sections; track section.title) {
+                <section class="flex flex-col gap-2">
+                    <h2 class="m-0 font-semibold text-base sm:text-lg text-surface-900 dark:text-surface-0">
+                        {{ section.title | translate }}
+                    </h2>
+                    <p class="m-0 text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
+                        {{ section.body | translate }}
+                    </p>
+                </section>
+            }
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 sm:p-5 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800">
+            <div class="flex-1 min-w-0">
+                <div class="font-semibold text-sm sm:text-base">{{ 'Questions about privacy?' | translate }}</div>
+                <p class="m-0 mt-1 text-xs sm:text-sm text-surface-500">
+                    {{ 'Contact our support team if you need help with your data or this policy.' | translate }}
+                </p>
+            </div>
+            <p-button
+                [label]="'Contact Us' | translate"
+                icon="pi pi-comments"
+                styleClass="w-full sm:w-auto"
+                (onClick)="goToContactUs()"
+            />
+        </div>
+    </div>
+</div>

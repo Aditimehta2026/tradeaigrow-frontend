@@ -15,6 +15,8 @@ import { Support } from './support/support';
 import { ForexTradeForm } from './forex-trade-form/forex-trade-form';
 import { ForexTradeHistory } from './forex-trade-history/forex-trade-history';
 import { adminGuard } from '@/core/guards/admin.guard';
+import { PrivacyPolicy } from './privacy-policy/privacy-policy';
+import { HelpCenter } from './help-center/help-center';
 
 export default [
     { path: 'deposit', data: { breadcrumb: 'Deposit' }, component: Deposit },
@@ -23,6 +25,8 @@ export default [
     { path: 'forex-trade', data: { breadcrumb: 'Forex Trade' }, component: ForexTradeForm },
     { path: 'forex-trade-history', data: { breadcrumb: 'Forex Trade History' }, component: ForexTradeHistory },
     { path: 'support', data: { breadcrumb: 'Support' }, component: Support },
+    { path: 'help-center', data: { breadcrumb: 'Help Center' }, component: HelpCenter },
+    { path: 'privacy-policy', data: { breadcrumb: 'Privacy Policy' }, component: PrivacyPolicy },
     { path: 'ai-trading', data: { breadcrumb: 'AI Trading' }, component: AiTrading },
     { path: 'ai-trade-history', data: { breadcrumb: 'AI Trade History' }, component: AiTradeHistory },
     { path: 'commodity-trading', data: { breadcrumb: 'Commodity Trading' }, component: CommodityTrading },

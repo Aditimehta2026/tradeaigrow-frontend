@@ -1,0 +1,49 @@
+<div class="flex flex-col mt-4 sm:mt-8 px-4 sm:px-0">
+    <div class="card flex flex-col gap-6 sm:gap-8 w-full">
+        <div class="flex flex-col gap-2">
+            <div class="font-semibold text-xl sm:text-2xl">{{ 'Help Center' | translate }}</div>
+            <span class="text-xs sm:text-sm text-surface-500 dark:text-surface-400">
+                {{ 'Find answers about deposits, withdrawals, verification, and trading.' | translate }}
+            </span>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            @for (faq of faqs; track faq.id) {
+                <div class="rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 overflow-hidden">
+                    <button
+                        type="button"
+                        class="w-full flex items-center gap-3 p-4 text-left"
+                        (click)="toggleFaq(faq.id)">
+                        <i class="pi pi-question-circle text-primary shrink-0"></i>
+                        <span class="flex-1 font-medium text-sm sm:text-base text-surface-900 dark:text-surface-0">
+                            {{ faq.question | translate }}
+                        </span>
+                        <i
+                            class="pi text-surface-400 shrink-0"
+                            [ngClass]="openFaqId === faq.id ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+                    </button>
+                    @if (openFaqId === faq.id) {
+                        <p class="m-0 px-4 pb-4 pl-11 text-xs sm:text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
+                            {{ faq.answer | translate }}
+                        </p>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 sm:p-5 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800">
+            <div class="flex-1 min-w-0">
+                <div class="font-semibold text-sm sm:text-base">{{ 'Still need help?' | translate }}</div>
+                <p class="m-0 mt-1 text-xs sm:text-sm text-surface-500">
+                    {{ 'Our team is available through Telegram or a support request.' | translate }}
+                </p>
+            </div>
+            <p-button
+                [label]="'Contact Us' | translate"
+                icon="pi pi-comments"
+                styleClass="w-full sm:w-auto"
+                (onClick)="goToContactUs()"
+            />
+        </div>
+    </div>
+</div>

@@ -133,6 +133,9 @@ export class AppTopbar implements OnInit {
         }
     ];
 
+    // for help and support
+    showHelpSupportDialog = false;
+
     constructor(
         public layoutService: LayoutService,
         private router: Router,
@@ -418,5 +421,27 @@ export class AppTopbar implements OnInit {
 
     get currentLanguageLabel(): any {
         return this.languages.find((lang: any) => lang.value === this.selectedLang)?.label ?? 'English';
+    }
+
+    // for help and support
+    openHelpSupportDialog(): void {
+        this.showHelpSupportDialog = true;
+    }
+     openHelpCenter(): void {
+        this.showHelpSupportDialog = false;
+        this.showProfileDrawer = false;
+        this.router.navigate(['/app/page/help-center']);
+    }
+
+    openPrivacyPolicy(): void {
+        this.showHelpSupportDialog = false;
+        this.showProfileDrawer = false;
+        this.router.navigate(['/app/page/privacy-policy']);
+    }
+
+    openContactUs(): void {
+        this.showHelpSupportDialog = false;
+        this.showProfileDrawer = false;
+        this.router.navigate(['/app/page/support']);
     }
 }

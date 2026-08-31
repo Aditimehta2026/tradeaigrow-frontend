@@ -318,6 +318,19 @@
                         <i class="pi pi-angle-right text-surface-400 shrink-0"></i>
                     </button>
                 </li>
+                <li class="profile-drawer-action-row profile-drawer-action-row--clickable">
+                    <button type="button" class="profile-drawer-lang-trigger" (click)="openHelpSupportDialog()">
+                        <span class="profile-drawer-action-icon">
+                            <i class="pi pi-question-circle"></i>
+                        </span>
+                        <div class="text-left min-w-0 flex-1">
+                            <div class="text-sm font-medium text-surface-900 dark:text-surface-0">
+                                {{ 'Help & Support' | translate }}
+                            </div>
+                        </div>
+                        <i class="pi pi-angle-right text-surface-400 shrink-0"></i>
+                    </button>
+                </li>
                 <li class="profile-drawer-action-row profile-drawer-action-row--danger">
                     <button
                         type="button"
@@ -410,6 +423,47 @@
     </div>
 </p-dialog>
 
+<p-dialog
+    [(visible)]="showHelpSupportDialog"
+    [modal]="true"
+    [style]="{ width: '95%', maxWidth: '420px' }"
+    styleClass="language-picker-dialog">
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+            <span class="language-picker-header-icon">
+                <i class="pi pi-question-circle"></i>
+            </span>
+            <span class="font-semibold text-lg">{{ 'Help & Support' | translate }}</span>
+        </div>
+    </ng-template>
+
+    <div class="language-picker-grid">
+        <button type="button" class="language-picker-card" (click)="openHelpCenter()">
+            <span class="profile-drawer-action-icon">
+                <i class="pi pi-book"></i>
+            </span>
+            <span class="language-picker-label">{{ 'Help Center' | translate }}</span>
+            <i class="pi pi-angle-right text-surface-400 ml-auto"></i>
+        </button>
+
+        <button type="button" class="language-picker-card" (click)="openPrivacyPolicy()">
+            <span class="profile-drawer-action-icon">
+                <i class="pi pi-lock"></i>
+            </span>
+            <span class="language-picker-label">{{ 'Privacy Policy' | translate }}</span>
+            <i class="pi pi-angle-right text-surface-400 ml-auto"></i>
+        </button>
+
+        <button type="button" class="language-picker-card" (click)="openContactUs()">
+            <span class="profile-drawer-action-icon">
+                <i class="pi pi-comments"></i>
+            </span>
+            <span class="language-picker-label">{{ 'Contact Us' | translate }}</span>
+            <i class="pi pi-angle-right text-surface-400 ml-auto"></i>
+        </button>
+    </div>
+</p-dialog>
+
 <p-dialog [(visible)]="showVerifyDialog" [modal]="true" (onHide)="resetVerifyForm()"
     [style]="{ width: '95%', maxWidth: '500px' }" [draggable]="false" [resizable]="false">
 
@@ -479,7 +533,7 @@
     <p-progressSpinner strokeWidth="4" animationDuration=".8s" styleClass="custom-spinner"></p-progressSpinner>
   </div>
 
-    <p-dialog [(visible)]="showVerifySuccessDialog"
+<p-dialog [(visible)]="showVerifySuccessDialog"
           [modal]="true"
           [style]="{ width: '95%', maxWidth: '460px' }"
           [closable]="false"
