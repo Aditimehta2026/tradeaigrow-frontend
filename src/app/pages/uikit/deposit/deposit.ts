@@ -55,14 +55,14 @@ export class Deposit {
   showFaithDepositDialog = false;
   faithDepositEnabled = true;
   faithWireDetailUK = [
-      { label: 'Recipient',         value: 'ECOMGLOBALCART LTD',                                                          copyLabel: 'Recipient' },
-      { label: 'Currency Accepted', value: 'USD',                                                                         copyLabel: 'Currency accepted' },
-      { label: 'IBAN',              value: 'GB33 REVO 0099 6960 5160 20',                                                 copyLabel: 'IBAN' },
-      { label: 'BIC',               value: 'REVOGB21',                                                                    copyLabel: 'BIC' },
-      { label: 'Intermediary BIC',  value: 'CHASGB2L',                                                                    copyLabel: 'Intermediary BIC' },
-      { label: 'Recipient Address', value: 'Office 12 Initial Business Centre, 12, M40 8WN, Manchester, United Kingdom',  copyLabel: 'Recipient address' },
-      { label: 'Bank Name',         value: 'Revolut Ltd',                                                                 copyLabel: 'Bank name' },
-      { label: 'Bank Address',      value: '30 South Colonnade, E14 5HX, London, United Kingdom',                         copyLabel: 'Bank address' }
+ { label: 'Account Name', value: 'Borun Trading LLC', copyLabel: 'Account name' },
+    { label: 'Global Account', value: '00007810', copyLabel: 'Global account' },
+    { label: 'Sort Code', value: '040997', copyLabel: 'Sort code' },
+    { label: 'SWIFT/BIC', value: 'CLRBGB22479', copyLabel: 'SWIFT code/BIC' },
+    { label: 'IBAN', value: 'GB52CLRB04099700007810', copyLabel: 'IBAN' },
+    { label: 'Bank Country', value: 'United Kingdom', copyLabel: 'Bank country' },
+    { label: 'Bank Name', value: 'CLEARBANK LIMITED', copyLabel: 'Bank name' },
+    { label: 'Bank Address', value: 'The Broadgate Tower, 20 Primrose Street, London, EC2A 2EW', copyLabel: 'Bank address' }
   ];
   faithWireDetailUS = [
       { label: 'Business Name',     value: 'PT Global Excel Trading',                          copyLabel: 'Business name' },
